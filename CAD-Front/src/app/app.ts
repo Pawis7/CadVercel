@@ -57,10 +57,7 @@ export class App implements AfterViewInit {
   @ViewChild('inlineSearch') inlineSearch?: ElementRef<HTMLInputElement>;
 
   topNav: { label: string; href: string; exact: boolean }[] = [
-    { label: 'Perfiles',  href: '/p/adolescentes', exact: false },
-    { label: 'Cursos',    href: '/cursos',         exact: false },
-    { label: 'Recursos',  href: '/recursos',       exact: false },
-    { label: 'Ayuda',     href: '/ayuda',          exact: false },
+    { label: 'Cursos', href: '/cursos', exact: false },
   ];
 
   constructor() {

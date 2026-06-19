@@ -532,30 +532,19 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const FOOTER_COLUMNS: FooterColumn[] = [
   {
-    title: 'Recursos',
+    title: 'Cursos',
     links: [
-      { label: 'Videos animados', href: '/recursos' },
-      { label: 'Audiocuentos', href: '/recursos' },
-      { label: 'Microlecciones', href: '/recursos' },
-      { label: 'Guías y checklist', href: '/recursos' },
+      { label: 'Catálogo de cursos', href: '/cursos' },
+      { label: 'Nivel básico', href: '/cursos' },
+      { label: 'Nivel intermedio', href: '/cursos' },
+      { label: 'Nivel avanzado', href: '/cursos' },
     ],
   },
   {
-    title: 'Para aprender',
+    title: 'Plataforma',
     links: [
-      { label: 'Edutips', href: '/edutips' },
-      { label: 'El día que casi', href: '/series/el-dia-que-casi' },
-      { label: 'Rutas guiadas', href: '/recursos' },
-      { label: 'Tutoriales imprimibles', href: '/recursos' },
-    ],
-  },
-  {
-    title: 'Institucional',
-    links: [
-      { label: 'Quiénes somos', href: '/quienes-somos' },
-      { label: 'Ayuda Digital', href: '/ayuda' },
-      { label: 'Aliados', href: '/quienes-somos' },
-      { label: 'Contacto', href: '/quienes-somos' },
+      { label: 'Inicio', href: '/' },
+      { label: 'Acceder', href: '/AlfaAdminLogin' },
     ],
   },
 ];

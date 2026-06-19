@@ -1,5 +1,5 @@
 <!-- =================================================================
-     Sidebar — Persistente estilo Coursera/edX
+     Sidebar — Solo Cursos (Cursos Alfa Digital)
      Default expanded (256px). Collapsable a 72px con toggle.
      ================================================================= -->
 <div
@@ -34,8 +34,8 @@
     <!-- Nav -->
     <nav class="sidebar-nav">
 
-      <!-- Sección APRENDER -->
-      <h3 class="sidebar-section-label">{{ collapsed() && variant === 'desktop' ? 'Apr.' : 'Aprender' }}</h3>
+      <!-- Sección CURSOS -->
+      <h3 class="sidebar-section-label">{{ collapsed() && variant === 'desktop' ? 'Nav' : 'Cursos' }}</h3>
       <a *ngFor="let item of learnSections"
          [routerLink]="item.routerLink"
          [routerLinkActiveOptions]="{ exact: item.id === 'home' }"
@@ -52,61 +52,20 @@
 
       <div class="sidebar-divider"></div>
 
-      <!-- Sección AUDIENCIAS -->
-      <h3 class="sidebar-section-label">{{ collapsed() && variant === 'desktop' ? 'Perf.' : 'Perfiles' }}</h3>
-
-      <ng-container *ngFor="let item of audiences">
-        <div class="sidebar-audience-group">
-          <a [routerLink]="item.routerLink"
-             (click)="item.subItems?.length ? toggleAudience(item.id, $event) : onNavigate()"
-             routerLinkActive="is-active"
-             [attr.data-audience]="item.audience"
-             class="sidebar-item"
-             [title]="item.label">
-            <span class="sidebar-icon">
-              <span translate="no" class="material-symbols-rounded text-[20px] icon-interactive">{{ item.icon }}</span>
-            </span>
-            <span class="sidebar-label">{{ item.label }}</span>
-            @if (item.subItems?.length) {
-              <span class="sidebar-chevron"
-                [class.is-open]="openedAudience() === item.id">
-                <span translate="no" class="material-symbols-rounded text-[16px]">expand_more</span>
-              </span>
-            }
-          </a>
-
-          @if (item.subItems?.length) {
-            <div class="sidebar-sub-wrapper" [class.is-open]="openedAudience() === item.id">
-              <div class="sidebar-sub" [attr.data-audience]="item.audience">
-                <a *ngFor="let sub of item.subItems"
-                   [href]="sub.href"
-                   (click)="onSubitemClick()"
-                   class="sidebar-subitem">
-                  <span class="sidebar-subitem-dot"></span>
-                  <span>{{ sub.label }}</span>
-                </a>
-              </div>
-            </div>
-          }
-        </div>
-      </ng-container>
-
-      <div class="sidebar-divider"></div>
-
-      <!-- Sección AYUDA -->
-      <h3 class="sidebar-section-label">{{ collapsed() && variant === 'desktop' ? 'Más' : 'Orientación y más' }}</h3>
-      <a *ngFor="let s of helpSections"
-         [routerLink]="s.routerLink"
+      <!-- Accesos rápidos por nivel -->
+      <h3 class="sidebar-section-label">{{ collapsed() && variant === 'desktop' ? 'Niv.' : 'Por nivel' }}</h3>
+      <a *ngFor="let item of levelLinks"
+         [routerLink]="item.routerLink"
          (click)="onNavigate()"
-         routerLinkActive="is-active"
-         [attr.data-audience]="s.audience"
+         [attr.data-audience]="item.audience"
          class="sidebar-item"
-         [title]="s.label">
+         [title]="item.label">
         <span class="sidebar-icon">
-          <span translate="no" class="material-symbols-rounded text-[20px] icon-interactive">{{ s.icon }}</span>
+          <span translate="no" class="material-symbols-rounded text-[20px] icon-interactive">{{ item.icon }}</span>
         </span>
-        <span class="sidebar-label">{{ s.label }}</span>
+        <span class="sidebar-label">{{ item.label }}</span>
       </a>
+
     </nav>
 
     <!-- Footer del sidebar -->

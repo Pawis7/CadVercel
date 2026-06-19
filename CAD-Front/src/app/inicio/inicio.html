@@ -1,245 +1,192 @@
-<!-- AI AGENT NOTE: HERO/BANNER DIMENSIONS
-     - Base design deliverable: 1392px x 423px / 1546px x 423px (collapsed)
-     - Adaptive 1080p scale: 1604px x 423px / 1788px x 423px (collapsed) -->
+<!-- ============================================================
+     Inicio — Landing de cursos (Kaggle Learn style)
+     Paleta: crimson #E9004C + amber / dark slate
+     ============================================================ -->
+
+<!-- HERO -->
 <section
   appReveal="fade"
   [revealDuration]="700"
-  class="main-hero relative mb-8 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] shadow-[var(--shadow-xl)] sm:mb-10"
-  style="background: #E9004C; height: clamp(180px, 22vw, 380px);"
-  data-audience="cdj">
+  class="relative mb-10 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--c-cdj)] px-8 py-14 text-white shadow-[var(--shadow-xl)] sm:px-12 sm:py-16 lg:px-16 lg:py-20">
 
-  <img
-    src="/banners/CIUDADANIA_DIGITAL_Principal.png"
-    alt="Cursos Alfa Digital Jalisco Banner Principal"
-    class="block w-full h-full object-contain object-center">
+  <!-- Fondo decorativo -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute right-0 top-0 h-80 w-80 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-white/8 blur-3xl"></div>
+  </div>
 
-  <!-- Texto superpuesto -->
-  <div class="absolute inset-0 flex items-start">
-    <div class="hero-welcome
-                pl-[clamp(1rem,3.5vw,5.5rem)]
-                pr-[clamp(0.5rem,1.5vw,2rem)]
-                pt-[clamp(0.85rem,2.2vw,2.5rem)]
-                pb-[clamp(0.5rem,1.5vw,1.5rem)]
-                max-w-[64%] sm:max-w-[60%] md:max-w-[58%] lg:max-w-[55%] xl:max-w-[54%]">
-      <span class="hero-welcome__eyebrow">Plataforma educativa · SEJ</span>
-      <h1 class="hero-welcome__title">
-        <span class="hero-welcome__line">Bienvenidos</span>
-        <span class="hero-welcome__line hero-welcome__line--accent">y bienvenidas a</span>
-        <span class="hero-welcome__line hero-welcome__line--brand">
-          Cursos Alfa Digital
-          <span class="hero-welcome__sej">SEJ</span>
-        </span>
+  <div class="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+    <div class="max-w-2xl">
+      <p class="text-[11px] font-black uppercase tracking-[0.2em] text-white/70">Plataforma educativa · SEJ Jalisco</p>
+      <h1 class="mt-3 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+        Aprende a tu ritmo
       </h1>
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+        Cursos para moverte en internet con criterio: seguridad, privacidad, convivencia y pensamiento crítico. Gratuitos y para todas las edades.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a routerLink="/cursos"
+           class="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-black text-[#E9004C] shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl">
+          Explorar cursos
+          <span class="h-[15px] w-[15px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Stat chips -->
+    <div class="hidden grid-cols-1 gap-4 lg:grid">
+      <div class="rounded-2xl border border-white/20 bg-white/10 px-6 py-5 text-center backdrop-blur-sm">
+        <p class="text-3xl font-black tracking-tight">{{ courses.length }}</p>
+        <p class="mt-1 text-[11px] font-bold uppercase tracking-wide text-white/70">Cursos</p>
+      </div>
+      <div class="rounded-2xl border border-white/20 bg-white/10 px-6 py-5 text-center backdrop-blur-sm">
+        <p class="text-3xl font-black tracking-tight">100%</p>
+        <p class="mt-1 text-[11px] font-bold uppercase tracking-wide text-white/70">Gratuito</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CURSOS PROTAGONIST BLOCK — shown first after hero per Task 6 redesign -->
-<section appReveal="up" class="mb-10 sm:mb-12">
-  <!-- Header row -->
+<!-- VALUE STRIP -->
+<div appReveal="up" class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:mb-12">
+  @for (item of valueStrip; track item.title) {
+    <div class="flex items-start gap-4 rounded-[1.8rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-5 shadow-[var(--shadow-sm)]">
+      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#E9004C]/10 text-[#E9004C]">
+        <span class="h-[20px] w-[20px]"><app-ui-icon [name]="item.icon"></app-ui-icon></span>
+      </span>
+      <div>
+        <p class="text-sm font-black tracking-tight text-[color:var(--text-primary)]">{{ item.title }}</p>
+        <p class="mt-1 text-[12px] leading-relaxed text-[color:var(--text-soft)]">{{ item.copy }}</p>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- CURSOS DESTACADOS -->
+<section class="mb-10 sm:mb-12">
   <div class="mb-6 flex items-end justify-between">
-    <div>
+    <div appReveal="up">
       <p class="text-[11px] font-black uppercase tracking-[0.18em] text-[#E9004C]">Aprendizaje estructurado</p>
-      <h2 class="mt-1 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">Cursos destacados</h2>
-      <p class="mt-1 max-w-xl text-sm leading-relaxed text-slate-500">Recorridos completos para aprender con más orden, avanzar por unidades y aplicar lo aprendido.</p>
+      <h2 class="mt-1 text-2xl font-black tracking-tight text-[color:var(--text-primary)] sm:text-3xl">Cursos destacados</h2>
+      <p class="mt-1 max-w-xl text-sm leading-relaxed text-[color:var(--text-soft)]">
+        Recorridos completos para aprender con orden, avanzar por unidades y aplicar lo aprendido.
+      </p>
     </div>
     <a routerLink="/cursos"
        class="hidden shrink-0 items-center gap-1.5 rounded-xl bg-[#E9004C] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:inline-flex">
       Ver todos
-      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+      <span class="h-[14px] w-[14px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
     </a>
   </div>
 
-  <!-- Quick-access cards: Cursos as the lead card + supporting tiles -->
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <!-- Featured courses CTA card (crimson) -->
-    <a routerLink="/cursos"
-       class="group col-span-1 sm:col-span-2 flex items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#E9004C] px-6 py-7 text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-xl">
-      <div>
-        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-white/70">Aprendizaje estructurado</p>
-        <h3 class="mt-1 text-xl font-black leading-tight tracking-tight">Explorar el catálogo de cursos</h3>
-        <p class="mt-2 max-w-sm text-sm leading-relaxed text-white/80">Programas con progresión clara, constancia opcional y contenido 100% gratuito de la SEJ.</p>
-        <span class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-4 py-2 text-sm font-bold text-white transition-all group-hover:bg-white/25">
-          Ir a cursos
-          <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-        </span>
-      </div>
-      <div class="hidden shrink-0 lg:block">
-        <span class="grid h-20 w-20 place-items-center rounded-2xl bg-white/15 text-white backdrop-blur-sm">
-          <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-1.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
-        </span>
-      </div>
-    </a>
+  <!-- Cards de cursos — mismo estilo visual que cursos.html -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    @for (c of courses; track c.id; let i = $index) {
+      <a [routerLink]="['/cursos', c.slug]"
+         [attr.data-audience]="c.audience"
+         appReveal="up" [revealDelay]="i * 70"
+         class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
 
-    <!-- Supporting content tiles -->
-    @for (item of quickAccess.slice(1); track item.href) {
-      <a [routerLink]="item.href"
-         class="group flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-        <span class="grid h-10 w-10 place-items-center rounded-xl text-white shadow-sm" [ngClass]="item.tone">
-          <span class="h-[18px] w-[18px]"><app-ui-icon [name]="item.icon"></app-ui-icon></span>
-        </span>
-        <div>
-          <h3 class="text-sm font-black tracking-tight text-slate-900">{{ item.title }}</h3>
-          <p class="mt-1 text-[12px] leading-relaxed text-slate-500">{{ item.copy }}</p>
+        <!-- Cover image -->
+        <div class="relative h-40 w-full overflow-hidden bg-slate-100">
+          @if (c.coverImageUrl) {
+            <img [src]="c.coverImageUrl" [alt]="c.title"
+                 class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+          } @else {
+            <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E9004C]/10 to-amber-400/10">
+              <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#E9004C] text-white shadow-md">
+                <span class="h-[28px] w-[28px]"><app-ui-icon name="course"></app-ui-icon></span>
+              </span>
+            </div>
+          }
+          <!-- Level badge overlaid on cover -->
+          <span class="absolute left-3 top-3 rounded-full bg-[#E9004C] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow">
+            {{ levelLabels[c.level] }}
+          </span>
+          @if (c.certificate) {
+            <span class="absolute right-3 top-3 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-950 shadow">
+              Constancia
+            </span>
+          }
         </div>
-        <span class="mt-auto inline-flex items-center gap-1 text-[11px] font-bold text-[#E9004C] transition-transform group-hover:translate-x-0.5">
-          Explorar
-          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-        </span>
+
+        <!-- Card body -->
+        <div class="flex flex-1 flex-col p-5">
+          <!-- Audience + duration row -->
+          <div class="mb-3 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
+            <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ audienceLabel(c.audience) }}</span>
+            @if (c.durationHours) {
+              <span>{{ c.durationHours }}h · {{ c.syllabus?.length ?? 0 }} unidades</span>
+            }
+          </div>
+
+          <h3 class="text-base font-black leading-snug tracking-tight text-slate-900">{{ c.title }}</h3>
+          <p class="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-slate-500">{{ c.shortDescription }}</p>
+
+          <!-- Tags -->
+          @if (c.tags?.length) {
+            <div class="mt-3 flex flex-wrap gap-1.5">
+              @for (t of c.tags; track t) {
+                <span class="text-[10px] font-bold text-slate-400">#{{ t }}</span>
+              }
+            </div>
+          }
+
+          @if (c.instructor) {
+            <p class="mt-3 text-[11px] font-semibold text-slate-400">{{ c.instructor }}</p>
+          }
+
+          <!-- Footer: CTA arrow -->
+          <div class="mt-4 flex items-center justify-end border-t border-slate-100 pt-3">
+            <span class="inline-flex items-center gap-1.5 text-[12px] font-black text-[#E9004C] transition-transform group-hover:translate-x-0.5">
+              Ver curso
+              <span class="h-[13px] w-[13px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
+            </span>
+          </div>
+
+          <!-- Micro progress bar -->
+          <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div class="h-full rounded-full bg-[#E9004C] transition-all duration-500" [style.width.%]="coursePercent(c)"></div>
+          </div>
+        </div>
       </a>
     }
   </div>
 
-  <!-- Mobile "Ver todos" button -->
+  <!-- Mobile CTA -->
   <div class="mt-5 sm:hidden">
     <a routerLink="/cursos"
        class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#E9004C] px-5 py-3 text-sm font-bold text-white shadow-sm">
       Ver catálogo completo
-      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+      <span class="h-[14px] w-[14px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
     </a>
   </div>
 </section>
 
-<!-- SLIDER HERO (PROPUESTA EMBEDDED) -->
-<div class="mb-10 sm:mb-12">
-  <app-hero-section [embedded]="true" />
-</div>
-
-<!-- CONTENIDO DESTACADO SEJ -->
-<section class="mb-10 sm:mb-12">
-  <app-section-featured-selector section="inicio" sectionTitle="Inicio" />
-
-  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-    @for (card of featureCards(); track card.id; let i = $index) {
-      <app-feature-card [card]="card" [delay]="i * 80" />
-    }
-    @if (!featureCards().length) {
-      <div class="col-span-full py-8 text-center text-sm text-[color:var(--text-soft)]">
-        No hay tarjetas destacadas en esta sección. Haz clic en "Destacados: Inicio" para agregar.
-      </div>
-    }
-  </div>
-</section>
-
-<section class="mb-8 sm:mb-10">
-  <div class="section-head">
-    <div appReveal="up">
-      <p class="eyebrow eyebrow-ink">Paso 1</p>
-      <h2 class="display-2 mt-1">Elige tu perfil</h2>
-      <p class="mt-2 max-w-2xl text-sm text-[color:var(--text-soft)] sm:text-base">
-        Empieza por la audiencia a la que pertenece el contenido que necesitas.
-      </p>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-    @for (card of profileCards(); track card.id; let i = $index) {
-      <app-feature-card [card]="card" [delay]="i * 70" />
-    }
-  </div>
-</section>
-
-<section appReveal="up" class="mb-8 rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-6 shadow-[var(--shadow-lg)] sm:mb-10 sm:p-10">
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
-    <div>
-      <p class="eyebrow text-[color:var(--c-edutips)]">Paso 2</p>
-      <h2 class="display-2 mt-2">Cómo navegar el portal</h2>
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-[color:var(--text-soft)] sm:text-base">
-        Después del perfil, entra por la vía que mejor resuelve lo que buscas: aprender, orientarte o actuar.
-      </p>
-
-      <div class="mt-6 grid grid-cols-1 gap-4">
-        @for (card of featuredSpaces; track card.title; let i = $index) {
-          <a
-            [routerLink]="card.href"
-            [attr.data-audience]="card.audience"
-            appReveal="up"
-            [revealDelay]="i * 90"
-            class="group rounded-[1.5rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-4 transition-all hover:-translate-y-0.5 hover:bg-[color:var(--surface-card)] hover:shadow-[var(--shadow-md)]">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <p class="text-[11px] font-black uppercase tracking-[0.16em] text-[color:var(--aud)]">{{ card.kicker }}</p>
-                <h3 class="mt-2 text-lg font-black tracking-tight text-[color:var(--text-primary)]">{{ card.title }}</h3>
-                <p class="mt-2 text-sm leading-relaxed text-[color:var(--text-soft)]">{{ card.description }}</p>
-              </div>
-              <span class="grid h-11 w-11 place-items-center rounded-2xl bg-[color:var(--aud-cream)] text-[color:var(--aud)]">
-                <span class="h-[18px] w-[18px]"><app-ui-icon [name]="card.icon"></app-ui-icon></span>
-              </span>
-            </div>
-          </a>
-        }
-      </div>
-    </div>
-
-    <div>
-      <p class="eyebrow text-[color:var(--c-cdj)]">Base del portal</p>
-      <h2 class="display-2 mt-2">Tres principios que organizan todo</h2>
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-[color:var(--text-soft)] sm:text-base">
-        El contenido no está suelto: cada pieza responde a una lógica común para aprender, convivir y participar.
-      </p>
-
-      <div class="mt-6 grid gap-4 sm:grid-cols-3">
-        @for (pillar of pillars(); track pillar.id) {
-          <div class="rounded-[1.4rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-4">
-            <span class="grid h-12 w-12 place-items-center rounded-2xl text-white" [ngClass]="pillar.bgClass">
-              <span class="h-[18px] w-[18px]"><app-ui-icon [name]="pillarUiIcon(pillar.id)"></app-ui-icon></span>
-            </span>
-            <h3 class="mt-4 text-lg font-black tracking-tight text-[color:var(--text-primary)]">{{ pillar.title }}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-[color:var(--text-soft)]">{{ pillar.description }}</p>
-          </div>
-        }
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- CLOSING CTA BAND -->
 <section
   appReveal="up"
-  class="relative overflow-hidden rounded-[2rem] border border-transparent bg-[color:var(--c-cdj)] px-6 py-8 text-primary-variable shadow-[var(--shadow-xl)] sm:px-10 sm:py-10"
-  data-audience="cdj">
-  <div class="pointer-events-none absolute inset-0">
-    <div class="absolute right-0 top-0 h-72 w-72 rounded-full bg-white/10 blur-3xl"></div>
-    <div class="absolute left-0 bottom-0 h-72 w-72 rounded-full bg-white/8 blur-3xl"></div>
+  class="relative mb-2 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-8 py-10 shadow-[var(--shadow-lg)] sm:px-12 sm:py-14">
+
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute right-0 top-0 h-64 w-64 rounded-full bg-[#E9004C]/5 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-amber-400/8 blur-3xl"></div>
   </div>
 
-  <div class="relative z-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
-    <div>
-      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-primary-variable opacity-70">Paso 3</p>
-      <h2 class="display-2 mt-2 text-primary-variable">{{ secondaryBanner().title }}</h2>
-      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-primary-variable opacity-84 sm:text-base">{{ secondaryBanner().description }}</p>
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a
-          [routerLink]="secondaryBanner().ctaHref?.startsWith('/') ? secondaryBanner().ctaHref : null"
-          [href]="secondaryBanner().ctaHref && !secondaryBanner().ctaHref!.startsWith('/') ? secondaryBanner().ctaHref : null"
-          class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[color:var(--c-cdj)] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-          {{ secondaryBanner().ctaLabel }}
-          <span class="h-[14px] w-[14px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
-        </a>
-        <a routerLink="/ayuda" class="inline-flex items-center gap-2 rounded-xl border border-white/25 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-white/10">
-          Ayuda Digital
-          <span class="h-[14px] w-[14px]"><app-ui-icon name="shield"></app-ui-icon></span>
-        </a>
-      </div>
-    </div>
-
-    <div class="rounded-[1.6rem] border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
-      <p class="text-[11px] font-black uppercase tracking-[0.16em] text-primary-variable opacity-65">Ruta complementaria</p>
-      <h3 class="mt-2 text-2xl font-black tracking-tight">Explora también Notebooks IA</h3>
-      <p class="mt-3 text-sm leading-relaxed text-primary-variable opacity-80">
-        Asistentes entrenados con el material del portal para resolver dudas concretas con un acceso más guiado.
+  <div class="relative z-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <div class="max-w-lg">
+      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-[#E9004C]">Empezar ahora</p>
+      <h2 class="mt-2 text-2xl font-black tracking-tight text-[color:var(--text-primary)] sm:text-3xl">
+        ¿Listo para aprender?
+      </h2>
+      <p class="mt-2 text-sm leading-relaxed text-[color:var(--text-soft)]">
+        Explora el catálogo completo, elige tu nivel y comienza cuando quieras. Sin registro, sin costo.
       </p>
-      <div class="mt-5 grid grid-cols-3 gap-3">
-        @for (s of stats; track s.label) {
-          <div class="rounded-[1.1rem] bg-white/10 px-3 py-4 text-center">
-            <p class="text-2xl font-black tracking-tight">{{ s.value }}</p>
-            <p class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary-variable opacity-70">{{ s.label }}</p>
-          </div>
-        }
-      </div>
-      <a routerLink="/notebooks-ia" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-[color:var(--c-cdj)] transition-all hover:-translate-y-0.5">
-        Abrir notebooks
-        <span class="h-[14px] w-[14px]"><app-ui-icon name="spark"></app-ui-icon></span>
-      </a>
     </div>
+    <a routerLink="/cursos"
+       class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#E9004C] px-6 py-3.5 text-sm font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-xl">
+      Explorar cursos
+      <span class="h-[15px] w-[15px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
+    </a>
   </div>
 </section>

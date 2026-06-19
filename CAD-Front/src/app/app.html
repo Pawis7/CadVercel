@@ -78,7 +78,7 @@
           <span class="h-[16px] w-[16px] text-[color:var(--text-mute)]">
             <app-ui-icon name="search"></app-ui-icon>
           </span>
-          <span class="flex-1 text-[color:var(--text-mute)]">Buscar cursos, recursos, videos…</span>
+          <span class="flex-1 text-[color:var(--text-mute)]">Buscar cursos, temas, instructores…</span>
           <kbd class="rounded border border-[color:var(--border)] bg-[color:var(--surface-card)] px-1.5 py-0.5 text-[10px] font-bold text-[color:var(--text-mute)]">⌘K</kbd>
         </button>
       </div>
@@ -143,7 +143,7 @@
 
         <!-- CTA primary -->
         <a routerLink="/cursos" class="inline-flex h-9 items-center gap-2 rounded-xl bg-[color:var(--c-cdj)] px-4 text-[13px] font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[color:var(--c-cdj-deep)] hover:shadow-md">
-          <span class="hidden sm:inline">Explorar portal</span>
+          <span class="hidden sm:inline">Explorar cursos</span>
           <span class="h-[14px] w-[14px]">
             <app-ui-icon name="arrow-right"></app-ui-icon>
           </span>
@@ -225,7 +225,7 @@
               type="text"
               [ngModel]="searchQuery()"
               (ngModelChange)="searchQuery.set($event)"
-              placeholder="Buscar cursos, recursos, videos, audiencias…"
+              placeholder="Buscar cursos, temas, instructores…"
               class="w-full bg-transparent text-base font-medium text-[color:var(--text-primary)] placeholder-[color:var(--text-mute)] outline-none sm:text-lg">
             @if (searchQuery()) {
               <button type="button" (click)="searchQuery.set('')"
@@ -241,34 +241,20 @@
 
           <div class="px-4 py-4 sm:px-6 sm:py-5">
             <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-[color:var(--text-mute)]">Acceso rápido</p>
-            <div class="grid grid-cols-2 gap-2 sm:grid-cols-2">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <a routerLink="/cursos" (click)="closeSearch()"
                  class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-teachers)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
                 <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-teachers)] text-white">
                   <span class="h-[16px] w-[16px]"><app-ui-icon name="course"></app-ui-icon></span>
                 </span>
-                <span class="text-sm font-bold text-[color:var(--text-primary)]">Cursos</span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Explorar cursos</span>
               </a>
-              <a routerLink="/edutips" (click)="closeSearch()"
-                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-edutips)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
-                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-edutips)] text-white">
-                  <span class="h-[16px] w-[16px]"><app-ui-icon name="spark"></app-ui-icon></span>
+              <a routerLink="/AlfaAdminLogin" (click)="closeSearch()"
+                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-cdj)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-cdj)] text-white">
+                  <span translate="no" class="material-symbols-rounded text-[18px]">person</span>
                 </span>
-                <span class="text-sm font-bold text-[color:var(--text-primary)]">Edutips</span>
-              </a>
-              <a routerLink="/ayuda" (click)="closeSearch()"
-                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-help)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
-                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-help)] text-white">
-                  <span class="h-[16px] w-[16px]"><app-ui-icon name="shield"></app-ui-icon></span>
-                </span>
-                <span class="text-sm font-bold text-[color:var(--text-primary)]">Ayuda Digital</span>
-              </a>
-              <a routerLink="/p/adolescentes" (click)="closeSearch()"
-                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-families)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
-                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-teens)] text-white">
-                  <span class="h-[16px] w-[16px]"><app-ui-icon name="phone"></app-ui-icon></span>
-                </span>
-                <span class="text-sm font-bold text-[color:var(--text-primary)]">Adolescentes</span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Acceder</span>
               </a>
             </div>
           </div>
