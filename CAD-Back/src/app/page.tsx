@@ -33,9 +33,9 @@ const ENDPOINTS = [
 export default function HomePage() {
   return (
     <main style={{ maxWidth: 880, margin: '40px auto', padding: '0 20px', color: '#0F172A' }}>
-      <h1 style={{ fontSize: 28, marginBottom: 4 }}>CDJ-Back</h1>
+      <h1 style={{ fontSize: 28, marginBottom: 4 }}>CAD-Back</h1>
       <p style={{ color: '#475569', marginBottom: 28 }}>
-        API REST de Ciudadanía Digital Jalisco — Next.js + Prisma + PostgreSQL.
+        API REST de Cursos Alfa Digital — Next.js + Prisma + PostgreSQL.
       </p>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         <thead>

@@ -8,16 +8,16 @@ import { hashPassword } from '../src/lib/crypto';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('▶ Seeding Ciudadanía Digital…');
+  console.log('▶ Seeding Cursos Alfa Digital…');
 
   await prisma.siteBranding.upsert({
     where: { id: 1 },
     create: {
       id: 1,
-      siteName: 'Ciudadanía Digital Jalisco',
+      siteName: 'Cursos Alfa Digital',
       tagline:
-        'Promovemos el uso ético y responsable de la tecnología para una ciudadanía digital activa y consciente en Jalisco.',
-      logoLine1: 'Ciudadanía',
+        'Promovemos el uso ético y responsable de la tecnología a través de cursos digitales de calidad.',
+      logoLine1: 'Cursos Alfa',
       logoLine2: 'Digital',
     },
     update: {},
@@ -29,7 +29,7 @@ async function main() {
       id: 1,
       eyebrow: 'Portal público de aprendizaje · Jalisco',
       titleLead: 'Hola, bienvenidas y bienvenidos a',
-      titleHighlight: 'Ciudadanía Digital',
+      titleHighlight: 'Cursos Alfa Digital',
       description:
         'Aprendemos, convivimos y participamos en entornos digitales de forma segura, responsable y respetuosa. Para niñas, niños, adolescentes, familias y docentes.',
       primaryCtaLabel: 'Explorar contenidos',

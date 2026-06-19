@@ -12,7 +12,7 @@ export async function GET() {
     await prisma.$queryRaw`SELECT 1`;
     return NextResponse.json({
       status: 'ok',
-      service: 'cdj-back',
+      service: 'cad-back',
       time: new Date().toISOString(),
       db: 'up',
     });
