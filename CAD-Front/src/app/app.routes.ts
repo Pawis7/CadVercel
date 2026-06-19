@@ -39,6 +39,11 @@ export const routes: Routes = [
     title: 'Cursos · Cursos Alfa Digital',
   },
   {
+    path: 'cursos/:slug',
+    loadComponent: () => import('./cursos/curso-detail').then((m) => m.CursoDetailComponent),
+    title: 'Curso · Cursos Alfa Digital',
+  },
+  {
     path: 'juegos',
     loadComponent: () => import('./juegos/juegos').then((m) => m.JuegosComponent),
     title: 'Juegos · Cursos Alfa Digital',
