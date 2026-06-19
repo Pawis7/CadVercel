@@ -1,0 +1,21 @@
+<div class="editable-img relative h-full w-full">
+  @if (showFallback()) {
+    <app-aud-illustration
+      [theme]="themeVal"
+      [scene]="sceneVal"
+      [alt]="alt$"
+      [class]="imgClass$">
+    </app-aud-illustration>
+  }
+  <img
+    [src]="resolvedSrc()"
+    [alt]="alt$"
+    [class]="imgClass$"
+    [attr.loading]="loadingAttr"
+    [class.opacity-0]="showFallback()"
+    [class.absolute]="showFallback()"
+    [class.inset-0]="showFallback()"
+    decoding="async"
+    (load)="onImgLoad()"
+    (error)="onImgError()">
+</div>

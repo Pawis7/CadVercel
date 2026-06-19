@@ -1,0 +1,39 @@
+{
+  "name": "cdj-back",
+  "version": "0.1.0",
+  "private": true,
+  "description": "API REST para Ciudadanía Digital Jalisco — Next.js + Prisma + PostgreSQL.",
+  "scripts": {
+    "dev": "next dev -p 4180",
+    "build": "next build",
+    "start": "next start -p 4180",
+    "lint": "next lint",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset --force",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts",
+    "postinstall": "prisma generate",
+    "prisma:studio:local": "docker compose --profile tools up -d studio"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.18.1",
+    "next": "^15.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "prisma": "^6.18.1",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
+  }
+}

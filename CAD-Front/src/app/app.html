@@ -1,0 +1,298 @@
+<div class="relative flex min-h-[100dvh] gap-4 p-3 sm:p-4 lg:gap-5 lg:p-5">
+
+  <!-- Sidebar desktop persistente -->
+  <div class="relative isolate hidden shrink-0 lg:block" style="z-index: 60;">
+    <div class="sticky top-5 h-[calc(100dvh-2.5rem)]">
+      <app-sidebar variant="desktop" (logout)="onLogout()"></app-sidebar>
+    </div>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div
+    class="fixed inset-0 z-50 lg:hidden"
+    [class.pointer-events-none]="!drawerOpen()"
+    aria-modal="true"
+    role="dialog">
+    <div
+      class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300"
+      [class.opacity-0]="!drawerOpen()"
+      [class.opacity-100]="drawerOpen()"
+      (click)="closeDrawer()"
+      aria-hidden="true">
+    </div>
+    <div
+      class="absolute inset-y-0 left-0 flex w-[86%] max-w-[320px] flex-col p-3 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      [class.-translate-x-full]="!drawerOpen()"
+      [class.translate-x-0]="drawerOpen()">
+      <app-sidebar variant="mobile" (navigate)="closeDrawer()" (logout)="onLogout()"></app-sidebar>
+    </div>
+  </div>
+
+  <!-- Main column -->
+  <div class="flex min-w-0 flex-1 flex-col gap-5 lg:gap-6">
+
+    <!-- Topbar — fijo arriba (position: fixed → siempre visible al scroll) -->
+    <header
+      class="topbar flex items-center gap-3 rounded-2xl border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-3 py-2.5 shadow-sm sm:px-4 lg:gap-4 lg:px-5 lg:py-3"
+      [class.shadow-md]="scrolled()">
+
+      <!-- Mobile: hamburger + logo compacto -->
+      <div class="flex items-center gap-2.5 lg:hidden">
+        <button
+          type="button"
+          (click)="toggleDrawer()"
+          [attr.aria-label]="drawerOpen() ? 'Cerrar menú' : 'Abrir menú'"
+          [attr.aria-expanded]="drawerOpen()"
+          class="grid h-9 w-9 cursor-pointer place-items-center rounded-lg border border-[color:var(--border)] text-[color:var(--text-primary)] transition-all hover:bg-[color:var(--surface-soft)] active:scale-95">
+          <span class="h-[18px] w-[18px]">
+            <app-ui-icon [name]="drawerOpen() ? 'close' : 'menu'"></app-ui-icon>
+          </span>
+        </button>
+        <a routerLink="/" class="flex items-center gap-2">
+          <app-cdj-logo variant="icon" containerClass="h-9 w-9 shrink-0"></app-cdj-logo>
+          <span class="font-display text-[12px] font-black leading-[1.05] tracking-tight text-[color:var(--text-primary)]">
+            Ciudadanía<br>Digital <span class="text-[color:var(--c-cdj)]">SEJ</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Desktop nav primario (chips de catálogo) -->
+      <nav class="hidden items-center gap-0.5 lg:flex">
+        <a *ngFor="let link of topNav"
+           [routerLink]="link.href.startsWith('/') ? link.href : null"
+           [href]="!link.href.startsWith('/') ? link.href : null"
+           [routerLinkActiveOptions]="{ exact: link.exact }"
+           routerLinkActive="bg-[color:var(--c-cdj-cream)] text-[color:var(--c-cdj)]"
+           class="rounded-lg px-3 py-1.5 text-[13.5px] font-semibold text-[color:var(--text-secondary)] transition-colors hover:bg-[color:var(--surface-soft)] hover:text-[color:var(--text-primary)]">
+          {{ link.label }}
+        </a>
+      </nav>
+
+      <!-- Search inline (siempre visible en desktop) -->
+      <div class="ml-auto hidden flex-1 max-w-md sm:flex">
+        <button
+          type="button"
+          (click)="openSearch()"
+          aria-label="Buscar (Cmd + K)"
+          class="search-input cursor-pointer text-left">
+          <span class="h-[16px] w-[16px] text-[color:var(--text-mute)]">
+            <app-ui-icon name="search"></app-ui-icon>
+          </span>
+          <span class="flex-1 text-[color:var(--text-mute)]">Buscar cursos, recursos, videos…</span>
+          <kbd class="rounded border border-[color:var(--border)] bg-[color:var(--surface-card)] px-1.5 py-0.5 text-[10px] font-bold text-[color:var(--text-mute)]">⌘K</kbd>
+        </button>
+      </div>
+
+      <!-- Acciones a la derecha -->
+      <div class="ml-auto flex items-center gap-1.5 sm:ml-0">
+        <!-- Search (mobile) -->
+        <button
+          type="button"
+          (click)="openSearch()"
+          aria-label="Buscar"
+          class="grid h-9 w-9 cursor-pointer place-items-center rounded-lg border border-[color:var(--border)] text-[color:var(--text-secondary)] transition-all hover:bg-[color:var(--surface-soft)] hover:text-[color:var(--text-primary)] sm:hidden">
+          <span class="h-[16px] w-[16px]">
+            <app-ui-icon name="search"></app-ui-icon>
+          </span>
+        </button>
+
+        <!-- Toggle tema -->
+        <button
+          type="button"
+          (click)="toggleTheme()"
+          [attr.aria-label]="theme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+          [title]="theme() === 'dark' ? 'Tema claro' : 'Tema oscuro'"
+          class="grid h-9 w-9 cursor-pointer place-items-center rounded-lg border border-[color:var(--border)] text-[color:var(--text-secondary)] transition-all hover:bg-[color:var(--surface-soft)] hover:text-[color:var(--text-primary)]">
+          <span class="h-[17px] w-[17px]">
+            <app-ui-icon [name]="theme() === 'dark' ? 'sun' : 'moon'"></app-ui-icon>
+          </span>
+        </button>
+
+        <!-- Lengua de señas (accesibilidad) - OCULTO POR AHORA -->
+        <button
+          type="button"
+          (click)="toggleSignLanguage()"
+          [attr.aria-pressed]="signLanguage()"
+          aria-label="Activar lengua de señas"
+          title="Lengua de señas"
+          class="!hidden h-9 w-9 place-items-center rounded-lg border border-[color:var(--border)] text-[color:var(--text-secondary)] transition-all hover:bg-[color:var(--surface-soft)] hover:text-[color:var(--text-primary)]"
+          [class.bg-]="signLanguage()"
+          [class.bg-cdj-50]="signLanguage()"
+          [class.text-cdj-600]="signLanguage()"
+          [class.border-cdj-200]="signLanguage()">
+          <span translate="no" class="material-symbols-rounded text-[18px] icon-interactive" [class.icon-fill]="signLanguage()">sign_language</span>
+        </button>
+
+
+        <!-- Mi cuenta / Login -->
+        @if (!isAuthenticated()) {
+          <a routerLink="/AlfaAdminLogin"
+            class="hidden h-9 items-center gap-2 rounded-lg border border-[color:var(--border)] px-3 text-[13px] font-semibold text-[color:var(--text-primary)] transition-all hover:bg-[color:var(--surface-soft)] sm:inline-flex"
+            title="Iniciar sesión">
+            <span translate="no" class="material-symbols-rounded text-[18px]">person</span>
+            <span>Acceder</span>
+          </a>
+        } @else {
+          <button type="button" (click)="onLogout()"
+            class="hidden h-9 cursor-pointer items-center gap-2 rounded-lg border border-[color:var(--border)] bg-[color:var(--surface-soft)] px-3 text-[13px] font-semibold text-rose-500 transition-all hover:bg-rose-500/10 sm:inline-flex"
+            title="Cerrar sesión">
+            <span translate="no" class="material-symbols-rounded text-[18px]">logout</span>
+            <span>Salir</span>
+          </button>
+        }
+
+        <!-- CTA primary -->
+        <a routerLink="/cursos" class="inline-flex h-9 items-center gap-2 rounded-xl bg-[color:var(--c-cdj)] px-4 text-[13px] font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[color:var(--c-cdj-deep)] hover:shadow-md">
+          <span class="hidden sm:inline">Explorar portal</span>
+          <span class="h-[14px] w-[14px]">
+            <app-ui-icon name="arrow-right"></app-ui-icon>
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="rounded-2xl border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-6 sm:p-10 lg:p-12">
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-5 lg:gap-12">
+        <div class="md:col-span-2">
+          <a routerLink="/" class="mb-5 flex items-center gap-3">
+            <app-cdj-logo variant="auto" containerClass="h-12 w-auto shrink-0"></app-cdj-logo>
+            <div class="text-lg font-black leading-tight text-[color:var(--text-primary)]">
+              {{ branding().siteName }}
+            </div>
+          </a>
+          <p class="max-w-sm leading-relaxed text-[color:var(--text-soft)]">
+            {{ branding().tagline }}
+          </p>
+          <div class="mt-7 flex flex-wrap gap-2.5">
+            <a *ngFor="let s of socialLinks()"
+               [href]="s.href !== '#' ? s.href : null"
+               [attr.aria-label]="s.label"
+               [title]="s.href !== '#' ? s.label : s.label + ' próximamente'"
+               [attr.aria-disabled]="s.href === '#' ? 'true' : null"
+               [class.pointer-events-none]="s.href === '#'"
+               [class.opacity-50]="s.href === '#'"
+               class="group grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--surface-soft)] text-[color:var(--text-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[color:var(--c-cdj)] hover:text-white hover:shadow-md">
+              <span class="block h-[16px] w-[16px] transition-transform duration-200 group-hover:scale-110">
+                <app-brand-icon [name]="s.brand" [label]="s.label"></app-brand-icon>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <div *ngFor="let group of footerColumns()">
+          <h4 class="mb-5 text-xs font-black uppercase tracking-widest text-[color:var(--text-primary)]">{{ group.title }}</h4>
+          <ul class="space-y-3">
+            <li *ngFor="let item of group.links">
+              <a
+                [routerLink]="item.href.startsWith('/') ? item.href : null"
+                [href]="!item.href.startsWith('/') ? item.href : null"
+                class="text-sm text-[color:var(--text-soft)] transition-colors hover:text-[color:var(--c-cdj)]">
+                {{ item.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-col gap-3 border-t border-[color:var(--border-soft)] pt-8 text-center text-xs text-[color:var(--text-mute)] sm:mt-12 sm:flex-row sm:items-center sm:justify-between sm:text-left">
+        <span>© {{ year }} {{ branding().siteName }} · Gobierno de Jalisco</span>
+        <span class="inline-flex items-center justify-center gap-2">
+          <span class="inline-flex h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+          Plataforma activa
+        </span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============== BUSCADOR (overlay tipo command-palette) ============== -->
+  @if (searchOpen()) {
+    <div class="fixed inset-0 z-[60] flex items-start justify-center"
+         role="dialog" aria-modal="true" aria-label="Buscar">
+      <div class="search-overlay absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+           (click)="closeSearch()"
+           aria-hidden="true"></div>
+
+      <div class="search-panel relative z-10 mt-20 w-[92%] max-w-2xl sm:mt-28">
+        <div class="overflow-hidden rounded-2xl border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-2xl">
+          <div class="flex items-center gap-3 border-b border-[color:var(--border-soft)] px-4 py-3 sm:px-6 sm:py-4">
+            <span translate="no" class="material-symbols-rounded text-2xl text-[color:var(--text-mute)]">search</span>
+            <input
+              #searchInput
+              type="text"
+              [ngModel]="searchQuery()"
+              (ngModelChange)="searchQuery.set($event)"
+              placeholder="Buscar cursos, recursos, videos, audiencias…"
+              class="w-full bg-transparent text-base font-medium text-[color:var(--text-primary)] placeholder-[color:var(--text-mute)] outline-none sm:text-lg">
+            @if (searchQuery()) {
+              <button type="button" (click)="searchQuery.set('')"
+                class="grid h-8 w-8 cursor-pointer place-items-center rounded-full text-[color:var(--text-mute)] transition-colors hover:bg-[color:var(--surface-soft)] hover:text-[color:var(--text-primary)]">
+                <span translate="no" class="material-symbols-rounded text-base">close</span>
+              </button>
+            }
+            <button type="button" (click)="closeSearch()"
+              class="hidden cursor-pointer items-center gap-1 rounded-md border border-[color:var(--border)] bg-[color:var(--surface-soft)] px-2 py-1 text-[10px] font-bold text-[color:var(--text-soft)] transition-colors hover:bg-[color:var(--surface-card)] sm:inline-flex">
+              ESC
+            </button>
+          </div>
+
+          <div class="px-4 py-4 sm:px-6 sm:py-5">
+            <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-[color:var(--text-mute)]">Acceso rápido</p>
+            <div class="grid grid-cols-2 gap-2 sm:grid-cols-2">
+              <a routerLink="/cursos" (click)="closeSearch()"
+                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-teachers)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-teachers)] text-white">
+                  <span class="h-[16px] w-[16px]"><app-ui-icon name="course"></app-ui-icon></span>
+                </span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Cursos</span>
+              </a>
+              <a routerLink="/edutips" (click)="closeSearch()"
+                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-edutips)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-edutips)] text-white">
+                  <span class="h-[16px] w-[16px]"><app-ui-icon name="spark"></app-ui-icon></span>
+                </span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Edutips</span>
+              </a>
+              <a routerLink="/ayuda" (click)="closeSearch()"
+                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-help)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-help)] text-white">
+                  <span class="h-[16px] w-[16px]"><app-ui-icon name="shield"></app-ui-icon></span>
+                </span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Ayuda Digital</span>
+              </a>
+              <a routerLink="/p/adolescentes" (click)="closeSearch()"
+                 class="group flex items-center gap-2.5 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-3 transition-all hover:-translate-y-0.5 hover:border-[color:var(--c-families)] hover:bg-[color:var(--surface-card)] hover:shadow-md">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--c-teens)] text-white">
+                  <span class="h-[16px] w-[16px]"><app-ui-icon name="phone"></app-ui-icon></span>
+                </span>
+                <span class="text-sm font-bold text-[color:var(--text-primary)]">Adolescentes</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="border-t border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] px-4 py-3 text-[11px] font-semibold text-[color:var(--text-mute)] sm:px-6">
+            <span class="hidden sm:inline">Tip · usa <kbd class="rounded border border-[color:var(--border)] bg-[color:var(--surface-card)] px-1.5 py-0.5 font-bold text-[color:var(--text-soft)]">⌘</kbd> + <kbd class="rounded border border-[color:var(--border)] bg-[color:var(--surface-card)] px-1.5 py-0.5 font-bold text-[color:var(--text-soft)]">K</kbd> para abrir desde cualquier sección</span>
+            <span class="sm:hidden">Toca fuera o ESC para cerrar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  <!-- Overlay de Feedback (Logout) -->
+  @if (loggingOut()) {
+    <div class="feedback-overlay">
+      <div class="feedback-card">
+        <div class="feedback-icon">
+          <span translate="no" class="material-symbols-rounded text-3xl icon-fill">verified_user</span>
+        </div>
+        <div class="feedback-text">
+          <h3>Sesión Finalizada</h3>
+          <p>Has salido de forma segura del panel de administración.</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,102 @@
+/* Estilos específicos para Inicio */
+
+/* ====================================================================
+   HERO WELCOME — texto superpuesto sobre el banner principal
+   Escalado fluido con clamp() basado en el ancho del viewport.
+   ==================================================================== */
+.hero-welcome {
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(15, 23, 42, 0.18);
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: default;
+}
+
+.hero-welcome__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: clamp(0.22rem, 0.18vw + 0.18rem, 0.4rem)
+           clamp(0.5rem, 0.4vw + 0.45rem, 1rem);
+  margin-bottom: clamp(0.5rem, 0.6vw + 0.35rem, 1.1rem);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-display);
+  font-size: clamp(0.52rem, 0.35vw + 0.45rem, 0.78rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  white-space: nowrap;
+}
+
+.hero-welcome__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.05rem, 1.9vw + 0.4rem, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.14em;
+}
+
+.hero-welcome__line {
+  display: block;
+}
+
+.hero-welcome__line--accent {
+  font-weight: 500;
+  opacity: 0.95;
+  font-size: 0.7em;
+  letter-spacing: -0.02em;
+}
+
+.hero-welcome__line--brand {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.78) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 4px 18px rgba(15, 23, 42, 0.18));
+}
+
+.hero-welcome__sej {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.16em 0.55em;
+  border-radius: 0.5em;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--c-cdj);
+  font-size: 0.46em;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  -webkit-text-fill-color: var(--c-cdj);
+  text-shadow: none;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+  transform: translateY(-0.2em);
+}
+
+@media (max-width: 420px) {
+  .hero-welcome__eyebrow {
+    display: none;
+  }
+  .hero-welcome__title {
+    line-height: 0.98;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-welcome__line--brand {
+    filter: none;
+  }
+}

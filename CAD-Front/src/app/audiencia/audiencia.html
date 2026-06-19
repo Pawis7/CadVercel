@@ -1,0 +1,448 @@
+@if (page(); as p) {
+  <!-- ====================================================================
+       HERO de audiencia con identidad de su tema
+        AI AGENT NOTE: HERO/BANNER DIMENSIONS
+        - Base design deliverable: 1392px x 423px / 1546px x 423px (collapsed)
+        - Adaptive 1080p scale: 1604px x 423px / 1788px x 423px (collapsed)
+       ==================================================================== -->
+  @if (slug() === 'ninas-y-ninos') {
+    <section
+      appReveal="fade"
+      [revealDuration]="700"
+      class="main-hero relative mb-8 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-[var(--shadow-xl)] sm:mb-10"
+      data-audience="kids">
+      <h1 class="sr-only">Niñas y niños - Ciudadanía Digital</h1>
+      <img
+        src="/banners/CIUDADANIA_NINASYNINOS.png"
+        alt="Ciudadanía Digital Jalisco Niñas y Niños"
+        class="block w-full h-auto lg:h-full lg:object-cover">
+    </section>
+  } @else if (slug() === 'adolescentes') {
+    <section
+      appReveal="fade"
+      [revealDuration]="700"
+      class="main-hero relative mb-8 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-[var(--shadow-xl)] sm:mb-10"
+      data-audience="teens">
+      <h1 class="sr-only">Adolescentes - Ciudadanía Digital</h1>
+      <img
+        src="/banners/CIUDADANIA_Adolescentes.png"
+        alt="Ciudadanía Digital Jalisco Adolescentes"
+        class="block w-full h-auto lg:h-full lg:object-cover">
+    </section>
+  } @else if (slug() === 'familias') {
+    <section
+      appReveal="fade"
+      [revealDuration]="700"
+      class="main-hero relative mb-8 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-[var(--shadow-xl)] sm:mb-10"
+      data-audience="families">
+      <h1 class="sr-only">Familias - Ciudadanía Digital</h1>
+      <img
+        src="/banners/CIUDADANIA_Familias.png"
+        alt="Ciudadanía Digital Jalisco Familias"
+        class="block w-full h-auto lg:h-full lg:object-cover">
+    </section>
+  } @else if (slug() === 'docentes') {
+    <section
+      appReveal="fade"
+      [revealDuration]="700"
+      class="main-hero relative mb-8 overflow-hidden rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-[var(--shadow-xl)] sm:mb-10"
+      data-audience="teachers">
+      <h1 class="sr-only">Docentes - Ciudadanía Digital</h1>
+      <img
+        src="/banners/CIUDADANIADOCENTESDIGITAL.png"
+        alt="Ciudadanía Digital Jalisco Docentes"
+        class="block w-full h-auto lg:h-full lg:object-cover">
+    </section>
+  } @else {
+    <section
+      appReveal="fade"
+      [revealDuration]="700"
+      [attr.data-audience]="audienceTheme()"
+      class="hero-aud relative mb-8 overflow-hidden text-primary-variable sm:mb-10">
+
+      <span aria-hidden="true" class="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/10 blur-3xl"></span>
+
+      <div class="relative z-10 grid grid-cols-1 items-center gap-10 p-6 sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:p-14">
+        <div>
+          <nav class="mb-4 flex items-center gap-2 text-xs font-semibold text-primary-variable opacity-80">
+            <a routerLink="/" class="transition-colors hover:text-primary-variable">Inicio</a>
+            <span translate="no" class="material-symbols-rounded text-sm">chevron_right</span>
+            <span class="text-primary-variable">{{ p.title }}</span>
+          </nav>
+
+          <span appReveal="up"
+                class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-widest backdrop-blur">
+            <span class="grid h-5 w-5 place-items-center rounded-full bg-white/25 text-primary-variable">
+              <span translate="no" class="material-symbols-rounded text-[14px] icon-fill">{{ p.icon }}</span>
+            </span>
+            {{ p.eyebrow }}
+          </span>
+
+          <h1 appReveal="up" [revealDelay]="80" class="display-1 mt-4 text-primary-variable">
+            {{ p.title }}
+          </h1>
+          <p appReveal="up" [revealDelay]="160" class="mt-3 text-base font-semibold text-primary-variable opacity-90 sm:text-lg">
+            {{ p.tagline }}
+          </p>
+          <p appReveal="up" [revealDelay]="220" class="mt-4 max-w-2xl text-sm leading-relaxed text-primary-variable opacity-85 sm:text-base">
+            {{ p.description }}
+          </p>
+
+          <div appReveal="up" [revealDelay]="280" class="mt-6 flex flex-wrap items-center gap-2">
+            @if (p.ageRange) {
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
+                <span translate="no" class="material-symbols-rounded text-[14px] icon-fill">cake</span>
+                Edad: {{ p.ageRange }}
+              </span>
+            }
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
+              <span translate="no" class="material-symbols-rounded text-[14px]">layers</span>
+              {{ p.subLevels.length }} niveles
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
+              <span translate="no" class="material-symbols-rounded text-[14px]">auto_stories</span>
+              {{ p.topics.length }} temas
+            </span>
+          </div>
+        </div>
+
+        <!-- Fotografía de la audiencia -->
+        <div class="relative hidden h-72 lg:block overflow-hidden rounded-3xl bg-[color:var(--surface-soft)] shadow-md">
+          <img [src]="p.heroImage" [alt]="p.title" class="block h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105">
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ====================================================================
+       SUB-NIVELES — cards más limpios
+       ==================================================================== -->
+  @if (p.subLevels.length) {
+    <section class="mb-8 sm:mb-10 animate-fade-in" [attr.data-audience]="audienceTheme()">
+      <div appReveal="up" class="section-head">
+        <div>
+          <p class="eyebrow text-[color:var(--aud)]">Por nivel</p>
+          <h2 class="display-2 mt-1">Elige tu nivel de aprendizaje</h2>
+          <p class="mt-2 text-sm text-[color:var(--text-soft)] max-w-xl">
+            Haz clic en tu nivel para abrir su portal interactivo, acceder a minijuegos exclusivos, simuladores en vivo y material didáctico.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <article *ngFor="let sub of p.subLevels; let i = index"
+           [attr.id]="sub.id"
+           (click)="selectedLevel.set(sub.id)"
+           appReveal="up"
+           [revealDelay]="i * 70"
+           class="card card-hover group relative flex flex-col cursor-pointer transition-all duration-300"
+           [class.ring-4]="selectedLevel() === sub.id"
+           [class.ring-violet-500]="selectedLevel() === sub.id && isTeenAudience()"
+           [class.ring-rose-500]="selectedLevel() === sub.id && !isTeenAudience()"
+           [class.shadow-2xl]="selectedLevel() === sub.id"
+           [class.scale-[1.03]]="selectedLevel() === sub.id"
+           [class.border-violet-300]="selectedLevel() === sub.id && isTeenAudience()"
+           [class.border-rose-300]="selectedLevel() === sub.id && !isTeenAudience()">
+
+          <!-- Active Selection Badge -->
+          <span *ngIf="selectedLevel() === sub.id" 
+                class="absolute right-4 top-4 bg-[color:var(--aud)] text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md z-20 animate-pulse">
+            Activo
+          </span>
+
+          <div class="relative aspect-[5/3] overflow-hidden bg-[color:var(--surface-soft)]">
+            <img
+              [src]="sub.imageUrl"
+              [alt]="sub.title"
+              class="block h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105">
+
+            <span class="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-xl bg-white/95 text-[color:var(--aud)] shadow-md transition-transform duration-300 group-hover:scale-110 backdrop-blur z-10">
+              <span translate="no" class="material-symbols-rounded text-xl icon-fill">{{ sub.icon }}</span>
+            </span>
+          </div>
+
+          <div class="flex flex-1 flex-col p-5">
+            <p class="text-[10px] font-black uppercase tracking-widest text-[color:var(--aud)]">{{ sub.subtitle }}</p>
+            <h3 class="mt-1 text-lg font-black tracking-tight text-[color:var(--text-primary)]">{{ sub.title }}</h3>
+            <div class="mt-4 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-3 text-[12px] font-bold text-[color:var(--text-soft)]">
+              <span class="inline-flex items-center gap-1">
+                <span translate="no" class="material-symbols-rounded text-[14px]">menu_book</span>
+                {{ sub.resourceCount }} recursos
+              </span>
+              <span class="inline-flex items-center gap-1 text-[color:var(--aud)] transition-transform group-hover:translate-x-0.5">
+                Abrir portal
+                <span translate="no" class="material-symbols-rounded text-[16px]">arrow_forward</span>
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         PORTAL DE NIVEL DINÁMICO & FILTRADO DE RECURSOS
+         ==================================================================== -->
+    <section class="mb-10 p-6 sm:p-8 rounded-[2rem] border border-[color:var(--border-soft)] bg-gradient-to-b from-[color:var(--surface-soft)] to-[color:var(--surface-card)] shadow-lg animate-fade-in">
+      
+      <!-- Encabezado del Portal de Aprendizaje Activo -->
+      <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[color:var(--border-soft)] pb-6">
+        <div>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--aud-cream)] px-3 py-1 text-[11px] font-black uppercase tracking-widest text-[color:var(--aud)] mb-2 shadow-sm">
+            <span translate="no" class="material-symbols-rounded text-[13px] icon-fill">school</span>
+            Portal de aprendizaje activo
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-[color:var(--text-primary)]">
+            Recursos y actividades: <span class="text-[color:var(--aud)]">{{ getActiveLevelName() }}</span>
+          </h2>
+          <p class="text-sm text-[color:var(--text-soft)] max-w-xl mt-1.5 leading-relaxed">
+            Explora las herramientas interactivas, guías descargables y retos diseñados para el nivel {{ getActiveLevelName() }}. ¡Filtra y busca lo que necesites!
+          </p>
+        </div>
+
+        <!-- Barra de búsqueda rápida -->
+        <div class="relative w-full max-w-xs shrink-0">
+          <span translate="no" class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <input 
+            type="text" 
+            [value]="searchQuery()"
+            (input)="updateSearch($event)"
+            placeholder="Buscar minijuego, video..." 
+            class="w-full pl-10 pr-4 py-3 rounded-2xl border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] text-sm font-semibold text-[color:var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--aud)] focus:border-transparent transition-all shadow-sm">
+          <button *ngIf="searchQuery()" (click)="searchQuery.set('')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+            <span translate="no" class="material-symbols-rounded text-sm">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtro por categoría (Chips) -->
+      <div class="mb-6 flex flex-wrap items-center gap-2">
+        <span class="text-xs font-black uppercase tracking-wider text-[color:var(--text-mute)] mr-2">Filtrar por:</span>
+        <button type="button" 
+                (click)="activeFilter.set('todos')" 
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold transition-all"
+                [class.bg-[color:var(--aud)]]="activeFilter() === 'todos'"
+                [class.text-white]="activeFilter() === 'todos'"
+                [class.bg-[color:var(--surface-card)]]="activeFilter() !== 'todos'"
+                [class.text-[color:var(--text-soft)]]="activeFilter() !== 'todos'"
+                [class.border]="activeFilter() !== 'todos'"
+                [class.border-[color:var(--border-soft)]]="activeFilter() !== 'todos'"
+                [class.hover:bg-slate-100]="activeFilter() !== 'todos'">
+          <span translate="no" class="material-symbols-rounded text-[13px]">apps</span>
+          Todos los recursos
+        </button>
+
+        <button type="button" 
+                (click)="activeFilter.set('game')" 
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold transition-all"
+                [class.bg-violet-600]="activeFilter() === 'game'"
+                [class.text-white]="activeFilter() === 'game'"
+                [class.bg-[color:var(--surface-card)]]="activeFilter() !== 'game'"
+                [class.text-slate-600]="activeFilter() !== 'game'"
+                [class.border]="activeFilter() !== 'game'"
+                [class.border-[color:var(--border-soft)]]="activeFilter() !== 'game'"
+                [class.hover:bg-violet-50]="activeFilter() !== 'game'">
+          <span translate="no" class="material-symbols-rounded text-[13px] icon-fill">sports_esports</span>
+          Minijuegos 🎮
+        </button>
+
+        <button type="button" 
+                (click)="activeFilter.set('video')" 
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold transition-all"
+                [class.bg-sky-600]="activeFilter() === 'video'"
+                [class.text-white]="activeFilter() === 'video'"
+                [class.bg-[color:var(--surface-card)]]="activeFilter() !== 'video'"
+                [class.text-sky-700]="activeFilter() !== 'video'"
+                [class.border]="activeFilter() !== 'video'"
+                [class.border-[color:var(--border-soft)]]="activeFilter() !== 'video'"
+                [class.hover:bg-sky-50]="activeFilter() !== 'video'">
+          <span translate="no" class="material-symbols-rounded text-[13px] icon-fill">play_circle</span>
+          Videos 📺
+        </button>
+
+        <button type="button" 
+                (click)="activeFilter.set('guide')" 
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold transition-all"
+                [class.bg-rose-600]="activeFilter() === 'guide'"
+                [class.text-white]="activeFilter() === 'guide'"
+                [class.bg-[color:var(--surface-card)]]="activeFilter() !== 'guide'"
+                [class.text-rose-700]="activeFilter() !== 'guide'"
+                [class.border]="activeFilter() !== 'guide'"
+                [class.border-[color:var(--border-soft)]]="activeFilter() !== 'guide'"
+                [class.hover:bg-rose-50]="activeFilter() !== 'guide'">
+          <span translate="no" class="material-symbols-rounded text-[13px] icon-fill">description</span>
+          Guías y PDFs 📝
+        </button>
+      </div>
+
+      <!-- Grid de recursos filtrados -->
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 min-h-[180px]">
+        <article *ngFor="let item of filteredResources(); let idx = index"
+                 class="card card-hover flex flex-col justify-between overflow-hidden group">
+          
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <!-- Resource Header: Icon & Category Badge -->
+              <div class="flex items-center justify-between">
+                <span class="grid h-10 w-10 place-items-center rounded-xl text-white shadow-md bg-gradient-to-br"
+                      [ngClass]="item.colorClass">
+                  <span translate="no" class="material-symbols-rounded text-lg icon-fill">{{ item.icon }}</span>
+                </span>
+                
+                <span class="rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider shadow-sm"
+                      [class.bg-violet-100]="item.type === 'game'" [class.text-violet-700]="item.type === 'game'"
+                      [class.bg-sky-100]="item.type === 'video'" [class.text-sky-700]="item.type === 'video'"
+                      [class.bg-rose-100]="item.type === 'guide'" [class.text-rose-700]="item.type === 'guide'">
+                  {{ item.typeLabel }}
+                </span>
+              </div>
+
+              <!-- Title & Description -->
+              <div class="pt-1.5">
+                <h4 class="text-base font-black tracking-tight text-[color:var(--text-primary)] group-hover:text-[color:var(--aud)] transition-colors duration-200">{{ item.title }}</h4>
+                <p class="text-xs text-[color:var(--text-soft)] leading-relaxed mt-1.5">{{ item.description }}</p>
+              </div>
+            </div>
+
+            <!-- Resource Footer Metadata -->
+            <div class="mt-4 pt-3 border-t border-[color:var(--border-soft)] flex items-center justify-between text-[11px] font-bold text-[color:var(--text-mute)]">
+              <span class="inline-flex items-center gap-1">
+                <span translate="no" class="material-symbols-rounded text-[13px]">schedule</span>
+                {{ item.duration }}
+              </span>
+
+              <span class="inline-flex items-center gap-1 rounded bg-amber-50 text-amber-700 px-1.5 py-0.5 text-[9px] uppercase font-black" *ngIf="item.badge">
+                {{ item.badge }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Bottom Button -->
+          <div class="px-5 pb-5">
+            <a *ngIf="item.id === 'simulador-fraudes'; else normalLink"
+               (click)="scrollToAnchor('simulador-fraudes-anchor')" 
+               class="btn-primary w-full py-3 text-xs font-black flex items-center justify-center gap-1.5 shadow-md cursor-pointer select-none">
+              <span translate="no" class="material-symbols-rounded text-sm">play_arrow</span>
+              {{ item.actionLabel }}
+            </a>
+            <ng-template #normalLink>
+              <a [href]="item.link" 
+                 [target]="item.link.startsWith('http') ? '_blank' : '_self'"
+                 class="btn-secondary w-full py-3 text-xs font-black flex items-center justify-center gap-1.5 border border-[color:var(--border-soft)] hover:bg-[color:var(--aud)] hover:text-white hover:border-transparent transition-all">
+                <span translate="no" class="material-symbols-rounded text-sm">{{ item.type === 'video' ? 'play_circle' : item.type === 'guide' ? 'download' : 'open_in_new' }}</span>
+                {{ item.actionLabel }}
+              </a>
+            </ng-template>
+          </div>
+        </article>
+
+        <!-- Empty State inside Portal grid -->
+        <div *ngIf="filteredResources().length === 0" 
+             class="col-span-full py-12 text-center flex flex-col items-center justify-center bg-[color:var(--surface-card)] rounded-2xl border border-dashed border-slate-200">
+          <span translate="no" class="material-symbols-rounded text-5xl text-slate-300">search_off</span>
+          <h4 class="mt-3 text-lg font-black text-[color:var(--text-primary)]">No encontramos recursos</h4>
+          <p class="text-xs text-[color:var(--text-soft)] mt-1 max-w-xs leading-relaxed">No hay actividades que coincidan con tu búsqueda en este filtro de categoría. Intenta otra combinación.</p>
+          <button type="button" (click)="searchQuery.set(''); activeFilter.set('todos')" class="btn-secondary mt-4 py-2 px-4 text-xs font-black">Limpiar filtros</button>
+        </div>
+      </div>
+      
+      <!-- ====================================================================
+           NIDADO DEL SIMULADOR DE FRAUDES DENTRO DE SECUNDARIA
+           ==================================================================== -->
+      <div id="simulador-fraudes-anchor" 
+           *ngIf="selectedLevel() === 'secundaria' && isTeenAudience()" 
+           class="mt-8 pt-8 border-t border-[color:var(--border-soft)] space-y-6">
+        
+        <!-- Featured simulator header banner inside workspace -->
+        <div class="overflow-hidden rounded-[2rem] bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur">
+              <span translate="no" class="material-symbols-rounded text-sm">sports_esports</span> Laboratorio de Phishing · En Vivo
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black tracking-tight">¡Simulador de Fraudes en Vivo!</h3>
+            <p class="text-white/90 max-w-xl text-sm sm:text-base leading-relaxed">Aprende a detectar trampas, premios falsos y extorsiones interactuando con un chat simulado. Pon a prueba tus reflejos digitales ahora.</p>
+          </div>
+          <button (click)="scrollToAnchor('dispositivo-simulador')" class="inline-flex items-center gap-2 rounded-2xl bg-white px-6 py-4 text-sm font-black text-violet-700 shadow-lg hover:bg-violet-50 hover:scale-105 transition-all whitespace-nowrap">
+            <span translate="no" class="material-symbols-rounded text-xl">play_arrow</span> Probar Simulador Móvil
+          </button>
+        </div>
+
+        <!-- The actual fraud simulator component -->
+        <div id="dispositivo-simulador" class="pt-4">
+          <app-secondary-fraud-simulator></app-secondary-fraud-simulator>
+        </div>
+      </div>
+
+      <!-- Feature showcase for Preparatoria when active -->
+      <div *ngIf="selectedLevel() === 'preparatoria' && isTeenAudience()" 
+           class="mt-8 pt-8 border-t border-[color:var(--border-soft)] space-y-6 animate-fade-in">
+        <div class="overflow-hidden rounded-[2rem] bg-gradient-to-r from-fuchsia-600 to-pink-600 p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur">
+              <span translate="no" class="material-symbols-rounded text-sm">3d_rotation</span> Laboratorio de Huella Digital
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black tracking-tight">Próximamente: Simulador de Huella Digital 3D</h3>
+            <p class="text-white/90 max-w-xl text-sm sm:text-base leading-relaxed">Un simulador de decisiones avanzadas en la preparatoria para entender cómo tus datos e historial de navegación alimentan los perfiles algorítmicos comerciales.</p>
+          </div>
+          <button class="inline-flex items-center gap-2 rounded-2xl bg-white px-6 py-4 text-sm font-black text-pink-700 shadow-lg hover:bg-pink-50 hover:scale-105 transition-all whitespace-nowrap opacity-75 cursor-not-allowed">
+            <span translate="no" class="material-symbols-rounded text-xl">hourglass_empty</span> Próximamente
+          </button>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- TOPICS -->
+  <section class="mb-8" [attr.data-audience]="audienceTheme()">
+    <div appReveal="up" class="section-head">
+      <div>
+        <p class="eyebrow text-[color:var(--text-mute)]">Lo que vas a encontrar</p>
+        <h2 class="display-2 mt-1">Temas principales</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div *ngFor="let t of p.topics; let i = index"
+           appReveal="up"
+           [revealDelay]="i * 70"
+           class="card card-hover flex flex-col gap-3 p-5">
+        <span class="grid h-11 w-11 place-items-center rounded-xl text-white shadow-md"
+              [ngClass]="t.bgClass">
+          <span translate="no" class="material-symbols-rounded text-xl icon-fill">{{ t.icon }}</span>
+        </span>
+        <h3 class="text-base font-black tracking-tight text-[color:var(--text-primary)]">{{ t.title }}</h3>
+        <p class="text-[13px] leading-relaxed text-[color:var(--text-soft)]">{{ t.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENIDO DESTACADO PERFIL -->
+  <section class="mb-8 sm:mb-10">
+    <div appReveal="up" class="section-head flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="eyebrow text-[color:var(--c-edutips)]">Contenido destacado</p>
+        <h2 class="display-2 mt-1">Recomendados para este perfil</h2>
+      </div>
+      <app-section-featured-selector [section]="audienceTheme()" [sectionTitle]="page()?.title ?? 'este perfil'" />
+    </div>
+
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      @for (card of recommendedCards(); track card.id; let i = $index) {
+        <app-feature-card [card]="card" [delay]="i * 80" />
+      }
+      @if (!recommendedCards().length) {
+        <div class="col-span-full py-8 text-center text-sm text-[color:var(--text-soft)]">
+          No hay tarjetas destacadas seleccionadas para este perfil. Haz clic en "Destacados" para agregar.
+        </div>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="surface mb-12 p-12 text-center">
+    <span translate="no" class="material-symbols-rounded text-5xl text-[color:var(--text-mute)]">help</span>
+    <h2 class="mt-4 text-2xl font-black tracking-tight text-[color:var(--text-primary)]">Página no encontrada</h2>
+    <a routerLink="/" class="btn-primary mt-6">
+      <span translate="no" class="material-symbols-rounded text-base">arrow_back</span>
+      Volver al inicio
+    </a>
+  </section>
+}

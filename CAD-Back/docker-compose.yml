@@ -1,0 +1,104 @@
+# =============================================================================
+# DOCKER COMPOSE - CDJ BACKEND (ENTORNO LOCAL)
+# =============================================================================
+# USO:
+#   docker compose up -d              → Levantar DB y API
+#   docker compose --profile tools up → Levantar con pgAdmin
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # BASE DE DATOS POSTGRESQL 17
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:17-alpine
+    container_name: cdj_db_local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cdj
+      POSTGRES_PASSWORD: cdj_dev
+      POSTGRES_DB: cdj
+    ports:
+      - "5432:5432"
+    volumes:
+      - cdj_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cdj -d cdj"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # API NEXT.JS
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cdj_api_local
+    restart: unless-stopped
+    ports:
+      - "4180:4180"
+      - "5555:5555"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql://cdj:cdj_dev@db:5432/cdj?schema=public"
+      NODE_ENV: development
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./public/uploads:/app/public/uploads
+      - /app/.next # ← Volumen anónimo para evitar errores de permisos en cache
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo '⏳ Sincronizando base de datos...' &&
+        npx prisma db push --accept-data-loss &&
+        echo '✅ Base de datos sincronizada' &&
+        echo '🌱 Ejecutando seeds...' &&
+        npx prisma db seed || echo '⚠️ Seeds ya existentes o error (no crítico)' &&
+        echo '🚀 Iniciando API...' &&
+        npm run dev
+      "
+
+  # ---------------------------------------------------------------------------
+  # PRISMA STUDIO (Interfaz visual para la DB)
+  # ---------------------------------------------------------------------------
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cdj_studio_local
+    profiles: ["tools"] # Solo se levanta si lo pides explícitamente
+    environment:
+      - DATABASE_URL=postgresql://cdj:cdj_dev@db:5432/cdj?schema=public
+    ports:
+      - "5555:5555"
+    command: npx prisma studio --browser none
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # PGADMIN (OPCIONAL)
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cdj_pgadmin
+    restart: unless-stopped
+    profiles: ["tools"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cdj.local
+      PGADMIN_DEFAULT_PASSWORD: cdj_dev
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  cdj_pgdata:
+    name: cdj_pgdata_local

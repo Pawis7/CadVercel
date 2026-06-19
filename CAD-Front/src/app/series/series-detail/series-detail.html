@@ -1,0 +1,270 @@
+@if (serie(); as s) {
+  <!-- HERO de la serie -->
+  <section
+    appReveal="fade"
+    [revealDuration]="700"
+    [attr.data-audience]="s.audience"
+    class="relative mb-8 overflow-hidden rounded-[1.75rem] border border-[color:var(--border-soft)] bg-slate-900 text-white shadow-sm sm:mb-12 sm:rounded-[2rem]">
+    
+    <!-- Controles de Edición para el Cover del Hero -->
+    <div *ngIf="editMode()" class="absolute right-4 top-4 z-20 flex items-center gap-1.5 rounded-xl bg-slate-900/90 p-2.5 shadow-lg backdrop-blur">
+      <span class="text-[9px] font-extrabold uppercase tracking-wider text-white/70">Cover: {{ s.id }}</span>
+      <input #fileInputHero type="file" accept="image/*" class="hidden" (change)="onFileSelected($event, s.id)">
+      <button
+        type="button"
+        (click)="fileInputHero.click()"
+        class="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-2.5 py-1 text-[11px] font-bold text-white shadow hover:bg-blue-700 active:scale-95 border-none cursor-pointer">
+        <span translate="no" class="material-symbols-rounded text-xs">edit</span>
+        <span>Modificar</span>
+      </button>
+      <button
+        *ngIf="hasOverride(s.id)"
+        type="button"
+        (click)="resetOverride(s.id)"
+        class="inline-flex items-center gap-1 rounded-lg bg-slate-850 px-2.5 py-1 text-[11px] font-bold text-white/80 shadow hover:bg-rose-600 hover:text-white active:scale-95 border-none cursor-pointer">
+        <span translate="no" class="material-symbols-rounded text-xs">restart_alt</span>
+        <span>Restablecer</span>
+      </button>
+    </div>
+
+    <div class="absolute inset-0 opacity-50">
+      <app-editable-image
+        [id]="s.id"
+        [src]="s.coverImageUrl"
+        [alt]="s.title"
+        [width]="1600" [height]="1000" aspectLabel="16:10"
+        imgClass="h-full w-full object-cover">
+      </app-editable-image>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-tr opacity-60" [ngClass]="s.accentClass"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent pointer-events-none"></div>
+
+    <div class="relative z-10 p-6 sm:p-12 lg:p-14">
+      <nav class="mb-4 flex items-center gap-2 text-xs font-semibold text-white/70 sm:mb-6">
+        <a routerLink="/" class="transition-colors hover:text-white">Inicio</a>
+        <span class="text-white/50">›</span>
+        <a routerLink="/series" class="transition-colors hover:text-white">Series</a>
+        <span class="text-white/50">›</span>
+        <span class="text-white">{{ s.title }}</span>
+      </nav>
+
+      <span appReveal="up"
+            class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-widest backdrop-blur">
+        <span class="grid h-5 w-5 place-items-center rounded-full text-white" [ngClass]="s.iconBgClass">
+          <span translate="no" class="material-symbols-rounded text-[14px] icon-fill">{{ s.icon }}</span>
+        </span>
+        Serie · {{ s.episodeCount }} episodios
+      </span>
+
+      <h1 appReveal="up" [revealDelay]="80" class="display-1 mt-4 text-white">
+        {{ s.title }}
+      </h1>
+      <p appReveal="up" [revealDelay]="160" class="mt-2 text-base font-semibold text-white/85 sm:text-lg">
+        {{ s.tagline }}
+      </p>
+      <p appReveal="up" [revealDelay]="220" class="mt-4 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
+        {{ s.description }}
+      </p>
+
+      <div appReveal="up" [revealDelay]="280" class="mt-6 flex flex-wrap gap-3">
+        <button class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-slate-900 shadow-md transition-all hover:-translate-y-0.5">
+          <span translate="no" class="material-symbols-rounded text-base icon-fill">play_arrow</span>
+          Empezar serie
+        </button>
+        <button class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-bold text-white backdrop-blur transition-all hover:bg-white/20">
+          <span translate="no" class="material-symbols-rounded text-base">bookmark</span>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lista de episodios — mismo estilo que Edutips -->
+  <section class="mb-10 sm:mb-14">
+    <div appReveal="up" class="section-head">
+      <div>
+        <p class="eyebrow text-[color:var(--c-edutips)]">Episodios</p>
+        <h2 class="display-2 mt-1">Mira ahora</h2>
+      </div>
+      <span class="text-xs font-semibold text-[color:var(--text-mute)] sm:text-sm">{{ videos().length }} videos</span>
+    </div>
+
+    <!-- Panel admin: sincronizar playlist de YouTube -->
+    @if (editMode()) {
+      <div class="mb-6 rounded-2xl border border-blue-200 bg-blue-50/60 p-4 dark:border-blue-900/60 dark:bg-blue-950/30">
+        <div class="flex items-start gap-3">
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-600 text-white shadow-sm">
+            <span translate="no" class="material-symbols-rounded text-lg">playlist_add</span>
+          </span>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-black tracking-tight text-blue-950 dark:text-blue-100">
+              Importar / sincronizar playlist de YouTube
+            </h3>
+            <p class="mt-1 text-xs leading-relaxed text-blue-900/75 dark:text-blue-200/75">
+              Pega el URL de una playlist pública. Al sincronizar, solo se <strong>agregan los videos nuevos</strong>
+              (los que ya existen no se tocan).
+            </p>
+
+            <div class="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                type="url"
+                [ngModel]="playlistInput()"
+                (ngModelChange)="playlistInput.set($event)"
+                placeholder="https://youtube.com/playlist?list=PL..."
+                [disabled]="syncing()"
+                class="flex-1 rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 disabled:opacity-60 dark:border-blue-800 dark:bg-slate-900 dark:text-slate-100">
+              <button
+                type="button"
+                (click)="syncPlaylist()"
+                [disabled]="syncing()"
+                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-blue-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60">
+                @if (syncing()) {
+                  <span translate="no" class="material-symbols-rounded text-base animate-spin">progress_activity</span>
+                  Sincronizando…
+                } @else {
+                  <span translate="no" class="material-symbols-rounded text-base">sync</span>
+                  Sincronizar ahora
+                }
+              </button>
+            </div>
+
+            <!-- Feedback -->
+            @if (syncResult(); as r) {
+              <div class="mt-3 flex items-start gap-2 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
+                <span translate="no" class="material-symbols-rounded text-base">check_circle</span>
+                <span>
+                  <strong>+{{ r.added }} nuevos</strong> · {{ r.skipped }} ya existentes · {{ r.total }} en playlist.
+                  @if (r.added === 0) {
+                    Todo al día.
+                  }
+                </span>
+              </div>
+            }
+            @if (syncError(); as e) {
+              <div class="mt-3 flex items-start gap-2 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
+                <span translate="no" class="material-symbols-rounded text-base">error</span>
+                <span>{{ e }}</span>
+              </div>
+            }
+            @if (serie()?.lastSyncedAt; as last) {
+              <p class="mt-2 text-[10px] font-semibold uppercase tracking-wider text-blue-900/55 dark:text-blue-200/55">
+                Última sincronización: {{ last | date:'short' }}
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <article *ngFor="let v of videos(); let i = index"
+               appReveal="up"
+               [revealDelay]="i * 60"
+               [attr.data-audience]="serie()?.audience"
+               class="card card-video-hover group flex flex-col overflow-hidden">
+
+        <!-- Thumbnail clicable -->
+        <div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-900 cursor-pointer" (click)="activeVideo.set(v)">
+          <img [src]="getYoutubeThumb(v.youtubeUrl)" [alt]="v.title"
+               class="h-full w-full object-cover">
+          <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+            <span class="grid h-12 w-12 place-items-center rounded-full bg-white/90 group-hover:bg-[color:var(--aud,var(--c-edutips))] text-slate-900 group-hover:text-white shadow-lg transition-all duration-300 group-hover:scale-110">
+              <span translate="no" class="material-symbols-rounded text-2xl icon-fill">play_arrow</span>
+            </span>
+          </div>
+          @if (v.durationLabel) {
+            <span class="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur">
+              {{ v.durationLabel }}
+            </span>
+          }
+          <!-- Número de episodio -->
+          <span class="absolute left-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-black text-white backdrop-blur">
+            Ep. {{ i + 1 }}
+          </span>
+        </div>
+
+        <!-- Metadata -->
+        <div class="flex flex-1 flex-col gap-2.5 p-5 cursor-pointer" (click)="activeVideo.set(v)">
+          <h3 class="text-[15px] font-black leading-snug tracking-tight text-[color:var(--text-primary)] group-hover:text-[color:var(--aud,var(--c-edutips))] transition-colors line-clamp-2">
+            {{ v.title }}
+          </h3>
+          @if (v.description) {
+            <p class="line-clamp-2 text-[13px] leading-relaxed text-[color:var(--text-soft)]">{{ v.description }}</p>
+          }
+          @if (v.tags?.length) {
+            <div class="mt-0.5 flex flex-wrap gap-1.5">
+              <span *ngFor="let t of v.tags?.slice(0, 2)" class="meta-pill">#{{ t }}</span>
+            </div>
+          }
+          <!-- Footer: autor + fecha · CTA -->
+          <div class="mt-auto flex items-center justify-between gap-2 border-t border-[color:var(--border-soft)] pt-3">
+            <div class="min-w-0 flex items-center gap-2">
+              <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[color:var(--aud,var(--c-edutips))] text-white shadow-sm">
+                <span translate="no" class="material-symbols-rounded text-[14px] icon-fill">verified</span>
+              </span>
+              <div class="min-w-0 leading-tight">
+                <p class="truncate text-[11px] font-bold text-[color:var(--text-primary)]">
+                  {{ v.author || serie()?.title }}
+                </p>
+                @if (v.publishedAt) {
+                  <p class="text-[10px] font-semibold text-[color:var(--text-mute)]">
+                    {{ v.publishedAt | date:'mediumDate' }}
+                  </p>
+                }
+              </div>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-[color:var(--aud-cream,var(--c-edutips-cream))] px-2.5 py-1 text-[11px] font-black text-[color:var(--aud,var(--c-edutips))] group-hover:translate-x-0.5 transition-transform">
+              Ver
+              <span translate="no" class="material-symbols-rounded text-[14px]">arrow_forward</span>
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Series relacionadas -->
+  @if (relatedCards().length) {
+    <section class="mb-12">
+      <div appReveal="up" class="section-head">
+        <div>
+          <p class="eyebrow text-[color:var(--c-teens)]">Sigue mirando</p>
+          <h2 class="display-2 mt-1">Otras series</h2>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        @for (r of relatedCards(); track r.id; let i = $index) {
+          <app-feature-card [card]="r" [delay]="i * 70" />
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Modal de video -->
+  @if (activeVideo(); as active) {
+    <app-video-modal
+      [video]="{
+        youtubeUrl: active.youtubeUrl,
+        title: active.title,
+        description: active.description,
+        durationLabel: active.durationLabel,
+        tags: active.tags,
+        seriesTitle: serie()?.title,
+        author: active.author,
+        authorUrl: active.authorUrl,
+        publishedAt: active.publishedAt
+      }"
+      (close)="activeVideo.set(null)" />
+  }
+
+} @else {
+  <section class="surface mb-12 p-12 text-center">
+    <span translate="no" class="material-symbols-rounded text-5xl text-[color:var(--text-mute)]">help</span>
+    <h2 class="mt-4 text-2xl font-black tracking-tight text-[color:var(--text-primary)]">Serie no encontrada</h2>
+    <p class="mt-2 text-sm text-[color:var(--text-soft)]">La serie que buscas no existe o fue movida.</p>
+    <a routerLink="/series" class="btn-primary mt-6">
+      <span translate="no" class="material-symbols-rounded text-base">arrow_back</span>
+      Volver al catálogo
+    </a>
+  </section>
+}

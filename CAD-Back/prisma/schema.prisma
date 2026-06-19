@@ -1,0 +1,525 @@
+// =============================================================================
+// Prisma schema · Ciudadanía Digital Jalisco
+//
+// Modelo de datos del portal. Cada bloque editable del front (branding, hero,
+// audiencias, recursos, banners, URLs YouTube, imágenes, situaciones de ayuda,
+// canales y rutas guiadas) es una entidad aquí.
+//
+// Convenciones:
+//  - Todos los slugs son únicos y URL-safe.
+//  - `audience` es el token cromático del front (kids/teens/families/teachers/
+//    help/edutips/casi/cdj). Se usa enum para integridad.
+//  - `tags`, `outcomes`, `contacts` son JSON para flexibilidad sin tablas pivote.
+//  - Imágenes editables se resuelven primero por `ImageOverride` (admin las
+//    sube por ID), si no existe se usa la URL del campo del modelo.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === Enums =================================================================
+
+enum AudienceKey {
+  kids
+  teens
+  families
+  teachers
+  help
+  edutips
+  casi
+  cdj
+}
+
+enum IlloScene {
+  hero
+  study
+  play
+  connect
+  shield
+  spark
+  compass
+}
+
+enum ResourceFormat {
+  video_animado
+  microsidio
+  audiocuento
+  guia
+  checklist
+  simulador
+  actividad
+  tarjeta_imprimible
+  secuencia_didactica
+  protocolo
+  infografia
+}
+
+enum ResourceLevel {
+  preescolar
+  primaria_baja
+  primaria_alta
+  secundaria
+  preparatoria
+  gestion_escolar
+  primera_infancia
+  ninez
+  adolescencia_temprana
+  adolescencia_tardia
+  todos
+}
+
+enum ResourceTheme {
+  seguridad_y_privacidad
+  convivencia_digital
+  bienestar_digital
+  pensamiento_critico
+  riesgos_y_enganos
+  uso_responsable
+  huella_e_identidad
+  ciberacoso
+}
+
+enum ResourceContext {
+  casa
+  aula
+  microsidio
+  todos
+}
+
+enum BannerSlot {
+  home_hero
+  home_secondary
+  audience_hero
+  audience_cta
+  edutips_hero
+  ayuda_hero
+  custom
+}
+
+// === Identidad del sitio ====================================================
+
+model SiteBranding {
+  id         Int      @id @default(1)
+  siteName   String
+  tagline    String
+  logoLine1  String
+  logoLine2  String
+  updatedAt  DateTime @updatedAt
+}
+
+model HeroBlock {
+  id                 Int      @id @default(1)
+  eyebrow            String?
+  titleLead          String
+  titleHighlight     String
+  description        String
+  primaryCtaLabel    String
+  primaryCtaHref     String
+  secondaryCtaLabel  String?
+  secondaryCtaHref   String?
+  imageUrl           String
+  imageAlt           String
+  updatedAt          DateTime @updatedAt
+}
+
+model Pillar {
+  id           String   @id
+  title        String
+  description  String
+  icon         String
+  bgClass      String
+  shadowClass  String
+  sortOrder    Int      @default(0)
+}
+
+model SocialLink {
+  id          String  @id
+  brand       String
+  label       String
+  href        String
+  hoverClass  String
+  sortOrder   Int     @default(0)
+}
+
+model FooterColumn {
+  id        String        @id @default(cuid())
+  title     String
+  sortOrder Int           @default(0)
+  links     FooterLink[]
+}
+
+model FooterLink {
+  id         String       @id @default(cuid())
+  columnId   String
+  column     FooterColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  label      String
+  href       String
+  sortOrder  Int          @default(0)
+}
+
+// === Audiencias y categorías ================================================
+
+model Audience {
+  slug         String         @id
+  name         String
+  description  String?
+  audience     AudienceKey
+  illoScene    IlloScene?
+  ageRange     String?
+  imageUrl     String
+  accentClass  String
+  sortOrder    Int            @default(0)
+  subLevels    AudienceSubLevel[]
+  topics       AudienceTopic[]
+  resources    Resource[]     @relation("AudienceResources")
+}
+
+model AudienceSubLevel {
+  id            String    @id
+  audienceSlug  String
+  audience      Audience  @relation(fields: [audienceSlug], references: [slug], onDelete: Cascade)
+  title         String
+  subtitle      String
+  imageUrl      String
+  imageId       String
+  bgClass       String
+  icon          String
+  level         ResourceLevel?
+  resourceCount Int       @default(0)
+  sortOrder     Int       @default(0)
+}
+
+model AudienceTopic {
+  id            String   @id @default(cuid())
+  audienceSlug  String
+  audience      Audience @relation(fields: [audienceSlug], references: [slug], onDelete: Cascade)
+  icon          String
+  title         String
+  description   String
+  bgClass       String
+  sortOrder     Int      @default(0)
+}
+
+// === Destinos válidos de tarjetas destacadas ================================
+//
+// Solo se puede enlazar a rutas existentes en la app.
+// Agrega aquí cuando se creen nuevas secciones.
+//
+enum CardDestination {
+  series          // /series
+  series_edutips  // /series/edutips
+  series_casi     // /series/el-dia-que-casi
+  series_familias // /series/familias
+  series_kids     // /series/kids
+  series_teens    // /series/teens
+  cursos          // /cursos
+  juegos          // /juegos
+  recursos        // /recursos
+  ayuda           // /ayuda
+  edutips         // /edutips
+  notebooks_ia    // /notebooks-ia
+  ninas_y_ninos   // /audiencia/ninas-y-ninos
+  adolescentes    // /audiencia/adolescentes
+  familias        // /audiencia/familias
+  docentes        // /audiencia/docentes
+  quienes_somos   // /quienes-somos
+  inicio          // /
+}
+
+// === Cards y banners ========================================================
+
+model FeatureCard {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  icon            String          @default("play_arrow")
+  iconBgClass     String          @default("bg-amber-600")
+  iconShadowClass String          @default("shadow-amber-200")
+  imageUrl        String          @default("")
+  destination     CardDestination @default(series)
+  audience        AudienceKey     @default(cdj)
+  illoScene       IlloScene?
+  badge           String?
+  sortOrder       Int             @default(0)
+  sections        String[]        @default([])
+  updatedAt       DateTime        @updatedAt
+}
+
+model Banner {
+  id           String        @id
+  title        String
+  description  String?
+  imageUrl     String
+  ctaLabel     String?
+  ctaHref      String?
+  audience     AudienceKey?
+  slot         BannerSlot    @default(home_secondary)
+  sortOrder    Int           @default(0)
+  updatedAt    DateTime      @updatedAt
+}
+
+// === Series y videos ========================================================
+
+model VideoSeries {
+  id                  String      @id
+  slug                String      @unique
+  title               String
+  tagline             String
+  description         String
+  coverImageUrl       String
+  accentClass         String
+  iconBgClass         String
+  icon                String
+  audience            AudienceKey
+  illoScene           IlloScene?
+  sortOrder           Int         @default(0)
+  youtubePlaylistId   String?     // ID de playlist de YouTube para sync admin
+  lastSyncedAt        DateTime?   // última vez que se importó la playlist
+  videos              Video[]
+}
+
+model Video {
+  id            String      @id
+  seriesId      String
+  series        VideoSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  youtubeUrl    String
+  durationLabel String?
+  publishedAt   DateTime?
+  tags          Json        @default("[]")
+  sortOrder     Int         @default(0)
+  updatedAt     DateTime    @updatedAt
+}
+
+// === Recursos (entidad central) =============================================
+
+model Resource {
+  id                String           @id @default(cuid())
+  slug              String           @unique
+  title             String
+  description       String
+  format            ResourceFormat
+  audienceSlug      String
+  audience          Audience         @relation("AudienceResources", fields: [audienceSlug], references: [slug])
+  level             ResourceLevel?
+  theme             ResourceTheme?
+  subtopic          String?
+  context           ResourceContext  @default(todos)
+  durationMinutes   Int?
+  youtubeUrl        String?
+  mediaUrl          String?
+  coverImageUrl     String?
+  tags              Json             @default("[]")
+  learningOutcomes  Json             @default("[]")
+  howToUse          Json             @default("[]")
+  downloads         ResourceDownload[]
+  related           ResourceRelated[] @relation("ResourceFrom")
+  relatedTo         ResourceRelated[] @relation("ResourceTo")
+  pathSteps         LearningPathStep[]
+  published         Boolean          @default(true)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([audienceSlug])
+  @@index([format])
+  @@index([theme])
+}
+
+model ResourceDownload {
+  id          String   @id @default(cuid())
+  resourceId  String
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  label       String
+  url         String
+  fileType    String?
+  sizeBytes   Int?
+  sortOrder   Int      @default(0)
+}
+
+model ResourceRelated {
+  resourceId  String
+  resource    Resource @relation("ResourceFrom", fields: [resourceId], references: [id], onDelete: Cascade)
+  relatedId   String
+  related     Resource @relation("ResourceTo",   fields: [relatedId],  references: [id], onDelete: Cascade)
+  sortOrder   Int      @default(0)
+
+  @@id([resourceId, relatedId])
+}
+
+// === Ayuda Digital ==========================================================
+
+model HelpSituation {
+  id              String   @id
+  slug            String   @unique
+  title           String
+  description     String
+  icon            String
+  bgClass         String
+  whatToDoFirst   Json     @default("[]")
+  sortOrder       Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
+
+model HelpChannel {
+  id          String   @id
+  title       String
+  description String
+  icon        String
+  bgClass     String
+  contacts    Json     @default("[]")
+  sortOrder   Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+// === Rutas guiadas ==========================================================
+
+model LearningPath {
+  id                    String              @id @default(cuid())
+  slug                  String              @unique
+  title                 String
+  description           String
+  audience              AudienceKey
+  level                 ResourceLevel?
+  totalDurationMinutes  Int?
+  outcomes              Json                @default("[]")
+  coverImageUrl         String?
+  published             Boolean             @default(true)
+  steps                 LearningPathStep[]
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+}
+
+model LearningPathStep {
+  id           String       @id @default(cuid())
+  pathId       String
+  path         LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  resourceId   String
+  resource     Resource     @relation(fields: [resourceId], references: [id])
+  intro        String?
+  sortOrder    Int          @default(0)
+
+  @@unique([pathId, resourceId])
+}
+
+// === Imágenes editables (admin) =============================================
+
+model ImageOverride {
+  id          String   @id        // p.ej. "hero-main", "category-ninas-y-ninos"
+  url         String              // ruta absoluta a /public/uploads/...
+  width       Int?
+  height      Int?
+  format      String?             // png/jpg/webp/avif/svg
+  sizeBytes   Int?
+  uploadedBy  String?
+  updatedAt   DateTime @updatedAt
+}
+
+// === Cursos (académico-serio) ===============================================
+
+enum CourseLevel {
+  basico
+  intermedio
+  avanzado
+}
+
+model Course {
+  id              String         @id @default(cuid())
+  slug            String         @unique
+  title           String
+  shortDescription String
+  longDescription  String?
+  audience        AudienceKey
+  level           CourseLevel    @default(basico)
+  durationHours   Float?
+  instructor      String?
+  syllabus        Json           @default("[]")    // [{ unit, lessons: [{title, durationMin}] }]
+  materials       Json           @default("[]")    // [{ label, url, type }]
+  tags            Json           @default("[]")
+  coverImageUrl   String?
+  certificate     Boolean        @default(false)
+  language        String         @default("es")
+  published       Boolean        @default(true)
+  sortOrder       Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// === Juegos (playful) =======================================================
+
+enum GameKind {
+  quiz
+  simulator
+  card_game
+  story
+  puzzle
+  arcade
+  embed
+  external
+}
+
+model Game {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  title         String
+  description   String
+  audience      AudienceKey
+  ageMin        Int?
+  ageMax        Int?
+  kind          GameKind    @default(embed)
+  embedUrl      String?               // si es jugable embebido (iframe)
+  externalUrl   String?               // si abre en otra pestaña
+  coverImageUrl String?
+  badges        Json        @default("[]")  // ["Multijugador","Sin descarga"]
+  learningGoals Json        @default("[]")
+  durationMinutes Int?
+  difficulty    Int?                  // 1-5
+  published     Boolean     @default(true)
+  sortOrder     Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+// === Notebooks IA (Gemini Gems / NotebookLM / otros) ========================
+
+enum AINotebookKind {
+  notebooklm     // Google NotebookLM
+  gemini_gem     // Gemini Gem
+  chatgpt_gpt    // GPT custom
+  claude_project // Claude project
+  other
+}
+
+model AINotebook {
+  id            String          @id @default(cuid())
+  slug          String          @unique
+  title         String
+  description   String
+  audience      AudienceKey
+  kind          AINotebookKind  @default(notebooklm)
+  externalUrl   String                          // siempre se abre en nueva pestaña
+  topics        Json            @default("[]")  // ["seguridad","privacidad"]
+  instructions  String?                         // cómo usarlo / qué preguntar
+  prerequisites String?
+  coverImageUrl String?
+  language      String          @default("es")
+  featured      Boolean         @default(false)
+  published     Boolean         @default(true)
+  sortOrder     Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hash
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

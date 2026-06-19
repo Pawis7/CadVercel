@@ -1,0 +1,1502 @@
+@import 'tailwindcss';
+
+/* ========================================================================
+   GARET (font-face)
+   ======================================================================== */
+@font-face {
+  font-family: 'Garet';
+  src: url('/assets/fonts/garet/Garet-Book.woff2') format('woff2'),
+    url('/assets/fonts/garet/Garet-Book.woff') format('woff'),
+    url('/assets/fonts/garet/Garet-Book.ttf') format('truetype');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garet';
+  src: url('/assets/fonts/garet/Garet-Heavy.woff2') format('woff2'),
+    url('/assets/fonts/garet/Garet-Heavy.woff') format('woff'),
+    url('/assets/fonts/garet/Garet-Heavy.ttf') format('truetype');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========================================================================
+   TAILWIND THEME
+   ======================================================================== */
+@theme {
+  --font-sans: 'Inter', 'Garet', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Garet', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --color-cdj-50: #FFF1F5;
+  --color-cdj-100: #FFE0E9;
+  --color-cdj-200: #FFC2D4;
+  --color-cdj-300: #FF8FAD;
+  --color-cdj-400: #FF4D7A;
+  --color-cdj-500: #E9004C;
+  --color-cdj-600: #C5003F;
+  --color-cdj-700: #9E0033;
+  --color-cdj-800: #7A0028;
+
+  --color-primary-variable: var(--text-primary-variable);
+}
+
+/* ========================================================================
+   DESIGN TOKENS — Plataforma de cursos (Coursera/edX) con identidad CDJ
+   ========================================================================
+   Sistema de superficies neutras + acentos institucionales por audiencia.
+   Soporta tema claro (default) y oscuro vía [data-theme="dark"] en <html>.
+   ======================================================================== */
+:root {
+  /* === Marca institucional (constante en ambos temas) === */
+  --c-cdj: #E9004C;
+  --c-cdj-soft: #FF3366;
+  --c-cdj-tint: #FFE0E9;
+  --c-cdj-cream: #FFF1F5;
+  --c-cdj-deep: #C5003F;
+
+  /* Audiencias (acentos) */
+  --c-kids: #FF3366;
+  --c-kids-soft: #FF6285;
+  --c-kids-tint: #FFD6E0;
+  --c-kids-cream: #FFF1F5;
+  --c-teens: #7C3AED;
+  --c-teens-soft: #8B5CF6;
+  --c-teens-tint: #EDE9FE;
+  --c-teens-cream: #F5F3FF;
+  --c-families: #EA580C;
+  --c-families-soft: #F97316;
+  --c-families-tint: #FFEDD5;
+  --c-families-cream: #FFF7ED;
+  --c-teachers: #C5003F;
+  --c-teachers-soft: #E9004C;
+  --c-teachers-tint: #FFCFDC;
+  --c-teachers-cream: #FFF1F5;
+  --c-help: #E11D48;
+  --c-help-soft: #F43F5E;
+  --c-help-tint: #FFE4E6;
+  --c-help-cream: #FFF1F2;
+  --c-edutips: #D97706;
+  --c-edutips-soft: #F59E0B;
+  --c-edutips-tint: #FEF3C7;
+  --c-edutips-cream: #FFFBEB;
+  --c-casi: #D97706;
+  --c-casi-soft: #F59E0B;
+  --c-casi-tint: #FEF3C7;
+  --c-casi-cream: #FFFBEB;
+
+  /* === Superficies — TEMA CLARO === */
+  --surface-base: #F8FAFC;
+  /* fondo del shell */
+  --surface-card: #FFFFFF;
+  /* cards, paneles */
+  --surface-elev: #FFFFFF;
+  /* superficies elevadas (modals, overlays) */
+  --surface-soft: #F1F5F9;
+  /* hovers, fondos sutiles */
+  --surface-mute: #E2E8F0;
+  /* dividers gruesos, separadores */
+  --surface-inverse: #0F172A;
+  /* superficie oscura para contraste */
+
+  /* Borders */
+  --border-soft: #E2E8F0;
+  --border: #CBD5E1;
+  --border-strong: #94A3B8;
+
+  /* Texto */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-soft: #475569;
+  --text-mute: #94A3B8;
+  --text-faint: #CBD5E1;
+  --text-on-accent: #FFFFFF;
+  --text-primary-variable: #FFFFFF;
+
+  /* === Compatibilidad con sistema previo (legacy aliases) === */
+  --c-paper: var(--surface-base);
+  --c-paper-soft: var(--surface-soft);
+  --c-line: var(--border-soft);
+  --c-line-soft: var(--border-soft);
+  --c-ink: var(--text-primary);
+  --c-ink-soft: var(--text-soft);
+  --c-ink-mute: var(--text-mute);
+
+  /* Sombras (calibradas para superficies blancas) */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 28px -8px rgba(15, 23, 42, 0.14), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 24px 60px -12px rgba(15, 23, 42, 0.20);
+  /* Sombras premium para cards/portadas — NEUTRAL en estado normal,
+     halo de audiencia solo al hover del card activo. */
+  --shadow-card:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 4px 10px -6px rgba(15, 23, 42, 0.10),
+    0 14px 28px -16px rgba(15, 23, 42, 0.12);
+  --shadow-card-sibling:
+    0 1px 2px rgba(15, 23, 42, 0.10),
+    0 8px 18px -10px rgba(15, 23, 42, 0.18),
+    0 18px 34px -18px rgba(15, 23, 42, 0.22);
+  --shadow-card-hover:
+    0 1px 2px rgba(15, 23, 42, 0.10),
+    0 14px 28px -14px rgba(15, 23, 42, 0.22),
+    0 28px 52px -18px color-mix(in srgb, var(--aud, var(--c-cdj)) 32%, rgba(15, 23, 42, 0.28));
+  --ring-focus: 0 0 0 3px color-mix(in srgb, var(--aud, var(--c-cdj)) 30%, transparent);
+
+  /* Radios (más medidos, menos juguetones) */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --safe-pad: env(safe-area-inset-bottom, 0px);
+
+  /* Default audience tokens */
+  --aud: var(--c-cdj);
+  --aud-soft: var(--c-cdj-soft);
+  --aud-tint: var(--c-cdj-tint);
+  --aud-cream: var(--c-cdj-cream);
+}
+
+/* ========================================================================
+   TEMA OSCURO — overrides
+   ======================================================================== */
+[data-theme='dark'] {
+  --surface-base: #0A0F1C;
+  /* fondo profundo */
+  --surface-card: #111827;
+  /* cards */
+  --surface-elev: #1F2937;
+  /* modals, overlays */
+  --surface-soft: #1E293B;
+  /* hovers */
+  --surface-mute: #334155;
+  --surface-inverse: #F8FAFC;
+
+  --border-soft: #1F2937;
+  --border: #334155;
+  --border-strong: #475569;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #E2E8F0;
+  --text-soft: #CBD5E1;
+  --text-mute: #94A3B8;
+  --text-faint: #475569;
+  --text-primary-variable: #FFFFFF;
+
+  /* Tints de audiencia ajustados (más opacos sobre dark) */
+  --c-cdj-cream: color-mix(in srgb, var(--c-cdj) 18%, var(--surface-card));
+  --c-cdj-tint: color-mix(in srgb, var(--c-cdj) 28%, var(--surface-card));
+  --c-kids-cream: color-mix(in srgb, var(--c-kids) 18%, var(--surface-card));
+  --c-teens-cream: color-mix(in srgb, var(--c-teens) 18%, var(--surface-card));
+  --c-families-cream: color-mix(in srgb, var(--c-families) 18%, var(--surface-card));
+  --c-teachers-cream: color-mix(in srgb, var(--c-teachers) 18%, var(--surface-card));
+  --c-help-cream: color-mix(in srgb, var(--c-help) 18%, var(--surface-card));
+  --c-edutips-cream: color-mix(in srgb, var(--c-edutips) 18%, var(--surface-card));
+  --c-casi-cream: color-mix(in srgb, var(--c-casi) 18%, var(--surface-card));
+
+  --c-paper: var(--surface-base);
+  --c-paper-soft: var(--surface-soft);
+  --c-line: var(--border-soft);
+  --c-line-soft: var(--border-soft);
+  --c-ink: var(--text-primary);
+  --c-ink-soft: var(--text-soft);
+  --c-ink-mute: var(--text-mute);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 10px 28px -8px rgba(0, 0, 0, 0.65);
+  --shadow-xl: 0 24px 60px -12px rgba(0, 0, 0, 0.75);
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 4px 10px -6px rgba(0, 0, 0, 0.50),
+    0 14px 28px -16px rgba(0, 0, 0, 0.55);
+  --shadow-card-sibling:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 8px 18px -10px rgba(0, 0, 0, 0.62),
+    0 18px 34px -18px rgba(0, 0, 0, 0.68);
+  --shadow-card-hover:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 14px 28px -14px rgba(0, 0, 0, 0.70),
+    0 28px 52px -18px color-mix(in srgb, var(--aud, var(--c-cdj)) 50%, rgba(0, 0, 0, 0.75));
+}
+
+/* ========================================================================
+   AUDIENCE SCOPES
+   ======================================================================== */
+[data-audience='kids'],
+.audience-kids {
+  --aud: var(--c-kids);
+  --aud-soft: var(--c-kids-soft);
+  --aud-tint: var(--c-kids-tint);
+  --aud-cream: var(--c-kids-cream);
+}
+
+[data-audience='teens'],
+.audience-teens {
+  --aud: var(--c-teens);
+  --aud-soft: var(--c-teens-soft);
+  --aud-tint: var(--c-teens-tint);
+  --aud-cream: var(--c-teens-cream);
+}
+
+[data-audience='families'],
+.audience-families {
+  --aud: var(--c-families);
+  --aud-soft: var(--c-families-soft);
+  --aud-tint: var(--c-families-tint);
+  --aud-cream: var(--c-families-cream);
+}
+
+[data-audience='teachers'],
+.audience-teachers {
+  --aud: var(--c-teachers);
+  --aud-soft: var(--c-teachers-soft);
+  --aud-tint: var(--c-teachers-tint);
+  --aud-cream: var(--c-teachers-cream);
+}
+
+[data-audience='help'],
+.audience-help {
+  --aud: var(--c-help);
+  --aud-soft: var(--c-help-soft);
+  --aud-tint: var(--c-help-tint);
+  --aud-cream: var(--c-help-cream);
+}
+
+[data-audience='edutips'],
+.audience-edutips {
+  --aud: var(--c-edutips);
+  --aud-soft: var(--c-edutips-soft);
+  --aud-tint: var(--c-edutips-tint);
+  --aud-cream: var(--c-edutips-cream);
+}
+
+[data-audience='casi'],
+.audience-casi {
+  --aud: var(--c-casi);
+  --aud-soft: var(--c-casi-soft);
+  --aud-tint: var(--c-casi-tint);
+  --aud-cream: var(--c-casi-cream);
+}
+
+/* ========================================================================
+   GLOBAL — body, headings
+   ======================================================================== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  background: var(--surface-base);
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Garet', ui-sans-serif, system-ui, sans-serif;
+  @apply antialiased;
+  color: var(--text-primary);
+  background-color: var(--surface-base);
+  min-height: 100dvh;
+  transition: background-color 240ms ease, color 240ms ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Garet', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--c-cdj) 28%, transparent);
+  color: var(--text-primary);
+}
+
+/* ========================================================================
+   ICONOS — Material Symbols Rounded
+   ======================================================================== */
+.icon,
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+.icon-fill,
+.material-symbols-rounded.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-bold {
+  font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-sm {
+  font-size: 18px;
+}
+
+.icon-md {
+  font-size: 22px;
+}
+
+.icon-lg {
+  font-size: 28px;
+}
+
+.icon-xl {
+  font-size: 36px;
+}
+
+.icon-2xl {
+  font-size: 44px;
+}
+
+.icon-interactive,
+.material-symbols-rounded.interactive {
+  transition: font-variation-settings 220ms ease, transform 220ms ease, color 220ms ease;
+}
+
+.icon-interactive:hover,
+a:hover .icon-interactive,
+button:hover .icon-interactive,
+.is-active .icon-interactive,
+[aria-pressed='true'] .icon-interactive,
+[aria-current='page'] .icon-interactive,
+.icon-interactive:focus-visible {
+  font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ========================================================================
+   TIPOGRAFÍA — escala fluida estilo plataforma de cursos
+   ======================================================================== */
+.display-1 {
+  font-size: clamp(2rem, 3vw + 0.75rem, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.display-2 {
+  font-size: clamp(1.5rem, 1.8vw + 0.75rem, 2.375rem);
+  font-weight: 900;
+  letter-spacing: -0.022em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.display-3 {
+  font-size: clamp(1.25rem, 0.9vw + 0.75rem, 1.625rem);
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--aud, var(--c-cdj));
+}
+
+.eyebrow-ink {
+  color: var(--text-mute);
+}
+
+.lede {
+  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.125rem);
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+/* ========================================================================
+   CARDS — primitivos plataforma de cursos
+   ======================================================================== */
+.surface {
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+}
+
+.surface-soft {
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+}
+
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  /* Sombra externa neutral + inner highlight (1px arriba) para sensación
+     de cristal sobre bandeja, no de div plano. */
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .card {
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.card-warm {
+  /* alias legacy */
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.card-tint {
+  background: var(--aud-cream);
+  border: 1px solid color-mix(in srgb, var(--aud) 16%, transparent);
+  border-radius: var(--radius-lg);
+}
+
+.card-hover {
+  cursor: pointer;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 220ms ease;
+}
+
+@media (hover: hover) {
+  .card-hover:hover {
+    transform: translateY(-3px) scale(1.015) !important;
+    box-shadow: var(--shadow-card-hover);
+    z-index: 10;
+    opacity: 1 !important;
+  }
+}
+
+/* Touch / mobile: feedback al presionar (no hay hover) */
+@media (hover: none) {
+  .card-hover:active {
+    transform: scale(0.985) !important;
+    transition: transform 120ms ease !important;
+  }
+}
+
+.card-video-hover {
+  cursor: pointer;
+  transition:
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms ease;
+}
+
+@media (hover: hover) {
+  .card-video-hover:hover {
+    transform: translateY(-4px) scale(1.025) !important;
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--aud, var(--c-cdj)) 30%, var(--border));
+    z-index: 10;
+  }
+}
+
+/* === Course card — la unidad central de la plataforma === */
+.course-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 260ms ease;
+}
+
+@media (hover: hover) {
+  .course-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--aud, var(--c-cdj)) 35%, var(--border));
+  }
+}
+
+.course-card .course-thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg,
+      color-mix(in srgb, var(--aud, var(--c-cdj)) 18%, var(--surface-card)),
+      color-mix(in srgb, var(--aud, var(--c-cdj)) 6%, var(--surface-card)));
+  overflow: hidden;
+}
+
+.course-card .course-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(color-mix(in srgb, var(--aud) 22%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.course-card .course-body {
+  padding: 1rem 1.125rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.course-card .course-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-mute);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 0.75rem;
+  margin-top: auto;
+}
+
+/* === Lesson row — para listas de lecciones dentro de un curso === */
+.lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--surface-card);
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.lesson-row:hover {
+  background: var(--surface-soft);
+  border-color: var(--border);
+}
+
+.lesson-row.is-completed {
+  opacity: 0.65;
+}
+
+/* === Pill de metadata (duración, nivel, idioma) === */
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  letter-spacing: 0.01em;
+}
+
+.meta-pill.is-accent {
+  background: var(--aud-cream);
+  color: var(--aud);
+}
+
+.meta-pill.is-success {
+  background: color-mix(in srgb, #E9004C 12%, var(--surface-card));
+  color: #047857;
+}
+
+.meta-pill.is-warning {
+  background: color-mix(in srgb, #F59E0B 14%, var(--surface-card));
+  color: #B45309;
+}
+
+[data-theme='dark'] .meta-pill.is-success {
+  background: color-mix(in srgb, #E9004C 22%, var(--surface-card));
+  color: #34D399;
+}
+
+[data-theme='dark'] .meta-pill.is-warning {
+  background: color-mix(in srgb, #F59E0B 22%, var(--surface-card));
+  color: #FBBF24;
+}
+
+/* === Filter chip (catálogo) === */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: all 160ms ease;
+  cursor: pointer;
+}
+
+.filter-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.filter-chip.is-active {
+  background: var(--aud, var(--c-cdj));
+  border-color: var(--aud, var(--c-cdj));
+  color: var(--text-on-accent);
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--aud, var(--c-cdj)) 40%, transparent);
+}
+
+/* === Progress bar === */
+.progress {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  background: var(--surface-mute);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress>.progress-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  background: var(--aud, var(--c-cdj));
+  border-radius: 999px;
+  transition: width 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* === Section header (catálogo) === */
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .section-head {
+    margin-bottom: 1.4rem;
+  }
+}
+
+/* ========================================================================
+   BOTONES
+   ======================================================================== */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: -0.005em;
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-primary,
+.btn-aud {
+  background: var(--aud, var(--c-cdj));
+  color: var(--text-on-accent);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.btn-primary:hover,
+.btn-aud:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--aud, var(--c-cdj)) 88%, black);
+  box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--aud, var(--c-cdj)) 50%, transparent);
+}
+
+.btn-secondary,
+.btn-ghost-aud {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover,
+.btn-ghost-aud:hover {
+  background: var(--surface-soft);
+  border-color: var(--border-strong);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  transition: all 180ms ease;
+}
+
+.btn-pill:hover {
+  background: var(--surface-card);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Aplicar btn base a las clases existentes */
+.btn-aud,
+.btn-ghost-aud,
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: -0.005em;
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+/* ========================================================================
+   HERO — más sobrio, tipo plataforma de cursos
+   ======================================================================== */
+.hero-warm {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-soft);
+}
+
+.hero-warm::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 380px at 92% -12%, color-mix(in srgb, var(--aud-tint, var(--c-cdj-tint)) 60%, transparent), transparent 60%),
+    radial-gradient(560px 320px at -6% 110%, color-mix(in srgb, var(--aud-cream, var(--c-cdj-cream)) 70%, transparent), transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-aud {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 500px at 88% -10%, color-mix(in srgb, var(--aud-soft, var(--c-cdj-soft)) 38%, transparent), transparent 60%),
+    radial-gradient(640px 380px at 8% 110%, color-mix(in srgb, var(--aud, var(--c-cdj)) 48%, transparent), transparent 60%),
+    color-mix(in srgb, var(--aud, var(--c-cdj)) 92%, black);
+  color: var(--text-primary-variable);
+  border-radius: var(--radius-xl);
+  border: 1px solid color-mix(in srgb, var(--aud, var(--c-cdj)) 60%, black 25%);
+}
+
+.hero-aud h1,
+.hero-aud h2,
+.hero-aud h3,
+.hero-aud h4,
+.hero-aud h5,
+.hero-aud h6 {
+  color: inherit;
+}
+
+/* Hero compacto para páginas de catálogo (estilo Coursera) */
+.catalog-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl);
+  padding: 2.25rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .catalog-hero {
+    padding: 3rem 2.5rem;
+  }
+}
+
+.catalog-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(640px 320px at 100% -20%, color-mix(in srgb, var(--aud) 22%, transparent), transparent 55%),
+    radial-gradient(420px 240px at -10% 120%, color-mix(in srgb, var(--aud-soft) 18%, transparent), transparent 55%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ========================================================================
+   GLOBAL HERO BANNER DIMENSIONS
+   - Base design deliverable: 1392 x 423 / 1546 x 423 (collapsed)
+   - Large screen / 1080p scale: 1604 x 423 / 1788 x 423 (collapsed)
+     (CSS scales the base image using object-cover to fit larger viewports)
+   - Desktop Height (>= 1024px): Exactly 423px height.
+   ======================================================================== */
+.main-hero,
+.hero-aud,
+.catalog-hero {
+  max-width: 1604px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transition: max-width 240ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.hero-aud,
+.catalog-hero {
+  padding: 1.5rem !important;
+}
+
+.main-hero {
+  padding: 0 !important;
+  display: block !important;
+}
+
+.main-hero img {
+  object-position: center !important;
+}
+
+@media (min-width: 1700px) {
+  .main-hero img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+}
+
+body.sidebar-collapsed .main-hero,
+body.sidebar-collapsed .hero-aud,
+body.sidebar-collapsed .catalog-hero {
+  max-width: 1788px !important;
+}
+
+@media (min-width: 768px) {
+
+  .hero-aud,
+  .catalog-hero {
+    padding: 2rem 2.5rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .hero-aud,
+  .catalog-hero {
+    height: 423px !important;
+    min-height: 423px !important;
+    max-height: 423px !important;
+    padding: 2.5rem 3.5rem !important;
+    display: grid !important;
+    align-content: center !important;
+    justify-content: stretch !important;
+  }
+
+  .main-hero {
+    height: clamp(260px, 22vw, 360px) !important;
+    min-height: clamp(260px, 22vw, 360px) !important;
+    max-height: clamp(260px, 22vw, 360px) !important;
+    display: block !important;
+  }
+}
+
+.halo-aud {
+  position: relative;
+}
+
+.halo-aud::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--aud, var(--c-cdj)) 28%, transparent), transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+}
+
+/* ========================================================================
+   SECTION WARM (compatibilidad)
+   ======================================================================== */
+.section-warm {
+  background: var(--surface-soft);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-soft);
+}
+
+/* ========================================================================
+   NAV / SIDEBAR PRIMITIVES (Coursera/edX style)
+   ======================================================================== */
+.nav-section-label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+
+.nav-section-label:first-child {
+  margin-top: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background 160ms ease, color 160ms ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+
+.nav-item.is-active,
+.nav-item[aria-current='page'] {
+  background: var(--aud-cream, var(--c-cdj-cream));
+  color: var(--aud, var(--c-cdj));
+  font-weight: 700;
+}
+
+.nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -0.75rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  background: var(--aud, var(--c-cdj));
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item .nav-icon {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.nav-item.is-collapsed {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.nav-subitem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.75rem 0.375rem 2.25rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.nav-subitem:hover {
+  color: var(--text-primary);
+  background: var(--surface-soft);
+}
+
+.nav-subitem.is-active {
+  color: var(--aud, var(--c-cdj));
+  background: var(--aud-cream);
+  font-weight: 700;
+}
+
+/* Topbar / Header — fijo arriba al hacer scroll */
+.topbar {
+  position: sticky;
+  /* align-self previene el bug clásico donde align-items:stretch del padre
+     flex rompe `position:sticky`. */
+  align-self: flex-start;
+  z-index: 50;
+  width: 100%;
+  background: color-mix(in srgb, var(--surface-card) 92%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  will-change: transform;
+}
+
+/* Searchbar inline (estilo Coursera) */
+.search-input {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+  border-radius: 0.95rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color 160ms ease, background 160ms ease;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.search-input:hover {
+  background: var(--surface-card);
+  border-color: var(--border);
+}
+
+.search-input:focus-within {
+  background: var(--surface-card);
+  border-color: var(--c-cdj);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-cdj) 18%, transparent);
+}
+
+.search-input input {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  width: 100%;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.search-input input::placeholder {
+  color: var(--text-mute);
+}
+
+/* ========================================================================
+   BREADCRUMB
+   ======================================================================== */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-mute);
+}
+
+.breadcrumb a {
+  color: var(--text-soft);
+  transition: color 160ms ease;
+}
+
+.breadcrumb a:hover {
+  color: var(--text-primary);
+}
+
+.breadcrumb .breadcrumb-sep {
+  color: var(--text-faint);
+  font-size: 0.75rem;
+}
+
+.breadcrumb .is-current {
+  color: var(--text-primary);
+}
+
+/* ========================================================================
+   SCROLL REVEAL
+   ======================================================================== */
+.reveal-init {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--reveal-duration, 700ms) cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    transform var(--reveal-duration, 700ms) cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms);
+}
+
+.reveal-init[data-reveal-direction='up'] {
+  transform: translate3d(0, 12px, 0);
+}
+
+.reveal-init[data-reveal-direction='down'] {
+  transform: translate3d(0, -12px, 0);
+}
+
+.reveal-init[data-reveal-direction='left'] {
+  transform: translate3d(12px, 0, 0);
+}
+
+.reveal-init[data-reveal-direction='right'] {
+  transform: translate3d(-12px, 0, 0);
+}
+
+.reveal-init[data-reveal-direction='fade'] {
+  transform: none;
+}
+
+.reveal-init[data-reveal-direction='scale'] {
+  transform: scale(0.985);
+}
+
+.reveal-in {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ========================================================================
+   KEYFRAMES UTILITARIOS
+   ======================================================================== */
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes float-fast {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0) rotate(2deg);
+  }
+}
+
+@keyframes blob {
+
+  0%,
+  100% {
+    border-radius: 42% 58% 64% 36% / 47% 36% 64% 53%;
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+
+  33% {
+    border-radius: 56% 44% 38% 62% / 42% 62% 38% 58%;
+    transform: translate3d(8px, -6px, 0) rotate(8deg);
+  }
+
+  66% {
+    border-radius: 36% 64% 52% 48% / 58% 36% 64% 42%;
+    transform: translate3d(-6px, 8px, 0) rotate(-6deg);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  60% {
+    transform: translateX(120%);
+  }
+
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+
+  80% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes gradient-pan {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes orbit-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.anim-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+.anim-float-fast {
+  animation: float-fast 5s ease-in-out infinite;
+}
+
+.anim-blob {
+  animation: blob 16s ease-in-out infinite;
+}
+
+.anim-gradient {
+  background-size: 200% 200%;
+  animation: gradient-pan 14s ease infinite;
+}
+
+.anim-orbit {
+  animation: orbit-slow 32s linear infinite;
+}
+
+/* Marquee horizontal */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.anim-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.anim-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background:
+    linear-gradient(90deg,
+      var(--surface-soft) 0%,
+      var(--surface-mute) 50%,
+      var(--surface-soft) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ========================================================================
+   SCROLL HORIZONTAL — carruseles
+   ======================================================================== */
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-x>* {
+  scroll-snap-align: start;
+}
+
+.scroll-snap-x::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll-snap-x::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ========================================================================
+   SEARCH OVERLAY
+   ======================================================================== */
+@keyframes searchOverlayIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes searchPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.search-overlay {
+  animation: searchOverlayIn 220ms ease-out forwards;
+}
+
+.search-panel {
+  animation: searchPanelIn 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================================
+   GLASS UTILITY
+   ======================================================================== */
+.glass {
+  background: color-mix(in srgb, var(--surface-card) 78%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+/* ========================================================================
+   TEXTURAS SUTILES
+   ======================================================================== */
+.bg-paper-grain {
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.06  0 0 0 0 0.05  0 0 0 0 0.04  0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    var(--surface-base);
+}
+
+.bg-dots-aud {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--aud, var(--c-cdj)) 20%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.bg-grid-soft {
+  background-image:
+    linear-gradient(to right, var(--border-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-soft) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ========================================================================
+   FOCO ACCESIBLE
+   ======================================================================== */
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--aud, var(--c-cdj)) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ========================================================================
+   PREFERS REDUCED MOTION
+   ======================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  .anim-float-slow,
+  .anim-float-fast,
+  .anim-blob,
+  .anim-gradient,
+  .anim-marquee,
+  .anim-orbit,
+  .skeleton {
+    animation: none !important;
+  }
+
+  .reveal-init {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .card-hover,
+  .course-card {
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* utility to lock scroll */
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+}

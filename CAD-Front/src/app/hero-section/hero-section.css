@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+/* Wrapper standalone (solo cuando NO es embedded) */
+.hero-section-shell {
+  background:
+    radial-gradient(80% 60% at 15% 0%, color-mix(in srgb, var(--c-cdj) 10%, transparent), transparent 60%),
+    radial-gradient(70% 60% at 90% 100%, color-mix(in srgb, var(--c-cdj) 6%, transparent), transparent 65%),
+    var(--surface-base);
+  min-height: 100dvh;
+}
+
+/* Background tinted del slider (gradients complejos que Tailwind arbitrary haría ilegible) */
+.hero-section-bg {
+  background:
+    radial-gradient(80% 90% at 0% 50%, color-mix(in srgb, var(--c-cdj) 14%, transparent), transparent 60%),
+    linear-gradient(135deg, var(--c-cdj-cream), color-mix(in srgb, var(--c-cdj-tint) 55%, var(--surface-card)));
+  border-color: color-mix(in srgb, var(--c-cdj) 18%, var(--border-soft));
+}
+
+/* Stack de slides (todos en la misma celda del grid) + animación de entrada */
+.hero-section-slide {
+  opacity: 0;
+  transform: translateX(36px);
+  pointer-events: none;
+  transition:
+    opacity 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 700ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.hero-section-slide.is-active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Animación escalonada de la imagen y el contenido cuando el slide se activa */
+.hero-section-frame {
+  transform: translateY(8px);
+  opacity: 0;
+  transition: transform 700ms cubic-bezier(0.32, 0.72, 0, 1), opacity 700ms ease;
+  transition-delay: 120ms;
+}
+.hero-section-slide.is-active .hero-section-frame {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.hero-section-content {
+  transform: translateY(16px);
+  opacity: 0;
+  transition: transform 700ms cubic-bezier(0.32, 0.72, 0, 1), opacity 700ms ease;
+  transition-delay: 240ms;
+}
+.hero-section-slide.is-active .hero-section-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Barra de progreso auto-play (keyframe) */
+.hero-section-progress__fill {
+  animation: hero-section-progress 6000ms linear forwards;
+}
+.hero-section-progress__fill.is-paused {
+  animation-play-state: paused;
+}
+@keyframes hero-section-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section-slide,
+  .hero-section-frame,
+  .hero-section-content,
+  .hero-section-progress__fill {
+    transition: opacity 200ms ease !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

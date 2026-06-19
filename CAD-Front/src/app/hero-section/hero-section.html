@@ -1,0 +1,171 @@
+<section [class.hero-section-shell]="!embedded">
+  <div [class.mx-auto]="!embedded"
+       [class.max-w-7xl]="!embedded"
+       [class.px-6]="!embedded"
+       [class.py-12]="!embedded"
+       [class.sm:py-16]="!embedded">
+
+    @if (!embedded) {
+      <header class="mb-10 max-w-3xl">
+        <p class="eyebrow text-[color:var(--c-cdj)]">Hero section · Preview</p>
+        <h1 class="display-1 mt-2">Hero slider destacado</h1>
+        <p class="lede mt-3">
+          Carrusel con auto-play (pausa al hover), flechas, dots y soporte de teclado.
+        </p>
+      </header>
+    }
+
+    <!-- Slider container -->
+    <div class="relative overflow-hidden rounded-[2rem] border shadow-2xl hero-section-bg"
+         role="region"
+         aria-roledescription="carrusel"
+         aria-label="Contenido destacado"
+         (mouseenter)="onMouseEnter()"
+         (mouseleave)="onMouseLeave()">
+
+      <!-- Track -->
+      <div class="relative grid grid-cols-1 min-h-[clamp(280px,24vw+80px,420px)]">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <article class="hero-section-slide [grid-area:1/1] grid grid-cols-[1.35fr_1fr] items-center
+                          gap-[clamp(1.5rem,2vw,2.75rem)]
+                          py-6 pb-10 px-[clamp(1.75rem,2.5vw,3rem)]
+                          max-md:grid-cols-1 max-md:py-5 max-md:pb-12"
+                   [class.is-active]="currentIndex() === i"
+                   [attr.aria-hidden]="currentIndex() !== i"
+                   [attr.data-audience]="slide.audience">
+
+            <!-- Frame imagen -->
+            <div class="hero-section-frame order-1 justify-self-start ml-[clamp(0.5rem,1vw,1.5rem)]
+                        relative aspect-[5/3] w-full
+                        max-w-[clamp(280px,28vw+60px,440px)]
+                        rounded-[1.4rem] overflow-hidden bg-[color:var(--surface-soft)]
+                        border border-[color-mix(in_srgb,var(--c-cdj)_30%,transparent)]
+                        shadow-[0_24px_52px_-22px_color-mix(in_srgb,var(--c-cdj)_26%,rgba(15,23,42,0.3)),0_3px_8px_-1px_rgba(15,23,42,0.07),inset_0_1px_0_rgba(255,255,255,0.6)]
+                        max-md:order-1 max-md:justify-self-center max-md:m-0 max-md:max-w-full">
+              <img [src]="slide.image" [alt]="slide.title"
+                   class="absolute inset-0 w-full h-full object-contain"
+                   loading="lazy">
+
+              <span class="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5
+                           pl-2.5 pr-3.5 py-1.5 rounded-full
+                           bg-white/95 backdrop-blur-md
+                           font-display text-[clamp(0.7rem,0.25vw+0.65rem,0.82rem)] font-extrabold tracking-[-0.01em]
+                           text-[color:var(--c-cdj-deep)]
+                           shadow-[0_6px_16px_rgba(15,23,42,0.2),inset_0_1px_0_rgba(255,255,255,0.5)]">
+                <span translate="no" class="material-symbols-rounded text-[18px] icon-fill text-[color:var(--c-cdj)]">{{ slide.badgeIcon }}</span>
+                {{ slide.badge }}
+              </span>
+            </div>
+
+            <!-- Contenido -->
+            <div class="hero-section-content order-2 flex flex-col gap-[clamp(0.6rem,0.4vw+0.4rem,0.95rem)]
+                        max-md:order-2 max-md:justify-self-stretch max-md:m-0">
+
+              <span class="self-start inline-flex items-center gap-2 pl-2.5 pr-3.5 py-1.5 rounded-full
+                           font-display text-[11px] font-extrabold uppercase tracking-[0.08em]
+                           bg-[color:var(--c-cdj-cream)] border border-[color:var(--c-cdj-tint)]
+                           text-[color:var(--c-cdj-deep)] shadow-sm">
+                <span class="grid place-items-center h-2 w-2 rounded-full
+                             bg-[color:var(--c-cdj)] ring-2 ring-[color:var(--c-cdj-tint)] animate-pulse"></span>
+                <span translate="no" class="material-symbols-rounded text-[14px] icon-fill text-[color:var(--c-cdj)]">stars</span>
+                Destacado · {{ i + 1 }} de {{ slides.length }}
+              </span>
+
+              <h2 class="font-display font-black leading-[1.0] tracking-[-0.03em]
+                         text-[clamp(1.65rem,2.1vw+0.6rem,2.85rem)]
+                         text-[color:var(--text-primary)]">
+                {{ slide.title }}
+              </h2>
+
+              <p class="font-medium leading-[1.5]
+                        text-[clamp(0.95rem,0.55vw+0.78rem,1.18rem)]
+                        text-[color:var(--text-soft)]
+                        max-w-[46ch] max-md:max-w-none">
+                {{ slide.description }}
+              </p>
+
+              <a [routerLink]="slide.ctaHref"
+                 class="inline-flex w-max items-center gap-2 mt-1
+                        rounded-full text-white font-extrabold tracking-[-0.01em]
+                        text-[clamp(0.9rem,0.3vw+0.8rem,1.02rem)]
+                        py-[clamp(0.7rem,0.35vw+0.6rem,0.9rem)] px-[clamp(1.2rem,0.7vw+1rem,1.7rem)]
+                        bg-[color:var(--c-cdj)]
+                        shadow-[0_10px_24px_color-mix(in_srgb,var(--c-cdj)_42%,transparent)]
+                        transition-[transform,box-shadow,background] duration-200 ease-out
+                        hover:-translate-y-0.5 hover:bg-[color:var(--c-cdj-deep)]
+                        hover:shadow-[0_16px_34px_color-mix(in_srgb,var(--c-cdj)_50%,transparent)]
+                        active:translate-y-0">
+                {{ slide.ctaLabel }}
+                <span translate="no" class="material-symbols-rounded text-[18px] transition-transform duration-200">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- Flechas glass -->
+      <button type="button"
+              (click)="prev()"
+              aria-label="Slide anterior"
+              class="absolute z-[5] top-[calc(50%-1.5rem)] left-3.5
+                     grid place-items-center h-9 w-9 rounded-full
+                     bg-white/35 border border-white/45 backdrop-blur-md
+                     text-[color:var(--text-primary)]
+                     shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]
+                     transition-[transform,background,border-color,color] duration-200 ease-out
+                     hover:scale-110 hover:bg-[color-mix(in_srgb,var(--c-cdj)_80%,transparent)]
+                     hover:border-[color-mix(in_srgb,var(--c-cdj)_30%,transparent)] hover:text-white
+                     active:scale-95
+                     max-md:top-auto max-md:bottom-12 max-md:left-2 max-md:h-8 max-md:w-8">
+        <span translate="no" class="material-symbols-rounded text-[24px]">chevron_left</span>
+      </button>
+
+      <button type="button"
+              (click)="next()"
+              aria-label="Slide siguiente"
+              class="absolute z-[5] top-[calc(50%-1.5rem)] right-3.5
+                     grid place-items-center h-9 w-9 rounded-full
+                     bg-white/35 border border-white/45 backdrop-blur-md
+                     text-[color:var(--text-primary)]
+                     shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]
+                     transition-[transform,background,border-color,color] duration-200 ease-out
+                     hover:scale-110 hover:bg-[color-mix(in_srgb,var(--c-cdj)_80%,transparent)]
+                     hover:border-[color-mix(in_srgb,var(--c-cdj)_30%,transparent)] hover:text-white
+                     active:scale-95
+                     max-md:top-auto max-md:bottom-12 max-md:right-2 max-md:h-8 max-md:w-8">
+        <span translate="no" class="material-symbols-rounded text-[24px]">chevron_right</span>
+      </button>
+
+      <!-- Dots -->
+      <div class="absolute z-[5] left-1/2 -translate-x-1/2 bottom-3.5
+                  flex gap-2"
+           role="tablist" aria-label="Paginación del carrusel">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <button type="button"
+                  role="tab"
+                  (click)="goTo(i)"
+                  [attr.aria-selected]="currentIndex() === i"
+                  [attr.aria-label]="'Ir al slide ' + (i + 1) + ': ' + slide.title"
+                  class="h-[0.45rem] rounded-full cursor-pointer
+                         transition-[width,background,transform] duration-300 ease-out
+                         hover:scale-125"
+                  [class]="currentIndex() === i
+                    ? 'w-[1.6rem] bg-[color:var(--c-cdj)]'
+                    : 'w-[0.45rem] bg-[color-mix(in_srgb,var(--text-mute)_55%,transparent)] hover:bg-[color-mix(in_srgb,var(--c-cdj)_60%,var(--text-mute))]'">
+          </button>
+        }
+      </div>
+
+      <!-- Barra progreso -->
+      <div class="absolute left-0 right-0 bottom-0 h-[3px] z-[4] overflow-hidden
+                  bg-[color-mix(in_srgb,var(--text-mute)_18%,transparent)]"
+           aria-hidden="true">
+        @for (key of [progressKey()]; track key) {
+          <span class="hero-section-progress__fill block h-full w-full origin-left
+                       bg-[linear-gradient(90deg,var(--c-cdj-soft),var(--c-cdj))]"
+                [class.is-paused]="isPaused()"></span>
+        }
+      </div>
+    </div>
+  </div>
+</section>
