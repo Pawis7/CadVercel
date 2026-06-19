@@ -13,7 +13,7 @@ import {
 import { resolveDestination } from './card-destinations';
 
 export const BRANDING: SiteBranding = {
-  logoText: { line1: 'Ciudadanía', line2: 'Digital' },
+  logoText: { line1: 'Cursos Alfa', line2: 'Digital' },
   logoGradientFrom: 'from-rose-500',
   logoGradientVia: 'via-rose-500',
   logoGradientTo: 'to-rose-600',

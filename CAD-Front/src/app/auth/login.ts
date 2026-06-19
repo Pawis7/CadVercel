@@ -20,7 +20,7 @@ import { CadLogoComponent } from '../shared/cad-logo/cad-logo';
         <div class="login-header">
           <app-cad-logo variant="white" containerClass="h-16 w-auto shrink-0"></app-cad-logo>
           <h1 class="login-title">Acceso Alfa</h1>
-          <p class="login-subtitle">Panel de administración · CDJ</p>
+          <p class="login-subtitle">Panel de administración · CAD</p>
         </div>
 
         <form (submit)="onLogin(); $event.preventDefault()" class="login-form">
