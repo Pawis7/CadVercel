@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "CDJ-Front": {
+    "CAD-Front": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -39,8 +39,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -57,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "CDJ-Front:build:production"
+              "buildTarget": "CAD-Front:build:production"
             },
             "development": {
-              "buildTarget": "CDJ-Front:build:development"
+              "buildTarget": "CAD-Front:build:development"
             }
           },
           "defaultConfiguration": "development"

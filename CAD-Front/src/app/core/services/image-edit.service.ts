@@ -3,8 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './auth.service';
 import { ApiClient } from './api.client';
 
-const STORAGE_KEY   = 'cdj_image_overrides_v1';
-const EDIT_MODE_KEY = 'cdj_edit_mode_v1';
+const STORAGE_KEY   = 'cad_image_overrides_v1';
+const EDIT_MODE_KEY = 'cad_edit_mode_v1';
 
 /**
  * Gestiona el modo de edición y los overrides locales de imágenes.

@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
-import { CdjLogoComponent } from '../shared/cdj-logo/cdj-logo';
+import { CadLogoComponent } from '../shared/cad-logo/cad-logo';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CdjLogoComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CadLogoComponent],
   template: `
     <div class="login-page">
       <div class="login-bg">
@@ -18,7 +18,7 @@ import { CdjLogoComponent } from '../shared/cdj-logo/cdj-logo';
 
       <div class="login-card glass">
         <div class="login-header">
-          <app-cdj-logo variant="white" containerClass="h-16 w-auto shrink-0"></app-cdj-logo>
+          <app-cad-logo variant="white" containerClass="h-16 w-auto shrink-0"></app-cad-logo>
           <h1 class="login-title">Acceso Alfa</h1>
           <p class="login-subtitle">Panel de administración · CDJ</p>
         </div>
@@ -83,7 +83,7 @@ import { CdjLogoComponent } from '../shared/cdj-logo/cdj-logo';
       </div>
       
       <div class="legal-notice">
-        Sistema exclusivo para personal autorizado de Ciudadanía Digital Jalisco.
+        Sistema exclusivo para personal autorizado de Cursos Alfa Digital Jalisco.
       </div>
     </div>
   `,

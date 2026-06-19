@@ -8,19 +8,19 @@ import { SidebarComponent } from './sidebar/sidebar';
 import { ContentService } from './core/services/content.service';
 import { BrandIconComponent } from './shared/brand-icon/brand-icon';
 import { ImageEditService } from './core/services/image-edit.service';
-import { CdjLogoComponent } from './shared/cdj-logo/cdj-logo';
+import { CadLogoComponent } from './shared/cad-logo/cad-logo';
 import { AuthService } from './core/services/auth.service';
 import { UiIconComponent } from './shared/ui-icon/ui-icon';
 
-const ADMIN_FLAG = 'cdj_admin_v1';
-const THEME_KEY  = 'cdj_theme';
+const ADMIN_FLAG = 'cad_admin_v1';
+const THEME_KEY  = 'cad_theme';
 
 type ThemeMode = 'light' | 'dark';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterOutlet, RouterLink, RouterLinkActive, SidebarComponent, BrandIconComponent, CdjLogoComponent, UiIconComponent],
+  imports: [CommonModule, FormsModule, RouterOutlet, RouterLink, RouterLinkActive, SidebarComponent, BrandIconComponent, CadLogoComponent, UiIconComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: './app.html',
   styleUrl: './app.css',

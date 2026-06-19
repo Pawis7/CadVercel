@@ -77,7 +77,7 @@ export interface SecondaryFraudSimulatorData {
 
 export const SECONDARY_FRAUD_SIMULATOR_DATA: SecondaryFraudSimulatorData = {
   metadata: {
-    project: 'Ciudadanía Digital Jalisco',
+    project: 'Cursos Alfa Digital Jalisco',
     productId: 'CDJ-154',
     version: 'v6_3casos',
     audience: 'Estudiantes',

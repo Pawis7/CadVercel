@@ -17,7 +17,7 @@ export const BRANDING: SiteBranding = {
   logoGradientFrom: 'from-rose-500',
   logoGradientVia: 'via-rose-500',
   logoGradientTo: 'to-rose-600',
-  siteName: 'Ciudadanía Digital Jalisco',
+  siteName: 'Cursos Alfa Digital Jalisco',
   tagline:
     'Promovemos el uso ético y responsable de la tecnología para una ciudadanía digital activa y consciente en Jalisco.',
 };
@@ -25,7 +25,7 @@ export const BRANDING: SiteBranding = {
 export const HERO: Hero = {
   eyebrow: 'Portal público de aprendizaje · Jalisco',
   titleLead: 'Hola, bienvenidas y bienvenidos a',
-  titleHighlight: 'Ciudadanía Digital',
+  titleHighlight: 'Cursos Alfa Digital',
   description:
     'Aprendemos, convivimos y participamos en entornos digitales de forma segura, responsable y respetuosa. Para niñas, niños, adolescentes, familias y docentes.',
   primaryCta: { label: 'Explorar contenidos', href: '/cursos' },
@@ -193,7 +193,7 @@ export const VIDEO_SERIES: VideoSeries[] = [
       },
       {
         id: 'edu-2',
-        title: 'Micrositio Ciudadanía Digital Jalisco',
+        title: 'Micrositio Cursos Alfa Digital Jalisco',
         description: 'Conoce todos los recursos, guías y cursos gratuitos disponibles en el portal para tu familia.',
         youtubeUrl: 'https://www.youtube.com/watch?v=HqhlRiRwefQ',
         durationLabel: '4:53',

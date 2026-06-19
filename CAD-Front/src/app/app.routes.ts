@@ -4,69 +4,69 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./inicio/inicio').then((m) => m.InicioComponent),
-    title: 'Inicio · Ciudadanía Digital',
+    title: 'Inicio · Cursos Alfa Digital',
   },
   {
     path: 'series',
     loadComponent: () =>
       import('./series/series-list/series-list').then((m) => m.SeriesListComponent),
-    title: 'Series · Ciudadanía Digital',
+    title: 'Series · Cursos Alfa Digital',
   },
   {
     path: 'series/:slug',
     loadComponent: () =>
       import('./series/series-detail/series-detail').then((m) => m.SeriesDetailComponent),
-    title: 'Serie · Ciudadanía Digital',
+    title: 'Serie · Cursos Alfa Digital',
   },
   {
     path: 'edutips',
     loadComponent: () => import('./edutips/edutips').then((m) => m.EdutipsComponent),
-    title: 'Edutips · Ciudadanía Digital',
+    title: 'Edutips · Cursos Alfa Digital',
   },
   {
     path: 'recurso/:slug',
     loadComponent: () => import('./recurso/recurso-detail').then((m) => m.RecursoDetailComponent),
-    title: 'Recurso · Ciudadanía Digital',
+    title: 'Recurso · Cursos Alfa Digital',
   },
   {
     path: 'recursos',
     loadComponent: () => import('./recursos/recursos').then((m) => m.RecursosComponent),
-    title: 'Recursos · Ciudadanía Digital',
+    title: 'Recursos · Cursos Alfa Digital',
   },
   {
     path: 'cursos',
     loadComponent: () => import('./cursos/cursos').then((m) => m.CursosComponent),
-    title: 'Cursos · Ciudadanía Digital',
+    title: 'Cursos · Cursos Alfa Digital',
   },
   {
     path: 'juegos',
     loadComponent: () => import('./juegos/juegos').then((m) => m.JuegosComponent),
-    title: 'Juegos · Ciudadanía Digital',
+    title: 'Juegos · Cursos Alfa Digital',
   },
   {
     path: 'notebooks-ia',
     loadComponent: () => import('./notebooks-ia/notebooks-ia').then((m) => m.NotebooksIaComponent),
-    title: 'Notebooks IA · Ciudadanía Digital',
+    title: 'Notebooks IA · Cursos Alfa Digital',
   },
   {
     path: 'quienes-somos',
     loadComponent: () => import('./quienes-somos/quienes-somos').then((m) => m.QuienesSomosComponent),
-    title: 'Quiénes somos · Ciudadanía Digital',
+    title: 'Quiénes somos · Cursos Alfa Digital',
   },
   {
     path: 'ayuda',
     loadComponent: () => import('./ayuda/ayuda').then((m) => m.AyudaComponent),
-    title: 'Ayuda Digital · Ciudadanía Digital',
+    title: 'Ayuda Digital · Cursos Alfa Digital',
   },
   {
     path: 'p/:slug',
     loadComponent: () => import('./audiencia/audiencia').then((m) => m.AudienciaComponent),
-    title: 'Ciudadanía Digital',
+    title: 'Cursos Alfa Digital',
   },
   {
     path: 'AlfaAdminLogin',
     loadComponent: () => import('./auth/login').then((m) => m.LoginComponent),
-    title: 'Acceso Administrativo · Ciudadanía Digital',
+    title: 'Acceso Administrativo · Cursos Alfa Digital',
   },
   { path: '**', redirectTo: '' },
 ];

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { ContentService } from '../core/services/content.service';
-import { CdjLogoComponent } from '../shared/cdj-logo/cdj-logo';
+import { CadLogoComponent } from '../shared/cad-logo/cad-logo';
 import { ImageEditService } from '../core/services/image-edit.service';
 
 interface SidebarItem {
@@ -15,7 +15,7 @@ interface SidebarItem {
   subItems?: { label: string; href: string }[];
 }
 
-const COLLAPSE_KEY = 'cdj_sidebar_collapsed';
+const COLLAPSE_KEY = 'cad_sidebar_collapsed';
 
 /**
  * Sidebar persistente estilo Coursera/edX.
@@ -28,7 +28,7 @@ const COLLAPSE_KEY = 'cdj_sidebar_collapsed';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, CdjLogoComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, CadLogoComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',

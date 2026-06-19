@@ -10,7 +10,7 @@ export const COURSES: Course[] = [
   {
     id: 'c1',
     slug: 'fundamentos-ciudadania-digital',
-    title: 'Fundamentos de Ciudadanía Digital',
+    title: 'Fundamentos de Cursos Alfa Digital',
     shortDescription:
       'Curso introductorio sobre seguridad, privacidad y convivencia en internet — para todas las edades.',
     longDescription:
@@ -155,7 +155,7 @@ export const NOTEBOOKS_IA: AINotebook[] = [
   {
     id: 'n1',
     slug: 'tutor-ciudadania-digital',
-    title: 'Tutor de Ciudadanía Digital',
+    title: 'Tutor de Cursos Alfa Digital',
     description:
       'Notebook entrenado con todos los recursos del portal. Pregúntale lo que quieras: qué hacer ante un caso, cómo explicar un tema en clase, dónde acudir. Responde en español, citando los recursos del sitio.',
     audience: 'cdj',

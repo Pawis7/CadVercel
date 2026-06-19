@@ -2,8 +2,8 @@ import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angu
 import { isPlatformBrowser } from '@angular/common';
 import { FeatureCard, VideoSeries } from '../models/content.models';
 
-const CARDS_KEY  = 'cdj_card_edits_v1';
-const SERIES_KEY = 'cdj_series_edits_v1';
+const CARDS_KEY  = 'cad_card_edits_v1';
+const SERIES_KEY = 'cad_series_edits_v1';
 
 /**
  * Gestiona ediciones pendientes (parches) sobre FeatureCards y VideoSeries.
