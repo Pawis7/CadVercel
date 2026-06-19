@@ -12,7 +12,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from './crypto';
 
 export const SESSION_COOKIE = 'cad_session';
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cad_2026';
+
+/**
+ * Devuelve el JWT_SECRET del entorno.
+ * Lanza un error si no está definido o es demasiado corto (mínimo 32 caracteres).
+ * No hay valor de fallback: una clave ausente DEBE ser un error explícito.
+ */
+export function getJwtSecret(): string {
+  const s = process.env.JWT_SECRET;
+  if (!s || s.length < 32) {
+    throw new Error(
+      'JWT_SECRET no está definido o es demasiado corto (mínimo 32 caracteres). Configúralo en .env.'
+    );
+  }
+  return s;
+}
 
 export interface SessionPayload {
   userId: string;
@@ -36,7 +50,7 @@ export function verifySession(request: NextRequest | Request): SessionPayload | 
     }
     if (!token) return null;
 
-    const payload = verifyToken(token, JWT_SECRET) as unknown as SessionPayload;
+    const payload = verifyToken(token, getJwtSecret()) as unknown as SessionPayload;
     if (!payload) return null;
 
     const now = Math.floor(Date.now() / 1000);

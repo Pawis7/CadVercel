@@ -10,7 +10,7 @@ import { CARD_DESTINATIONS, resolveDestination } from '@/lib/card-destinations';
 
 export const dynamic = 'force-dynamic';
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
 function enrichCard(card: Awaited<ReturnType<typeof prisma.featureCard.findFirstOrThrow>>) {
   return { ...card, href: resolveDestination(card.destination) };
@@ -18,6 +18,7 @@ function enrichCard(card: Awaited<ReturnType<typeof prisma.featureCard.findFirst
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   if (!isAdmin(req)) return unauthorized();
+  const { id } = await params;
   try {
     const body = await req.json();
 
@@ -38,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (Object.keys(data).length === 0) return badRequest('Sin campos para actualizar.');
 
     const updated = await prisma.featureCard.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return ok(enrichCard(updated));
@@ -50,9 +51,10 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
 export async function DELETE(req: NextRequest, { params }: Params) {
   if (!isAdmin(req)) return unauthorized();
+  const { id } = await params;
   try {
-    await prisma.featureCard.delete({ where: { id: params.id } });
-    return ok({ deleted: params.id });
+    await prisma.featureCard.delete({ where: { id } });
+    return ok({ deleted: id });
   } catch (err: unknown) {
     if (isPrismaNotFound(err)) return notFound('Feature card no encontrada.');
     return serverError(err);

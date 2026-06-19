@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword, signToken } from '@/lib/crypto';
-import { SESSION_COOKIE } from '@/lib/auth';
+import { SESSION_COOKIE, getJwtSecret } from '@/lib/auth';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -9,7 +9,6 @@ const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cad_2026';
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 export async function POST(request: NextRequest) {
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Usuario o contraseña incorrectos.' }, { status: 401 });
     }
 
-    const token = signToken({ userId: user.id, email: user.email }, JWT_SECRET);
+    const token = signToken({ userId: user.id, email: user.email }, getJwtSecret());
 
     const response = NextResponse.json({
       ok: true,

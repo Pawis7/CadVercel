@@ -99,7 +99,8 @@ async function main() {
     { id: 'notebooks-ia',   title: 'Notebooks IA',        description: 'Resuelve tus dudas en base a la documentación oficial con nuestra IA.',icon: 'psychology', iconBgClass: 'bg-fuchsia-600', iconShadowClass: 'shadow-fuchsia-100', imageUrl: '/assets/img/sub-teens-prep.svg',         destination: 'notebooks_ia',   audience: 'cdj',      illoScene: 'spark',   badge: 'Asistente IA',  sortOrder: 12, sections: [] },
   ] as const;
   for (const f of featureCards) {
-    await prisma.featureCard.upsert({ where: { id: f.id }, create: f, update: f });
+    const fData = { ...f, sections: [...f.sections] };
+    await prisma.featureCard.upsert({ where: { id: fData.id }, create: fData, update: fData });
   }
 
   // === Banner CTA ===
@@ -218,7 +219,7 @@ async function main() {
 
   await prisma.adminUser.upsert({
     where: { email: adminEmail },
-    update: { password: hashedPassword },
+    update: {},   // No sobreescribir password en re-seeds
     create: {
       email: adminEmail,
       password: hashedPassword,

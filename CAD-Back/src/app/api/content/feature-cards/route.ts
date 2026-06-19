@@ -4,7 +4,7 @@
  * GET    /api/content/feature-cards/destinations — opciones válidas de destino
  */
 import { NextRequest } from 'next/server';
-import { ok, badRequest, serverError } from '@/lib/responses';
+import { ok, created, badRequest, serverError } from '@/lib/responses';
 import { isAdmin, unauthorized } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { CARD_DESTINATIONS, resolveDestination } from '@/lib/card-destinations';
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         sortOrder:   nextOrder,
       },
     });
-    return ok(enrichCard(card), 201);
+    return created(enrichCard(card));
   } catch (err) {
     return serverError(err);
   }
