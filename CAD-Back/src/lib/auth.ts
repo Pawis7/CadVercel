@@ -2,7 +2,7 @@
  * Utilidades de autenticación JWT via httpOnly cookie.
  *
  * El JWT NUNCA se expone a JavaScript. Solo se lee en el servidor
- * a través de la cookie 'cdj_session', que es httpOnly + SameSite=Strict.
+ * a través de la cookie 'cad_session', que es httpOnly + SameSite=Strict.
  *
  * Uso en route handlers:
  *   const payload = verifySession(request);
@@ -11,8 +11,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from './crypto';
 
-export const SESSION_COOKIE = 'cdj_session';
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cdj_2026';
+export const SESSION_COOKIE = 'cad_session';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cad_2026';
 
 export interface SessionPayload {
   userId: string;

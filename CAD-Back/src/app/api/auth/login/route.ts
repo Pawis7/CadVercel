@@ -9,7 +9,7 @@ const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cdj_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret_alfa_cad_2026';
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 export async function POST(request: NextRequest) {

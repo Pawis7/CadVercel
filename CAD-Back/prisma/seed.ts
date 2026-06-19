@@ -213,7 +213,7 @@ async function main() {
   }
 
   // === Admin User (Alfa) ===
-  const adminEmail = 'admin@cdj.jalisco.gob.mx';
+  const adminEmail = 'admin@cad.local';
   const hashedPassword = hashPassword('AlfaCDJ2026!');
 
   await prisma.adminUser.upsert({

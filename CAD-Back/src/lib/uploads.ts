@@ -2,7 +2,7 @@
  * Helpers para guardar archivos subidos por el panel admin en disco.
  *
  * En dev: van a /public/uploads/{id}.{ext}
- * En prod: la misma ruta, servidor Ubuntu monta /var/www/cdj/uploads como
+ * En prod: la misma ruta, servidor Ubuntu monta /var/www/cad/uploads como
  * volumen apuntando a public/uploads.
  *
  * El identificador es el `imageId` del front (p.ej. "hero-main") + extensión.
