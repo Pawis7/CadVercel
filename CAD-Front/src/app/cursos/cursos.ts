@@ -7,6 +7,7 @@ import { Course, CourseLevel } from '../core/models/special-sections.models';
 import { RevealDirective } from '../shared/scroll-reveal/scroll-reveal.directive';
 import { UiIconComponent, UiIconName } from '../shared/ui-icon/ui-icon';
 import { ProgressService } from '../core/services/progress.service';
+import { courseCoverGradient, courseCoverIcon } from '../core/utils/course-cover';
 
 type SortKey = 'popular' | 'recent' | 'duration_asc' | 'duration_desc';
 type DurationKey = 'todos' | 'corto' | 'medio' | 'largo';
@@ -122,4 +123,7 @@ export class CursosComponent {
     const total = (c.syllabus ?? []).reduce((n, u) => n + u.lessons.length, 0);
     return this.progress.courseProgress(c.slug, total);
   }
+
+  protected coverGradient(c: Course): string { return courseCoverGradient(c); }
+  protected coverIcon(c: Course): string { return courseCoverIcon(c); }
 }

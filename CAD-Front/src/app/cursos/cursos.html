@@ -120,20 +120,14 @@
        appReveal="up" [revealDelay]="i * 60"
        class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
 
-      <!-- Cover image -->
-      <div class="relative h-40 w-full overflow-hidden bg-slate-100">
-        @if (c.coverImageUrl) {
-          <img [src]="c.coverImageUrl" [alt]="c.title"
-               class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
-        } @else {
-          <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E9004C]/10 to-amber-400/10">
-            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#E9004C] text-white shadow-md">
-              <span class="h-[28px] w-[28px]"><app-ui-icon name="course"></app-ui-icon></span>
-            </span>
-          </div>
-        }
+      <!-- Cover gradient -->
+      <div class="relative h-40 w-full overflow-hidden" [ngClass]="coverGradient(c)">
+        <div class="flex h-full w-full items-center justify-center">
+          <span class="material-symbols-outlined text-white/30 transition-transform duration-300 group-hover:scale-110"
+                style="font-size: 72px;">{{ coverIcon(c) }}</span>
+        </div>
         <!-- Level badge overlaid on cover -->
-        <span class="absolute left-3 top-3 rounded-full bg-[#E9004C] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow">
+        <span class="absolute left-3 top-3 rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow backdrop-blur-sm">
           {{ levelLabels[c.level] }}
         </span>
         @if (c.certificate) {

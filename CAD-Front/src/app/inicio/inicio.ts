@@ -6,6 +6,7 @@ import { UiIconComponent, UiIconName } from '../shared/ui-icon/ui-icon';
 import { COURSES } from '../core/data/special-sections.data';
 import { Course } from '../core/models/special-sections.models';
 import { ProgressService } from '../core/services/progress.service';
+import { courseCoverGradient, courseCoverIcon } from '../core/utils/course-cover';
 
 @Component({
   selector: 'app-inicio',
@@ -42,4 +43,7 @@ export class InicioComponent {
     };
     return map[aud] ?? 'General';
   }
+
+  coverGradient(c: Course): string { return courseCoverGradient(c); }
+  coverIcon(c: Course): string { return courseCoverIcon(c); }
 }
