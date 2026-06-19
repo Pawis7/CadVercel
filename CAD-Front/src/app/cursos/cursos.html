@@ -118,42 +118,69 @@
     <a [routerLink]="['/cursos', c.slug]"
        [attr.data-audience]="c.audience"
        appReveal="up" [revealDelay]="i * 60"
-       class="group overflow-hidden rounded-[1.7rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] shadow-[var(--shadow-sm)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]">
-      <div class="relative border-b border-[color:var(--border-soft)] bg-[color:var(--surface-soft)] p-5">
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex flex-wrap gap-2">
-            <span class="meta-pill is-accent">{{ audienceLabel(c.audience) }}</span>
-            @if (c.certificate) {
-              <span class="meta-pill is-warning">Constancia</span>
-            }
-          </div>
-          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[color:var(--aud-cream)] text-[color:var(--aud)] shadow-[var(--shadow-sm)]">
-            <span class="h-[20px] w-[20px]"><app-ui-icon name="course"></app-ui-icon></span>
-          </span>
-        </div>
+       class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
 
-        <h3 class="mt-5 text-xl font-black leading-snug tracking-tight text-[color:var(--text-primary)]">{{ c.title }}</h3>
-        <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-[color:var(--text-soft)]">{{ c.shortDescription }}</p>
+      <!-- Cover image -->
+      <div class="relative h-40 w-full overflow-hidden bg-slate-100">
+        @if (c.coverImageUrl) {
+          <img [src]="c.coverImageUrl" [alt]="c.title"
+               class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+        } @else {
+          <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E9004C]/10 to-amber-400/10">
+            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#E9004C] text-white shadow-md">
+              <span class="h-[28px] w-[28px]"><app-ui-icon name="course"></app-ui-icon></span>
+            </span>
+          </div>
+        }
+        <!-- Level badge overlaid on cover -->
+        <span class="absolute left-3 top-3 rounded-full bg-[#E9004C] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow">
+          {{ levelLabels[c.level] }}
+        </span>
+        @if (c.certificate) {
+          <span class="absolute right-3 top-3 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-950 shadow">
+            Constancia
+          </span>
+        }
       </div>
 
-      <div class="p-5">
-        <div class="flex flex-wrap gap-2 text-[11px] font-bold text-[color:var(--text-mute)]">
-          @for (t of c.tags; track t) {
-            <span>#{{ t }}</span>
+      <!-- Card body -->
+      <div class="flex flex-1 flex-col p-5">
+        <!-- Audience + duration row -->
+        <div class="mb-3 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
+          <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ audienceLabel(c.audience) }}</span>
+          @if (c.durationHours) {
+            <span>{{ c.durationHours }}h · {{ c.syllabus.length }} unidades</span>
           }
         </div>
 
-        <div class="mt-5 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-[13px] font-semibold text-[color:var(--text-soft)]">
-          <span>{{ c.durationHours }}h · {{ c.syllabus.length }} unidades</span>
-          <span class="inline-flex items-center gap-2 font-black text-[color:var(--aud)]">
-            {{ levelLabels[c.level] }}
-            <span class="h-[14px] w-[14px] transition-transform group-hover:translate-x-1"><app-ui-icon name="arrow-right"></app-ui-icon></span>
+        <h3 class="text-base font-black leading-snug tracking-tight text-slate-900">{{ c.title }}</h3>
+        <p class="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-slate-500">{{ c.shortDescription }}</p>
+
+        <!-- Tags -->
+        @if (c.tags?.length) {
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            @for (t of c.tags; track t) {
+              <span class="text-[10px] font-bold text-slate-400">#{{ t }}</span>
+            }
+          </div>
+        }
+
+        @if (c.instructor) {
+          <p class="mt-3 text-[11px] font-semibold text-slate-400">{{ c.instructor }}</p>
+        }
+
+        <!-- Footer: CTA arrow -->
+        <div class="mt-4 flex items-center justify-end border-t border-slate-100 pt-3">
+          <span class="inline-flex items-center gap-1.5 text-[12px] font-black text-[#E9004C] transition-transform group-hover:translate-x-0.5">
+            Ver curso
+            <span class="h-[13px] w-[13px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
           </span>
         </div>
 
-        @if (c.instructor) {
-          <p class="mt-3 text-[12px] font-semibold text-[color:var(--text-mute)]">{{ c.instructor }}</p>
-        }
+        <!-- Micro progress bar at card foot -->
+        <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+          <div class="h-full rounded-full bg-[#E9004C] transition-all duration-500" [style.width.%]="coursePercent(c)"></div>
+        </div>
       </div>
     </a>
   } @empty {

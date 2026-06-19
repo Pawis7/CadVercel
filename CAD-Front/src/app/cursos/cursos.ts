@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { COURSES } from '../core/data/special-sections.data';
 import { Course, CourseLevel } from '../core/models/special-sections.models';
 import { RevealDirective } from '../shared/scroll-reveal/scroll-reveal.directive';
 import { UiIconComponent, UiIconName } from '../shared/ui-icon/ui-icon';
+import { ProgressService } from '../core/services/progress.service';
 
 type SortKey = 'popular' | 'recent' | 'duration_asc' | 'duration_desc';
 type DurationKey = 'todos' | 'corto' | 'medio' | 'largo';
@@ -18,6 +19,7 @@ type DurationKey = 'todos' | 'corto' | 'medio' | 'largo';
   templateUrl: './cursos.html',
 })
 export class CursosComponent {
+  protected progress = inject(ProgressService);
   protected courses = signal<Course[]>(COURSES);
 
   protected query = signal<string>('');
@@ -114,5 +116,10 @@ export class CursosComponent {
       teachers: 'school', cdj: 'public', help: 'shield', edutips: 'play_circle',
     };
     return map[aud] ?? 'public';
+  }
+
+  protected coursePercent(c: Course): number {
+    const total = (c.syllabus ?? []).reduce((n, u) => n + u.lessons.length, 0);
+    return this.progress.courseProgress(c.slug, total);
   }
 }
