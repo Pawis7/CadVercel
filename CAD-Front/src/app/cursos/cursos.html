@@ -149,7 +149,7 @@
         <div class="mb-3 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
           <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ audienceLabel(c.audience) }}</span>
           @if (c.durationHours) {
-            <span>{{ c.durationHours }}h · {{ c.syllabus.length }} unidades</span>
+            <span>{{ c.durationHours }}h · {{ c.syllabus?.length ?? 0 }} unidades</span>
           }
         </div>
 
