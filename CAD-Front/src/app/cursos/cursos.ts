@@ -6,8 +6,7 @@ import { COURSES } from '../core/data/special-sections.data';
 import { Course, CourseLevel } from '../core/models/special-sections.models';
 import { RevealDirective } from '../shared/scroll-reveal/scroll-reveal.directive';
 import { UiIconComponent, UiIconName } from '../shared/ui-icon/ui-icon';
-import { ProgressService } from '../core/services/progress.service';
-import { courseCoverGradient, courseCoverIcon } from '../core/utils/course-cover';
+import { CourseCardComponent } from '../shared/course-card/course-card';
 
 type SortKey = 'popular' | 'recent' | 'duration_asc' | 'duration_desc';
 type DurationKey = 'todos' | 'corto' | 'medio' | 'largo';
@@ -15,12 +14,11 @@ type DurationKey = 'todos' | 'corto' | 'medio' | 'largo';
 @Component({
   selector: 'app-cursos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RevealDirective, UiIconComponent],
+  imports: [CommonModule, FormsModule, RouterLink, RevealDirective, UiIconComponent, CourseCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cursos.html',
 })
 export class CursosComponent {
-  protected progress = inject(ProgressService);
   protected courses = signal<Course[]>(COURSES);
 
   protected query = signal<string>('');
@@ -29,6 +27,7 @@ export class CursosComponent {
   protected onlyCertificate = signal<boolean>(false);
   protected durationFilter = signal<DurationKey>('todos');
   protected sort = signal<SortKey>('popular');
+  protected categoryFilter = signal<string>('todos');
 
   protected levels: { id: CourseLevel | 'todos'; label: string }[] = [
     { id: 'todos',      label: 'Todos los niveles' },
@@ -53,15 +52,23 @@ export class CursosComponent {
     { id: 'largo', label: 'Largo (> 6h)' },
   ];
 
-  protected levelLabels: Record<CourseLevel, string> = {
-    basico: 'Básico', intermedio: 'Intermedio', avanzado: 'Avanzado',
-  };
-
   protected featuredMoments: { title: string; copy: string; icon: UiIconName }[] = [
     { title: 'Rutas guiadas', copy: 'Programas con una progresión clara para no aprender a saltos.', icon: 'course' },
     { title: 'Aplicación real', copy: 'Contenido pensado para escuela, familia y vida digital cotidiana.', icon: 'community' },
     { title: 'Constancia opcional', copy: 'Algunos cursos incluyen reconocimiento al finalizar.', icon: 'check' },
   ];
+
+  /** Distinct categories derived from course data, prefixed with 'Todas las categorías' */
+  protected categories = computed<{ id: string; label: string }[]>(() => {
+    const cats = Array.from(
+      new Set(
+        this.courses()
+          .map((c) => c.category)
+          .filter((cat): cat is string => !!cat)
+      )
+    ).sort();
+    return [{ id: 'todos', label: 'Todas las categorías' }, ...cats.map((c) => ({ id: c, label: c }))];
+  });
 
   protected filtered = computed(() => {
     const q = this.query().trim().toLowerCase();
@@ -70,11 +77,13 @@ export class CursosComponent {
     const cert = this.onlyCertificate();
     const dur = this.durationFilter();
     const sort = this.sort();
+    const cat = this.categoryFilter();
 
     let list = this.courses().filter((c) => {
       if (lvl !== 'todos' && c.level !== lvl) return false;
       if (aud !== 'todos' && c.audience !== aud) return false;
       if (cert && !c.certificate) return false;
+      if (cat !== 'todos' && c.category !== cat) return false;
       if (q) {
         const hay = (c.title + ' ' + c.shortDescription + ' ' + (c.tags ?? []).join(' ') + ' ' + (c.instructor ?? '')).toLowerCase();
         if (!hay.includes(q)) return false;
@@ -101,29 +110,6 @@ export class CursosComponent {
     this.onlyCertificate.set(false);
     this.durationFilter.set('todos');
     this.sort.set('popular');
+    this.categoryFilter.set('todos');
   }
-
-  protected audienceLabel(aud: string): string {
-    const map: Record<string, string> = {
-      kids: 'Niñas y niños', teens: 'Adolescentes', families: 'Familias',
-      teachers: 'Docentes', cdj: 'General', help: 'Ayuda', edutips: 'Edutips',
-    };
-    return map[aud] ?? 'General';
-  }
-
-  protected audienceIcon(aud: string): string {
-    const map: Record<string, string> = {
-      kids: 'child_care', teens: 'forum', families: 'family_restroom',
-      teachers: 'school', cdj: 'public', help: 'shield', edutips: 'play_circle',
-    };
-    return map[aud] ?? 'public';
-  }
-
-  protected coursePercent(c: Course): number {
-    const total = (c.syllabus ?? []).reduce((n, u) => n + u.lessons.length, 0);
-    return this.progress.courseProgress(c.slug, total);
-  }
-
-  protected coverGradient(c: Course): string { return courseCoverGradient(c); }
-  protected coverIcon(c: Course): string { return courseCoverIcon(c); }
 }

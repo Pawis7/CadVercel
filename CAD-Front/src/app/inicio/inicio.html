@@ -79,71 +79,12 @@
     </a>
   </div>
 
-  <!-- Cards de cursos — mismo estilo visual que cursos.html -->
+  <!-- Cards de cursos — shared CourseCard component -->
   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
     @for (c of courses; track c.id; let i = $index) {
-      <a [routerLink]="['/cursos', c.slug]"
-         [attr.data-audience]="c.audience"
-         appReveal="up" [revealDelay]="i * 70"
-         class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-
-        <!-- Cover gradient -->
-        <div class="relative h-40 w-full overflow-hidden" [ngClass]="coverGradient(c)">
-          <div class="flex h-full w-full items-center justify-center">
-            <span translate="no" class="material-symbols-rounded text-white/30 transition-transform duration-300 group-hover:scale-110"
-                  style="font-size: 72px;">{{ coverIcon(c) }}</span>
-          </div>
-          <!-- Level badge overlaid on cover -->
-          <span class="absolute left-3 top-3 rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow backdrop-blur-sm">
-            {{ levelLabels[c.level] }}
-          </span>
-          @if (c.certificate) {
-            <span class="absolute right-3 top-3 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-950 shadow">
-              Constancia
-            </span>
-          }
-        </div>
-
-        <!-- Card body -->
-        <div class="flex flex-1 flex-col p-5">
-          <!-- Audience + duration row -->
-          <div class="mb-3 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
-            <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ audienceLabel(c.audience) }}</span>
-            @if (c.durationHours) {
-              <span>{{ c.durationHours }}h · {{ c.syllabus?.length ?? 0 }} unidades</span>
-            }
-          </div>
-
-          <h3 class="text-base font-black leading-snug tracking-tight text-slate-900">{{ c.title }}</h3>
-          <p class="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-slate-500">{{ c.shortDescription }}</p>
-
-          <!-- Tags -->
-          @if (c.tags?.length) {
-            <div class="mt-3 flex flex-wrap gap-1.5">
-              @for (t of c.tags; track t) {
-                <span class="text-[10px] font-bold text-slate-400">#{{ t }}</span>
-              }
-            </div>
-          }
-
-          @if (c.instructor) {
-            <p class="mt-3 text-[11px] font-semibold text-slate-400">{{ c.instructor }}</p>
-          }
-
-          <!-- Footer: CTA arrow -->
-          <div class="mt-4 flex items-center justify-end border-t border-slate-100 pt-3">
-            <span class="inline-flex items-center gap-1.5 text-[12px] font-black text-[#E9004C] transition-transform group-hover:translate-x-0.5">
-              Ver curso
-              <span class="h-[13px] w-[13px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
-            </span>
-          </div>
-
-          <!-- Micro progress bar -->
-          <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-            <div class="h-full rounded-full bg-[#E9004C] transition-all duration-500" [style.width.%]="coursePercent(c)"></div>
-          </div>
-        </div>
-      </a>
+      <div appReveal="up" [revealDelay]="i * 70">
+        <app-course-card [course]="c" />
+      </div>
     }
   </div>
 

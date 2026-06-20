@@ -61,6 +61,7 @@
   }
 </div>
 
+<!-- Filters panel -->
 <section class="mb-8 rounded-[2rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-5 shadow-[var(--shadow-lg)] sm:mb-10 sm:p-6">
   <div class="grid gap-5 lg:grid-cols-[220px_minmax(0,1fr)_220px] lg:items-end">
     <div>
@@ -97,6 +98,7 @@
     </div>
   </div>
 
+  <!-- Audience + certificate + duration filters -->
   <div class="mt-4 flex flex-wrap gap-2">
     @for (a of audienceOptions; track a.id) {
       <button type="button" class="filter-chip" [class.is-active]="audienceFilter() === a.id" (click)="audienceFilter.set(a.id)">
@@ -111,72 +113,30 @@
     </button>
     <button type="button" class="ml-auto text-[12px] font-bold text-[color:var(--c-cdj)] hover:underline" (click)="resetFilters()">Limpiar filtros</button>
   </div>
+
+  <!-- Category filter pills -->
+  <div class="mt-3 border-t border-[color:var(--border-soft)] pt-3">
+    <p class="mb-2 text-[11px] font-black uppercase tracking-[0.16em] text-[color:var(--text-mute)]">Categoría</p>
+    <div class="flex flex-wrap gap-2">
+      @for (cat of categories(); track cat.id) {
+        <button
+          type="button"
+          class="filter-chip"
+          [class.is-active]="categoryFilter() === cat.id"
+          (click)="categoryFilter.set(cat.id)">
+          {{ cat.label }}
+        </button>
+      }
+    </div>
+  </div>
 </section>
 
-<section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+<!-- Results grid — marketplace layout -->
+<section class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
   @for (c of filtered(); track c.id; let i = $index) {
-    <a [routerLink]="['/cursos', c.slug]"
-       [attr.data-audience]="c.audience"
-       appReveal="up" [revealDelay]="i * 60"
-       class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-
-      <!-- Cover gradient -->
-      <div class="relative h-40 w-full overflow-hidden" [ngClass]="coverGradient(c)">
-        <div class="flex h-full w-full items-center justify-center">
-          <span translate="no" class="material-symbols-rounded text-white/30 transition-transform duration-300 group-hover:scale-110"
-                style="font-size: 72px;">{{ coverIcon(c) }}</span>
-        </div>
-        <!-- Level badge overlaid on cover -->
-        <span class="absolute left-3 top-3 rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow backdrop-blur-sm">
-          {{ levelLabels[c.level] }}
-        </span>
-        @if (c.certificate) {
-          <span class="absolute right-3 top-3 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-950 shadow">
-            Constancia
-          </span>
-        }
-      </div>
-
-      <!-- Card body -->
-      <div class="flex flex-1 flex-col p-5">
-        <!-- Audience + duration row -->
-        <div class="mb-3 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
-          <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ audienceLabel(c.audience) }}</span>
-          @if (c.durationHours) {
-            <span>{{ c.durationHours }}h · {{ c.syllabus?.length ?? 0 }} unidades</span>
-          }
-        </div>
-
-        <h3 class="text-base font-black leading-snug tracking-tight text-slate-900">{{ c.title }}</h3>
-        <p class="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-slate-500">{{ c.shortDescription }}</p>
-
-        <!-- Tags -->
-        @if (c.tags?.length) {
-          <div class="mt-3 flex flex-wrap gap-1.5">
-            @for (t of c.tags; track t) {
-              <span class="text-[10px] font-bold text-slate-400">#{{ t }}</span>
-            }
-          </div>
-        }
-
-        @if (c.instructor) {
-          <p class="mt-3 text-[11px] font-semibold text-slate-400">{{ c.instructor }}</p>
-        }
-
-        <!-- Footer: CTA arrow -->
-        <div class="mt-4 flex items-center justify-end border-t border-slate-100 pt-3">
-          <span class="inline-flex items-center gap-1.5 text-[12px] font-black text-[#E9004C] transition-transform group-hover:translate-x-0.5">
-            Ver curso
-            <span class="h-[13px] w-[13px]"><app-ui-icon name="arrow-right"></app-ui-icon></span>
-          </span>
-        </div>
-
-        <!-- Micro progress bar at card foot -->
-        <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-          <div class="h-full rounded-full bg-[#E9004C] transition-all duration-500" [style.width.%]="coursePercent(c)"></div>
-        </div>
-      </div>
-    </a>
+    <div appReveal="up" [revealDelay]="i * 60">
+      <app-course-card [course]="c" />
+    </div>
   } @empty {
     <div class="col-span-full rounded-[1.8rem] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-12 text-center shadow-[var(--shadow-sm)]">
       <h3 class="text-lg font-black tracking-tight text-[color:var(--text-primary)]">No hay cursos con esa combinación</h3>
