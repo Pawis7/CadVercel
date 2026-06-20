@@ -41,6 +41,10 @@ export const COURSES: Course[] = [
     tags: ['seguridad', 'contraseñas', 'privacidad', 'dispositivos'],
     certificate: true,
     language: 'es',
+    rating: 4.8,
+    ratingsCount: 1280,
+    studentsCount: 5400,
+    category: 'Seguridad digital',
   },
   {
     id: 'c2',
@@ -80,6 +84,10 @@ export const COURSES: Course[] = [
     tags: ['privacidad', 'huella-digital', 'redes-sociales', 'datos'],
     certificate: true,
     language: 'es',
+    rating: 4.6,
+    ratingsCount: 512,
+    studentsCount: 2100,
+    category: 'Privacidad',
   },
   {
     id: 'c3',
@@ -113,6 +121,10 @@ export const COURSES: Course[] = [
     tags: ['fraudes', 'phishing', 'estafas', 'seguridad'],
     certificate: false,
     language: 'es',
+    rating: 4.9,
+    ratingsCount: 3400,
+    studentsCount: 12000,
+    category: 'Seguridad digital',
   },
   {
     id: 'c4',
@@ -152,6 +164,10 @@ export const COURSES: Course[] = [
     tags: ['ciudadanía-digital', 'ciberbullying', 'netiqueta', 'convivencia', 'jóvenes'],
     certificate: true,
     language: 'es',
+    rating: 4.7,
+    ratingsCount: 860,
+    studentsCount: 3800,
+    category: 'Ciudadanía digital',
   },
   {
     id: 'c5',
@@ -188,6 +204,10 @@ export const COURSES: Course[] = [
     tags: ['secundaria', 'redes-sociales', 'aula', 'docentes', 'talleres'],
     certificate: true,
     language: 'es',
+    rating: 4.5,
+    ratingsCount: 240,
+    studentsCount: 980,
+    category: 'Docencia',
   },
   {
     id: 'c6',
@@ -223,6 +243,10 @@ export const COURSES: Course[] = [
     tags: ['familias', 'pantallas', 'acuerdos', 'crianza-digital'],
     certificate: false,
     language: 'es',
+    rating: 4.4,
+    ratingsCount: 186,
+    studentsCount: 720,
+    category: 'Familias',
   },
   {
     id: 'c7',
@@ -269,6 +293,10 @@ export const COURSES: Course[] = [
     tags: ['inteligencia-artificial', 'docentes', 'pedagogía', 'chatgpt', 'ética-ia'],
     certificate: true,
     language: 'es',
+    rating: 4.7,
+    ratingsCount: 640,
+    studentsCount: 2800,
+    category: 'Inteligencia artificial',
   },
   {
     id: 'c8',
@@ -304,6 +332,10 @@ export const COURSES: Course[] = [
     tags: ['bienestar', 'pantallas', 'salud-digital', 'adolescentes'],
     certificate: false,
     language: 'es',
+    rating: 4.3,
+    ratingsCount: 86,
+    studentsCount: 420,
+    category: 'Bienestar digital',
   },
   {
     id: 'c9',
@@ -346,6 +378,10 @@ export const COURSES: Course[] = [
     tags: ['desinformación', 'fact-checking', 'pensamiento-crítico', 'medios', 'verificación'],
     certificate: true,
     language: 'es',
+    rating: 4.2,
+    ratingsCount: 310,
+    studentsCount: 1400,
+    category: 'Pensamiento crítico',
   },
 ];
 

@@ -37,6 +37,11 @@ export interface Course {
   coverImageUrl?: string;
   certificate: boolean;
   language: string;
+  // Marketplace metadata
+  rating?: number;        // 0–5, one decimal  e.g. 4.7
+  ratingsCount?: number;  // number of ratings  e.g. 1280
+  studentsCount?: number; // enrolled students  e.g. 5400
+  category?: string;      // human-readable label e.g. 'Seguridad digital'
 }
 
 export type GameKind =
