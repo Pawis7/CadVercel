@@ -1,14 +1,15 @@
 # =============================================================================
-# DOCKER COMPOSE - CAD BACKEND (ENTORNO LOCAL)
+# DOCKER COMPOSE - CAD BACKEND (NESTJS + POSTGRESQL LOCAL)
 # =============================================================================
-# USO:
-#   docker compose up -d              → Levantar DB y API
-#   docker compose --profile tools up → Levantar con pgAdmin
+# Uso:
+#   docker compose up -d --build   → Construir y levantar DB + API
+#   docker compose down -v         → Bajar y limpiar volúmenes
+#   docker compose logs -f api     → Ver logs de la API en tiempo real
 # =============================================================================
 
 services:
   # ---------------------------------------------------------------------------
-  # BASE DE DATOS POSTGRESQL 17
+  # BASE DE DATOS - PostgreSQL 17
   # ---------------------------------------------------------------------------
   db:
     image: postgres:17-alpine
@@ -29,16 +30,17 @@ services:
       retries: 5
 
   # ---------------------------------------------------------------------------
-  # API NEXT.JS
+  # API - NestJS
   # ---------------------------------------------------------------------------
   api:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development
     container_name: cad_api_local
     restart: unless-stopped
     ports:
-      - "4280:4280"
+      - "3000:3000"
       - "5555:5555"
     env_file:
       - .env
@@ -48,56 +50,17 @@ services:
     volumes:
       - ./src:/app/src
       - ./prisma:/app/prisma
-      - ./public/uploads:/app/public/uploads
-      - /app/.next # ← Volumen anónimo para evitar errores de permisos en cache
     depends_on:
       db:
         condition: service_healthy
     command: >
       sh -c "
-        echo '⏳ Sincronizando base de datos...' &&
-        npx prisma db push --accept-data-loss &&
-        echo '✅ Base de datos sincronizada' &&
-        echo '🌱 Ejecutando seeds...' &&
-        npx prisma db seed || echo '⚠️ Seeds ya existentes o error (no crítico)' &&
-        echo '🚀 Iniciando API...' &&
-        npm run dev
+        echo '⏳ Aplicando migraciones de base de datos...' &&
+        npx prisma migrate deploy &&
+        echo '✅ Base de datos lista' &&
+        echo '🚀 Iniciando API NestJS...' &&
+        npm run start:dev
       "
-
-  # ---------------------------------------------------------------------------
-  # PRISMA STUDIO (Interfaz visual para la DB)
-  # ---------------------------------------------------------------------------
-  studio:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: cad_studio_local
-    profiles: ["tools"] # Solo se levanta si lo pides explícitamente
-    environment:
-      - DATABASE_URL=postgresql://cad:cad_dev@db:5432/cad?schema=public
-    ports:
-      - "5555:5555"
-    command: npx prisma studio --browser none
-    depends_on:
-      db:
-        condition: service_healthy
-
-  # ---------------------------------------------------------------------------
-  # PGADMIN (OPCIONAL)
-  # ---------------------------------------------------------------------------
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: cad_pgadmin
-    restart: unless-stopped
-    profiles: ["tools"]
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@cad.local
-      PGADMIN_DEFAULT_PASSWORD: cad_dev
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    ports:
-      - "5050:80"
-    depends_on:
-      - db
 
 volumes:
   cad_pgdata:

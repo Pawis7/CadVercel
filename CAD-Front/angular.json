@@ -2,8 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm",
-    "analytics": "fe7dfe8f-46ab-4170-936b-7ae46e2ff16f"
+    "packageManager": "yarn",
+    "analytics": "eacc4b15-08b2-4de9-8303-0e5301f7e7b9"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -39,8 +39,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "8kB",
-                  "maximumError": "16kB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -55,6 +55,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "CAD-Front:build:production"

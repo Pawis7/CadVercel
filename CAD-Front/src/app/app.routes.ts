@@ -1,25 +1,27 @@
 import { Routes } from '@angular/router';
+import { Login } from './pages/login/login';
+import { Register } from './pages/register/register';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { AuthenticatedLayout } from './layouts/authenticated/authenticated';
+import { authGuard } from './guards/auth-guard';
+import { noAuthGuard } from './guards/no-auth.guard';
 
 export const routes: Routes = [
+  // Rutas públicas — si ya hay sesión activa, redirigen al dashboard
+  { path: 'login',    component: Login,    canActivate: [noAuthGuard] },
+  { path: 'register', component: Register, canActivate: [noAuthGuard] },
+  
+  // Rutas protegidas globales que comparten el layout y el guard de autenticación
   {
     path: '',
-    loadComponent: () => import('./inicio/inicio').then((m) => m.InicioComponent),
-    title: 'Inicio · Cursos Alfa Digital',
+    component: AuthenticatedLayout,
+    canActivate: [authGuard],
+    children: [
+      { path: 'dashboard', component: Dashboard }
+      // Las futuras páginas pasando el login irán aquí como hijas
+    ]
   },
-  {
-    path: 'cursos',
-    loadComponent: () => import('./cursos/cursos').then((m) => m.CursosComponent),
-    title: 'Cursos · Cursos Alfa Digital',
-  },
-  {
-    path: 'cursos/:slug',
-    loadComponent: () => import('./cursos/curso-detail').then((m) => m.CursoDetailComponent),
-    title: 'Curso · Cursos Alfa Digital',
-  },
-  {
-    path: 'AlfaAdminLogin',
-    loadComponent: () => import('./auth/login').then((m) => m.LoginComponent),
-    title: 'Acceso Administrativo · Cursos Alfa Digital',
-  },
-  { path: '**', redirectTo: '' },
+  
+  { path: '',   redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login' }
 ];

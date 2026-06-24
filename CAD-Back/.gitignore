@@ -1,10 +1,5 @@
-node_modules/
-.next/
+node_modules
+# Keep environment variables out of version control
 .env
-.env.local
-.env.production
-public/uploads/*
-!public/uploads/.gitkeep
-*.log
-.DS_Store
-next-env.d.ts
+
+/generated/prisma

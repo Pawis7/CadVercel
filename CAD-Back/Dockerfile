@@ -1,7 +1,6 @@
 # =============================================================================
-# DOCKERFILE - CDJ BACKEND (Entorno Local Prod-Like)
-# =============================================================================
-# Multi-stage build para optimizar tamaño y seguridad
+# DOCKERFILE - CAD BACKEND (NESTJS)
+# Multi-stage: deps → development
 # =============================================================================
 
 # ---------------------------------------------------------------------------
@@ -11,47 +10,26 @@ FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-# Instalar dependencias de sistema necesarias (openssl para Prisma, libc6 para Next.js)
-RUN apk update && \
-    apk add --no-cache \
-    python3 \
-    make \
-    g++ \
-    build-base \
-    openssl \
-    openssl-dev \
-    libc6-compat
+RUN apk add --no-cache openssl libc6-compat
 
-# Copiar archivos de dependencias
 COPY package.json package-lock.json ./
-
-# Instalar todas las dependencias
-RUN npm install --ignore-scripts
+RUN npm install --legacy-peer-deps
 
 # ---------------------------------------------------------------------------
-# STAGE 2: Development
+# STAGE 2: Development (con hot-reload vía --watch)
 # ---------------------------------------------------------------------------
 FROM node:20-alpine AS development
 
 WORKDIR /app
 
-# Instalar dependencias de runtime
-RUN apk update && \
-    apk add --no-cache \
-    openssl \
-    libc6-compat
+RUN apk add --no-cache openssl libc6-compat
 
-# Copiar node_modules desde stage anterior
 COPY --from=deps /app/node_modules ./node_modules
-
-# Copiar código fuente y configuraciones
 COPY . .
 
-# Generar Prisma Client
+# Genera el Prisma Client dentro del contenedor
 RUN npx prisma generate
 
-# Puerto de la API (Next.js usa 4180 según tu config)
-EXPOSE 4180
+EXPOSE 3000
 
-# Comando por defecto (sobrescrito por docker-compose en local)
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start:dev"]
