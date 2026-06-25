@@ -5,16 +5,16 @@ import { map, catchError, of } from 'rxjs';
 
 /**
  * Guard para rutas PÚBLICAS (login, register).
- * Si el usuario ya tiene sesión activa → redirige al dashboard.
+ * Si el usuario ya tiene sesión activa → redirige a inicio.
  * Si no hay sesión → permite el acceso normal a la ruta.
  */
 export const noAuthGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Si el signal ya confirma sesión activa → ir al dashboard
+  // Si el signal ya confirma sesión activa → ir a inicio
   if (authService.isAuthenticated()) {
-    router.navigate(['/dashboard']);
+    router.navigate(['/inicio']);
     return false;
   }
 
@@ -22,7 +22,7 @@ export const noAuthGuard: CanActivateFn = () => {
   return authService.fetchMe().pipe(
     map(() => {
       // Si /me responde OK → ya hay sesión, redirigir
-      router.navigate(['/dashboard']);
+      router.navigate(['/inicio']);
       return false;
     }),
     catchError(() => {

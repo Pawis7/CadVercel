@@ -3,8 +3,31 @@
 
 @theme {
   --font-sans: 'Montserrat', sans-serif;
+  
+  /* Modo Oscuro Brand Slate-Navy overrides */
+  --color-neutral-950: #0D1321;
+  --color-neutral-900: #1b2336;
+  --color-neutral-800: #222c42;
+  
+  /* Brand Orange & Red overrides */
+  --color-orange-500: #FF8300;
+  --color-orange-400: #ffa233;
+  --color-orange-600: #d96f00;
+  
+  --color-red-650: #C90045;
+  --color-red-600: #C90045;
+  --color-red-500: #C90045;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
-  background-color: #f3f4f6;
+  @apply bg-slate-50 dark:bg-neutral-950 text-slate-600 dark:text-neutral-200 transition-colors duration-300;
+}
+
+/* Custom View Transition for eye-friendly theme switching */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

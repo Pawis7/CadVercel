@@ -10,6 +10,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================
+// ENUMS GLOBALES
+// ============================================
+
+enum Role {
+  ADMIN
+  USER
+  EDITOR
+}
+
+enum NivelCurso {
+  PRINCIPIANTE
+  INTERMEDIO
+  AVANZADO
+}
+
+enum EstadoCurso {
+  BORRADOR
+  PUBLICADO
+  ARCHIVADO
+}
+
+enum TipoLeccion {
+  VIDEO
+  LECTURA
+  ARCHIVO
+  CUESTIONARIO
+}
+
+// ============================================
+// USUARIOS
+// ============================================
+
 model User {
   id           String   @id @default(cuid())
   firstName    String
@@ -21,11 +54,168 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Relaciones inversas
+  cursos        Curso[]
+  inscripciones Inscripcion[]
+
   @@map("users")
 }
 
-enum Role {
-  ADMIN
-  USER
-  EDITOR
+// ============================================
+// CURSOS
+// ============================================
+// Un curso es el contenedor principal.
+// "nivel" y "estado" usan enums para evitar
+// strings arbitrarios en la base de datos.
+// "estado" te permite trabajar en borradores
+// sin que aparezcan publicados todavía.
+
+model Curso {
+  id               String      @id @default(cuid())
+  nombre           String
+  descripcion      String      @db.Text
+  portada          String?     // URL de imagen de portada
+  etiquetas        String[]    // ej: ["matemáticas", "primaria"]
+  nivel            NivelCurso  @default(PRINCIPIANTE)
+  estado           EstadoCurso @default(BORRADOR)
+  duracionEstimada Int?        // en minutos, calculado/editado a mano
+  autorId          String
+  creadoEn         DateTime    @default(now())
+  actualizadoEn    DateTime    @updatedAt
+
+  autor     User          @relation(fields: [autorId], references: [id])
+  modulos   Modulo[]
+  inscritos Inscripcion[]
+}
+
+// ============================================
+// MÓDULOS
+// ============================================
+// Agrupador temático dentro del curso.
+// "orden" define la secuencia de los módulos.
+// Se guarda explícito para poder reordenar
+// sin depender del orden de inserción.
+
+model Modulo {
+  id          String  @id @default(cuid())
+  cursoId     String
+  titulo      String
+  descripcion String?
+  orden       Int     // 1, 2, 3... reordenable
+
+  curso     Curso     @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+  lecciones Leccion[]
+}
+
+// ============================================
+// LECCIONES
+// ============================================
+// Unidad atómica de contenido. Cada lección
+// tiene un tipo que determina qué campos usa.
+// Los campos opcionales cubren los 4 tipos:
+//
+//   VIDEO        → recursoUrl, duracionSeg
+//   LECTURA      → contenidoHtml
+//   ARCHIVO      → recursoUrl, nombreArchivo, tipoMime
+//   CUESTIONARIO → calificacionMinima (0-100)
+//
+// "esObligatoria" permite agregar recursos
+// descargables opcionales que no bloqueen
+// el progreso del alumno.
+
+model Leccion {
+  id                 String      @id @default(cuid())
+  moduloId           String
+  titulo             String
+  tipo               TipoLeccion
+  orden              Int
+  esObligatoria      Boolean     @default(true)
+
+  // Campos por tipo (todos opcionales, usas los que apliquen)
+  recursoUrl         String?     // VIDEO y ARCHIVO
+  duracionSeg        Int?        // VIDEO — para mostrar duración y calcular tiempo del curso
+  contenidoHtml      String?     @db.Text // LECTURA
+  nombreArchivo      String?     // ARCHIVO — nombre para mostrar al descargar
+  tipoMime           String?     // ARCHIVO — ej: "application/pdf"
+  calificacionMinima Int?        // CUESTIONARIO — porcentaje mínimo para aprobar (0-100)
+
+  modulo    Modulo     @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+  preguntas Pregunta[]
+  progreso  Progreso[]
+}
+
+// ============================================
+// PREGUNTAS Y OPCIONES (solo para cuestionarios)
+// ============================================
+// Separadas de Lección para poder tener
+// múltiples preguntas por cuestionario.
+// "esCorrecta" vive en Opcion para soportar
+// fácilmente preguntas de opción múltiple.
+
+model Pregunta {
+  id        String @id @default(cuid())
+  leccionId String
+  texto     String
+  orden     Int
+
+  leccion  Leccion  @relation(fields: [leccionId], references: [id], onDelete: Cascade)
+  opciones Opcion[]
+}
+
+model Opcion {
+  id         String  @id @default(cuid())
+  preguntaId String
+  texto      String
+  esCorrecta Boolean @default(false)
+
+  pregunta Pregunta @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// INSCRIPCIÓN
+// ============================================
+// Registro de que un usuario está tomando
+// un curso. "porcentaje" se recalcula aquí
+// cada vez que el usuario completa una lección,
+// así nunca lo calculas en tiempo real.
+// "completadoEn" se llena automáticamente
+// cuando porcentaje llega a 100.
+
+model Inscripcion {
+  id           String    @id @default(cuid())
+  usuarioId    String
+  cursoId      String
+  porcentaje   Float     @default(0)
+  inscritoEn   DateTime  @default(now())
+  completadoEn DateTime?
+
+  usuario  User       @relation(fields: [usuarioId], references: [id])
+  curso    Curso      @relation(fields: [cursoId], references: [id])
+  progreso Progreso[]
+
+  @@unique([usuarioId, cursoId]) // un usuario solo se inscribe una vez
+}
+
+// ============================================
+// PROGRESO
+// ============================================
+// Una fila por cada lección que el usuario
+// completa. Para cuestionarios, guardamos
+// la calificación obtenida aquí.
+// "tiempoVisto" aplica solo a videos —
+// útil para retomar desde donde quedó.
+
+model Progreso {
+  id            String    @id @default(cuid())
+  inscripcionId String
+  leccionId     String
+  completada    Boolean   @default(false)
+  completadaEn  DateTime?
+  tiempoVisto   Int?      // en segundos, para videos
+  calificacion  Float?    // 0-100, solo cuestionarios
+
+  inscripcion Inscripcion @relation(fields: [inscripcionId], references: [id])
+  leccion     Leccion     @relation(fields: [leccionId], references: [id])
+
+  @@unique([inscripcionId, leccionId]) // una entrada por lección por inscripción
 }

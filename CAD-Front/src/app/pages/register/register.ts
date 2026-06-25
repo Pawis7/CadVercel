@@ -59,7 +59,7 @@ export class Register {
     this.authService.register({ firstName, lastName, email, password }).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/inicio']);
       },
       error: (err) => {
         this.isLoading.set(false);

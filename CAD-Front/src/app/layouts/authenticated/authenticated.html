@@ -1,127 +1,368 @@
-<div class="min-h-screen bg-neutral-50 flex flex-col font-sans">
+<div class="min-h-screen bg-slate-50 dark:bg-neutral-950 flex flex-col font-sans text-slate-600 dark:text-neutral-200 transition-colors duration-300">
+  
   <!-- Navbar -->
-  <header class="bg-white border-b border-neutral-200 sticky top-0 z-50">
+  <header 
+    [class.translate-y-0]="!isNavbarHidden()" 
+    [class.-translate-y-full]="isNavbarHidden()" 
+    class="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-neutral-800/80 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out transform"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <!-- Logo -->
-        <div class="flex items-center space-x-3">
-          <!-- Escudo / Icono Gobierno Jalisco -->
-          <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-orange-500/10">
-            J
-          </div>
-          <div>
-            <span class="font-bold text-neutral-800 text-lg block leading-none">Cursos Alfa Digital</span>
-            <span class="text-xs text-neutral-500 font-medium">Secretaría de Educación Jalisco</span>
-          </div>
+      <div class="flex justify-between h-16 items-center relative">
+        
+        <!-- Left Section: Hamburger Menu (Mobile only) -->
+        <div class="flex md:hidden z-10">
+          <button 
+            (click)="toggleMobileMenu()" 
+            class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-100 dark:hover:bg-neutral-800/80 rounded-lg cursor-pointer transition-colors"
+            aria-label="Abrir menú de navegación"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
 
-        <!-- User Actions -->
-        <div class="flex items-center space-x-4" *ngIf="currentUser()">
-          <div class="text-right hidden sm:block">
-            <p class="text-sm font-semibold text-neutral-800">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</p>
-            <p class="text-xs text-neutral-500">{{ currentUser()?.email }}</p>
+        <!-- Middle Section on mobile, Left Section on desktop: Logo & Desktop Links -->
+        <div class="flex items-center space-x-8 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:flex-grow-0 h-full">
+          <div class="flex items-center space-x-3">
+            <svg class="h-9 w-9 shrink-0" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Crest Shape (Red Base) -->
+              <path d="M20 2C31 2 37 8 37 17C37 28 20 38 20 38C20 38 3 28 3 17C3 8 9 2 20 2Z" fill="#C90045"/>
+              <!-- Right Side Overlay (Orange Half) -->
+              <path d="M20 2C20 2 37 8 37 17C37 28 20 38 20 38V2Z" fill="#FF8300"/>
+              <!-- Inner White Shield Line & Star (White Accents) -->
+              <path d="M20 6V34M12 16H28" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="20" cy="16" r="2.5" fill="#FFFFFF"/>
+            </svg>
+            <div class="text-left leading-tight hidden md:block">
+              <span class="font-extrabold text-slate-900 dark:text-white text-base block tracking-tight">Cursos Alfa Digital</span>
+              <span class="text-[9px] text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider">Secretaría de Educación Jalisco</span>
+            </div>
           </div>
+
+          <!-- Navigation Menu (Desktop) -->
+          <nav class="hidden md:flex space-x-6 h-full">
+            <a 
+              routerLink="/inicio" 
+              routerLinkActive="!text-red-600 dark:!text-red-600 font-bold border-b-2 !border-red-600 dark:!border-red-600" 
+              [routerLinkActiveOptions]="{exact: true}" 
+              class="inline-flex items-center px-1 pt-1 text-sm font-semibold text-slate-600 dark:text-neutral-300 hover:text-red-600 dark:hover:text-red-600 transition-colors duration-200 cursor-pointer h-full border-b-2 border-transparent"
+            >
+              Inicio
+            </a>
+            <a 
+              routerLink="/cursos" 
+              routerLinkActive="!text-red-600 dark:!text-red-600 font-bold border-b-2 !border-red-600 dark:!border-red-600" 
+              class="inline-flex items-center px-1 pt-1 text-sm font-semibold text-slate-600 dark:text-neutral-300 hover:text-red-600 dark:hover:text-red-600 transition-colors duration-200 cursor-pointer h-full border-b-2 border-transparent"
+            >
+              Cursos
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right Section: Dark Mode Toggle & Profile -->
+        <div class="flex items-center space-x-3 z-10">
           
-          <button (click)="logout()" class="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 font-medium text-sm rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-            Cerrar Sesión
+          <!-- Dark Mode Button Toggle -->
+          <button 
+            (click)="toggleDarkMode()" 
+            class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl hover:bg-slate-100 dark:hover:bg-neutral-800/80 transition-all duration-200 cursor-pointer"
+            aria-label="Alternar modo oscuro"
+          >
+            <!-- Sun Icon -->
+            <svg *ngIf="isDarkMode()" xmlns="http://www.w3.org/2000/svg" class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+            <!-- Moon Icon -->
+            <svg *ngIf="!isDarkMode()" xmlns="http://www.w3.org/2000/svg" class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
           </button>
+
+          <!-- User Session Component -->
+          <div class="relative" *ngIf="currentUser()">
+            <button 
+              (click)="toggleProfileDropdown()" 
+              class="flex items-center justify-center w-9 h-9 rounded-full md:w-auto md:h-auto md:rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-800 md:border border-slate-200/80 dark:border-neutral-800 md:p-1.5 md:pr-3 transition-all duration-200 cursor-pointer"
+            >
+              <!-- Avatar with Initials (Always visible) -->
+              <div class="w-8 h-8 rounded-full bg-slate-350 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-sm select-none ring-2 ring-slate-200/80 dark:ring-neutral-700 shrink-0">
+                {{ currentUser()?.firstName?.charAt(0)?.toUpperCase() }}
+              </div>
+              
+              <!-- Desktop name details (Hidden on mobile) -->
+              <div class="text-left hidden md:block ml-2.5">
+                <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 leading-none">
+                  {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+                </p>
+                <span class="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase">Docente</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 hidden md:block ml-2" [class.rotate-180]="isProfileOpen()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <!-- Overlay backdrop to close dropdown -->
+            <div 
+              *ngIf="isProfileOpen()" 
+              (click)="closeProfileDropdown()" 
+              class="fixed inset-0 z-10 cursor-default"
+            ></div>
+
+            <!-- Dropdown Profile Options -->
+            <div 
+              [class.opacity-100]="isProfileOpen()" 
+              [class.scale-100]="isProfileOpen()" 
+              [class.pointer-events-auto]="isProfileOpen()"
+              [class.opacity-0]="!isProfileOpen()" 
+              [class.scale-95]="!isProfileOpen()" 
+              [class.pointer-events-none]="!isProfileOpen()"
+              class="absolute right-0 mt-2.5 w-56 rounded-xl bg-white dark:bg-neutral-900 border border-slate-200/80 dark:border-neutral-800 shadow-xl py-2 z-20 origin-top-right transition-all duration-200 ease-out"
+            >
+              <div class="px-4 py-2 border-b border-slate-100 dark:border-neutral-800/60">
+                <p class="text-[10px] font-extrabold text-slate-400 dark:text-neutral-500 uppercase tracking-wider">Sesión Activa</p>
+                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">
+                  {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+                </p>
+                <p class="text-xs text-slate-505 dark:text-neutral-400 truncate mt-0.5">
+                  {{ currentUser()?.email }}
+                </p>
+              </div>
+
+              <!-- Profile/Dashboard option -->
+              <a 
+                routerLink="/dashboard" 
+                (click)="closeProfileDropdown()"
+                class="flex items-center space-x-2.5 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800/40 hover:text-red-600 dark:hover:text-red-600 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-slate-400 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Mi Perfil / Dashboard</span>
+              </a>
+
+              <div class="border-t border-slate-100 dark:border-neutral-800/60 my-1"></div>
+
+              <!-- Logout option -->
+              <button 
+                (click)="logout(); closeProfileDropdown()" 
+                class="w-full flex items-center space-x-2.5 px-4 py-2.5 text-sm font-bold text-red-600 dark:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 text-left transition-colors cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Cerrar Sesión</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- MOBILE SIDEBAR DRAWER -->
+  <!-- Backdrop (with blur effect) -->
+  <div 
+    (click)="closeMobileMenu()" 
+    [class.opacity-100]="isMobileMenuOpen()" 
+    [class.pointer-events-auto]="isMobileMenuOpen()"
+    [class.opacity-0]="!isMobileMenuOpen()" 
+    [class.pointer-events-none]="!isMobileMenuOpen()"
+    class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 transition-opacity duration-300 ease-in-out md:hidden"
+  ></div>
+
+  <!-- Drawer panel -->
+  <div 
+    [class.translate-x-0]="isMobileMenuOpen()" 
+    [class.-translate-x-full]="!isMobileMenuOpen()"
+    class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-neutral-900 shadow-2xl z-50 transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-neutral-800 md:hidden flex flex-col p-6"
+  >
+    <!-- Drawer Header -->
+    <div class="flex items-center justify-between pb-6 border-b border-slate-100 dark:border-neutral-800/60">
+      <div class="flex items-center space-x-2.5">
+        <svg class="h-7 w-7 shrink-0" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2C31 2 37 8 37 17C37 28 20 38 20 38C20 38 3 28 3 17C3 8 9 2 20 2Z" fill="#C90045"/>
+          <path d="M20 2C20 2 37 8 37 17C37 28 20 38 20 38V2Z" fill="#FF8300"/>
+          <path d="M20 6V34M12 16H28" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="16" r="2.5" fill="#FFFFFF"/>
+        </svg>
+        <span class="font-extrabold text-slate-900 dark:text-white text-sm block">Cursos Alfa Digital</span>
+      </div>
+      <!-- Close Button -->
+      <button 
+        (click)="closeMobileMenu()" 
+        class="p-1.5 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-50 dark:hover:bg-neutral-800 rounded-lg cursor-pointer"
+        aria-label="Cerrar menú"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Drawer Navigation Links -->
+    <nav class="flex flex-col space-y-3 mt-6">
+      <a 
+        routerLink="/inicio" 
+        routerLinkActive="bg-red-50 dark:bg-neutral-800 text-red-600 dark:text-red-600 font-bold border-l-4 border-red-600 dark:border-red-600" 
+        [routerLinkActiveOptions]="{exact: true}" 
+        (click)="closeMobileMenu()"
+        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-neutral-350 hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
+      >
+        Inicio
+      </a>
+      <a 
+        routerLink="/cursos" 
+        routerLinkActive="bg-red-50 dark:bg-neutral-800 text-red-600 dark:text-red-600 font-bold border-l-4 border-red-600 dark:border-red-600" 
+        (click)="closeMobileMenu()"
+        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-neutral-350 hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
+      >
+        Cursos
+      </a>
+    </nav>
+
+    <!-- Drawer Footer / Actions -->
+    <div class="mt-auto pt-6 border-t border-slate-100 dark:border-neutral-800/60 flex flex-col space-y-4">
+      <!-- Dark Mode Switcher -->
+      <div class="flex items-center justify-between px-2">
+        <span class="text-xs font-semibold text-slate-500 dark:text-neutral-400">Modo Oscuro</span>
+        <button 
+          (click)="toggleDarkMode()" 
+          class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl bg-slate-100 dark:bg-neutral-800 hover:bg-slate-200 dark:hover:bg-neutral-700 transition-all duration-200 cursor-pointer"
+        >
+          <svg *ngIf="isDarkMode()" xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+          </svg>
+          <svg *ngIf="!isDarkMode()" xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- User Quick Info -->
+      <div class="flex items-center space-x-3 p-2 bg-slate-50 dark:bg-neutral-800/60 rounded-xl">
+        <div class="w-8 h-8 rounded-full bg-slate-350 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-xs ring-2 ring-slate-200/50 dark:ring-neutral-700 shrink-0">
+          {{ currentUser()?.firstName?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div class="text-left overflow-hidden">
+          <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 truncate">
+            {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+          </p>
+          <p class="text-[10px] text-slate-400 dark:text-neutral-500 truncate">
+            {{ currentUser()?.email }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Main Content Route Outlet -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-16">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Shared Official SEJ Footer from Portal SEJ (Post-Login Global) -->
-  <footer class="bg-[#1b1c21] text-white py-12 border-t border-gray-800 mt-auto" style="background-image: url('https://portalsej.jalisco.gob.mx/wp-content/uploads/2018/11/footer-bg-2.png'); background-size: cover; background-position: center;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+  <!-- Shared Official SEJ Footer (Global Authenticated Layout - Synthesized Modern Remake) -->
+  <footer class="mt-auto bg-white dark:bg-neutral-900 border-t border-slate-200/80 dark:border-neutral-800/60 transition-colors duration-300">
+    
+    <!-- 1. Top Gray Bar with Diagonal Cut (Modern double-layer geometric divider) -->
+    <div class="h-20 bg-white dark:bg-neutral-900 relative overflow-hidden transition-colors duration-300">
+      <!-- Shadow/Accent Layer -->
+      <div 
+        class="absolute inset-y-0 left-0 w-[86.5%] bg-neutral-200 dark:bg-slate-700" 
+        style="clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);"
+      ></div>
+      <!-- Primary Gray Layer -->
+      <div 
+        class="absolute inset-y-0 left-0 w-[85%] bg-[#454c54] dark:bg-neutral-800" 
+        style="clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);"
+      ></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+      
+      <!-- Main Content Grid (2 Columns: Left Branding, Right Social Networks) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
         
-        <!-- Column 1: Logo -->
-        <div class="flex items-center justify-center md:justify-start">
-          <img 
-            src="https://portalsej.jalisco.gob.mx/wp-content/uploads/2018/12/logo_jal.png" 
-            alt="Gobierno de Jalisco" 
-            class="h-20 w-auto object-contain"
-          >
+        <!-- Column 1: Identity & Brand -->
+        <div class="space-y-4 text-center md:text-left flex flex-col items-center md:items-start justify-start">
+          <div class="flex items-center space-x-3.5">
+            <img 
+              src="/assets/images/logo_jal.png" 
+              alt="Jalisco Gobierno del Estado" 
+              class="h-14 w-auto object-contain transition-opacity duration-300 opacity-80 hover:opacity-100 dark:invert-[0.1]"
+            >
+            <div class="h-10 w-px bg-slate-200 dark:bg-neutral-800"></div>
+            <div class="text-left">
+              <h4 class="text-base font-bold text-slate-800 dark:text-white tracking-tight">Cursos Alfa Digital</h4>
+              <p class="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-neutral-500">Jalisco</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed max-w-sm">
+            Plataforma digital para la gestión, capacitación y formación continua de la comunidad docente de la Secretaría de Educación Jalisco.
+          </p>
         </div>
 
-        <!-- Column 2: Quick Links -->
-        <div class="flex flex-col justify-center border-y md:border-y-0 md:border-x border-gray-800/80 py-6 md:py-0 md:px-8">
-          <h3 class="text-xs font-bold tracking-wider uppercase text-gray-400 mb-3">Enlaces rápidos</h3>
-          <ul class="space-y-1.5 text-xs text-gray-300">
-            <li>
-              <a href="https://portalsej.jalisco.gob.mx/acerca/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Acerca de</a>
-            </li>
-            <li>
-              <a href="https://portalsej.jalisco.gob.mx/alumnos/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Alumnos</a>
-            </li>
-            <li>
-              <a href="https://portalsej.jalisco.gob.mx/contacto/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Contacto</a>
-            </li>
-            <li>
-              <a href="https://portalsej.jalisco.gob.mx/docentes/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Docentes</a>
-            </li>
-            <li>
-              <a href="https://portalsej.jalisco.gob.mx/home/aviso-de-privacidad-2/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Aviso de Privacidad</a>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Column 3: Social & Accessibility -->
-        <div class="flex flex-col items-center md:items-start justify-center">
-          <h3 class="text-xs font-bold tracking-wider uppercase text-gray-400 mb-3">Redes Sociales</h3>
-          <div class="flex space-x-3 mb-4">
+        <!-- Column 2: Social Networks (Aligned to the right on desktop) -->
+        <div class="text-center md:text-right flex flex-col items-center md:items-end justify-start">
+          <h3 class="text-xs font-bold text-slate-450 dark:text-neutral-500 tracking-[0.12em] uppercase mb-4">Redes Sociales</h3>
+          <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed max-w-xs mb-4">
+            Mantente al día con los comunicados oficiales y novedades en nuestras redes:
+          </p>
+          <div class="flex space-x-3">
+            <!-- Facebook Button -->
             <a 
               href="https://www.facebook.com/educacion.jalisco" 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-[#e7004c] text-white transition-colors"
+              class="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-white hover:bg-[#1877f2] hover:border-[#1877f2] hover:shadow-lg hover:shadow-[#1877f2]/15 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-white"
               aria-label="Facebook"
             >
-              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
               </svg>
             </a>
+
+            <!-- Twitter / X Button -->
             <a 
               href="https://twitter.com/seceducacionjal" 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-[#e7004c] text-white transition-colors"
+              class="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-white hover:bg-black hover:border-black hover:shadow-lg hover:shadow-black/15 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-black"
               aria-label="Twitter (X)"
             >
               <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </svg>
             </a>
-          </div>
-          <!-- Accessibility stamp -->
-          <a 
-            href="https://www.hearcolors.com.mx/SelloAccesibilidad.php?num_clte=JA1PS129" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="block"
-          >
-            <img 
-              src="https://portalsej.jalisco.gob.mx/wp-content/uploads/2020/03/signo-distintivo-80x80.png" 
-              alt="Signo distintivo accesibilidad" 
-              title="Signo distintivo accesibilidad"
-              class="h-12 w-12 object-contain hover:opacity-80 transition-opacity"
+
+            <!-- YouTube Button -->
+            <a 
+              href="https://www.youtube.com/user/educacionjalisco" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-white hover:bg-[#ff0000] hover:border-[#ff0000] hover:shadow-lg hover:shadow-[#ff0000]/15 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-[#ff0000]"
+              aria-label="YouTube"
             >
-          </a>
+              <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.5 12 3.5 12 3.5s-7.518 0-9.388.553a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11C4.482 20.5 12 20.5 12 20.5s7.518 0 9.388-.553a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          </div>
         </div>
 
       </div>
 
-      <!-- Divider & Bottom Area -->
-      <hr class="border-gray-800/60 my-6">
-      
-      <div class="flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500 space-y-2 md:space-y-0">
-        <p>Algunos derechos reservados 2026. Cursos Alfa Digital.</p>
-        <p class="font-mono">V 1.0.0</p>
+      <!-- Divider line -->
+      <hr class="border-slate-200 dark:border-neutral-800 my-6">
+
+      <!-- Bottom Meta Bar -->
+      <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-xs text-slate-400 dark:text-neutral-500">
+        <p class="text-center sm:text-left">
+          © {{ todayYear }} Cursos Alfa Digital. Todos los derechos reservados. Secretaría de Educación Jalisco.
+        </p>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-semibold bg-slate-100 dark:bg-neutral-800/80 text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800/80 select-none">
+          v1.0.0
+        </span>
       </div>
 
     </div>

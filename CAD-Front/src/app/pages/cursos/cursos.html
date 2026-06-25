@@ -1,0 +1,46 @@
+<!-- Encabezado de página -->
+<div class="mb-8">
+  <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Catálogo de Cursos</h1>
+  <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1.5">
+    Inscríbete en los cursos oficiales aprobados por la Dirección de Formación Continua de Jalisco.
+  </p>
+</div>
+
+<!-- Filtros por nivel -->
+<div class="flex flex-wrap gap-2 mb-8 pb-4 border-b border-slate-200 dark:border-neutral-800">
+  <button
+    *ngFor="let n of niveles"
+    (click)="setNivel(n)"
+    [class.bg-red-600]="selectedNivel() === n"
+    [class.text-white]="selectedNivel() === n"
+    [class.border-transparent]="selectedNivel() === n"
+    [class.bg-white]="selectedNivel() !== n"
+    [class.dark:bg-neutral-900]="selectedNivel() !== n"
+    [class.text-slate-600]="selectedNivel() !== n"
+    [class.dark:text-neutral-300]="selectedNivel() !== n"
+    [class.border-slate-200]="selectedNivel() !== n"
+    [class.dark:border-neutral-800]="selectedNivel() !== n"
+    class="px-4 py-2 text-xs font-bold border rounded-lg hover:border-red-600 dark:hover:border-red-600 transition-colors duration-150 cursor-pointer shadow-xs"
+  >
+    {{ nivelLabel[n] }}
+  </button>
+</div>
+
+<!-- Grid de tarjetas -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <app-curso-card
+    *ngFor="let course of filteredCourses"
+    [curso]="course"
+  />
+</div>
+
+<!-- Empty state -->
+<div *ngIf="filteredCourses.length === 0" class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-12 h-12 bg-slate-100 dark:bg-neutral-900 rounded-full flex items-center justify-center mb-3 text-slate-400 border border-slate-200 dark:border-neutral-800">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+  </div>
+  <h3 class="text-base font-bold text-slate-800 dark:text-white">No se encontraron cursos</h3>
+  <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">Intenta seleccionando otro nivel en los filtros superiores.</p>
+</div>
