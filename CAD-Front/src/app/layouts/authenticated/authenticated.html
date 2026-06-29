@@ -7,13 +7,13 @@
     class="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-neutral-800/80 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out transform"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center relative">
+      <div class="flex justify-between h-20 items-center relative">
         
         <!-- Left Section: Hamburger Menu (Mobile only) -->
         <div class="flex md:hidden z-10">
           <button 
             (click)="toggleMobileMenu()" 
-            class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-100 dark:hover:bg-neutral-800/80 rounded-lg cursor-pointer transition-colors"
+            class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-100 dark:hover:bg-neutral-800/80 rounded-lg cursor-pointer transition-colors focus:outline-none"
             aria-label="Abrir menú de navegación"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +66,7 @@
           <!-- Dark Mode Button Toggle -->
           <button 
             (click)="toggleDarkMode()" 
-            class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl hover:bg-slate-100 dark:hover:bg-neutral-800/80 transition-all duration-200 cursor-pointer"
+            class="hidden md:block p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl hover:bg-slate-100 dark:hover:bg-neutral-800/80 transition-all duration-200 cursor-pointer focus:outline-none"
             aria-label="Alternar modo oscuro"
           >
             <!-- Sun Icon -->
@@ -86,7 +86,7 @@
               class="flex items-center justify-center w-9 h-9 rounded-full md:w-auto md:h-auto md:rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-800 md:border border-slate-200/80 dark:border-neutral-800 md:p-1.5 md:pr-3 transition-all duration-200 cursor-pointer"
             >
               <!-- Avatar with Initials (Always visible) -->
-              <div class="w-8 h-8 rounded-full bg-slate-350 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-sm select-none ring-2 ring-slate-200/80 dark:ring-neutral-700 shrink-0">
+              <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-sm select-none ring-2 ring-slate-200/80 dark:ring-neutral-700 shrink-0">
                 {{ currentUser()?.firstName?.charAt(0)?.toUpperCase() }}
               </div>
               
@@ -191,7 +191,7 @@
       <!-- Close Button -->
       <button 
         (click)="closeMobileMenu()" 
-        class="p-1.5 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-50 dark:hover:bg-neutral-800 rounded-lg cursor-pointer"
+        class="p-1.5 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 hover:bg-slate-100 dark:hover:bg-neutral-800/80 rounded-lg cursor-pointer focus:outline-none"
         aria-label="Cerrar menú"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -204,18 +204,18 @@
     <nav class="flex flex-col space-y-3 mt-6">
       <a 
         routerLink="/inicio" 
-        routerLinkActive="bg-red-50 dark:bg-neutral-800 text-red-600 dark:text-red-600 font-bold border-l-4 border-red-600 dark:border-red-600" 
+        routerLinkActive="!bg-slate-100 dark:!bg-neutral-800 !text-red-600 dark:!text-red-600 font-bold !border-red-600 dark:!border-red-600" 
         [routerLinkActiveOptions]="{exact: true}" 
         (click)="closeMobileMenu()"
-        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-neutral-350 hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
+        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
       >
         Inicio
       </a>
       <a 
         routerLink="/cursos" 
-        routerLinkActive="bg-red-50 dark:bg-neutral-800 text-red-600 dark:text-red-600 font-bold border-l-4 border-red-600 dark:border-red-600" 
+        routerLinkActive="!bg-slate-100 dark:!bg-neutral-800 !text-red-600 dark:!text-red-600 font-bold !border-red-600 dark:!border-red-600" 
         (click)="closeMobileMenu()"
-        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-neutral-350 hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
+        class="flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-neutral-800/40 rounded-lg transition-colors cursor-pointer border-l-4 border-transparent"
       >
         Cursos
       </a>
@@ -228,7 +228,7 @@
         <span class="text-xs font-semibold text-slate-500 dark:text-neutral-400">Modo Oscuro</span>
         <button 
           (click)="toggleDarkMode()" 
-          class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl bg-slate-100 dark:bg-neutral-800 hover:bg-slate-200 dark:hover:bg-neutral-700 transition-all duration-200 cursor-pointer"
+          class="p-2 text-slate-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-600 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-800 transition-all duration-200 cursor-pointer focus:outline-none"
         >
           <svg *ngIf="isDarkMode()" xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
@@ -241,7 +241,7 @@
 
       <!-- User Quick Info -->
       <div class="flex items-center space-x-3 p-2 bg-slate-50 dark:bg-neutral-800/60 rounded-xl">
-        <div class="w-8 h-8 rounded-full bg-slate-350 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-xs ring-2 ring-slate-200/50 dark:ring-neutral-700 shrink-0">
+        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-xs ring-2 ring-slate-200/80 dark:ring-neutral-700 shrink-0">
           {{ currentUser()?.firstName?.charAt(0)?.toUpperCase() }}
         </div>
         <div class="text-left overflow-hidden">
@@ -257,7 +257,7 @@
   </div>
 
   <!-- Main Content Route Outlet -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-16">
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-20">
     <router-outlet></router-outlet>
   </main>
 

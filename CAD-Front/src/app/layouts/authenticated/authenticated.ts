@@ -24,8 +24,8 @@ export class AuthenticatedLayout implements OnInit {
   onWindowScroll(): void {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     
-    // Hide navbar on scroll down past header height (64px)
-    if (scrollTop > this.lastScrollTop && scrollTop > 64) {
+    // Hide navbar on scroll down past header height (80px)
+    if (scrollTop > this.lastScrollTop && scrollTop > 80) {
       this.isNavbarHidden.set(true);
       this.closeProfileDropdown();
       this.closeMobileMenu();
