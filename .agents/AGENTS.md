@@ -1,6 +1,6 @@
 # Directrices de Diseño y Colores Oficiales
 
-Este documento establece las directrices estéticas y los colores institucionales que deben respetarse en todo el desarrollo del frontend de **Cursos Alfa Digital**.
+Este documento establece las directrices estéticas y los colores institucionales que deben respetarse en todo el desarrollo del frontend de **Jalisco Aprende**.
 
 ## Paleta de Colores Oficiales
 

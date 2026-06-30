@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -13,6 +13,7 @@ export interface CursoCardData {
   duracionEstimada?: number | null; // minutos
   autor: { firstName: string; lastName: string };
   _count?: { modulos?: number; inscritos?: number };
+  inscripciones?: { porcentaje: number }[];
 }
 
 @Component({
@@ -25,6 +26,35 @@ export interface CursoCardData {
 })
 export class CursoCard {
   @Input({ required: true }) curso!: CursoCardData;
+  /** Activa el menú de 3 puntos con opciones de editar y eliminar */
+  @Input() isAdmin = false;
+
+  @Output() onEdit = new EventEmitter<string>();
+  @Output() onDelete = new EventEmitter<string>();
+
+  /** Estado del menú de opciones admin */
+  readonly isMenuOpen = signal<boolean>(false);
+
+  toggleMenu(event: Event): void {
+    event.stopPropagation();
+    this.isMenuOpen.update(v => !v);
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen.set(false);
+  }
+
+  edit(event: Event): void {
+    event.stopPropagation();
+    this.closeMenu();
+    this.onEdit.emit(this.curso.id);
+  }
+
+  delete(event: Event): void {
+    event.stopPropagation();
+    this.closeMenu();
+    this.onDelete.emit(this.curso.id);
+  }
 
   get nivelLabel(): string {
     const map: Record<string, string> = {
@@ -42,6 +72,24 @@ export class CursoCard {
       AVANZADO:     'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/40'
     };
     return map[this.curso.nivel] ?? '';
+  }
+
+  get estadoClasses(): string {
+    const map: Record<string, string> = {
+      BORRADOR:   'bg-slate-100 text-slate-500 border-slate-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700',
+      PUBLICADO:  'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/40',
+      ARCHIVADO:  'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/40',
+    };
+    return map[this.curso.estado] ?? '';
+  }
+
+  get estadoLabel(): string {
+    const map: Record<string, string> = {
+      BORRADOR:  'Borrador',
+      PUBLICADO: 'Publicado',
+      ARCHIVADO: 'Archivado',
+    };
+    return map[this.curso.estado] ?? this.curso.estado;
   }
 
   get duracionLabel(): string {
@@ -63,5 +111,12 @@ export class CursoCard {
 
   get inscritosCount(): number {
     return this.curso._count?.inscritos ?? 0;
+  }
+
+  get porcentaje(): number | null {
+    if (this.curso.inscripciones && this.curso.inscripciones.length > 0) {
+      return Math.round(this.curso.inscripciones[0].porcentaje);
+    }
+    return null;
   }
 }

@@ -15,6 +15,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { Roles } from './decorators/roles.decorator';
 
 // Duración de la cookie: 1 día en milisegundos
 const COOKIE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
@@ -91,6 +93,21 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   me(@Request() req: any) {
     return this.authService.me(req.user.id);
+  }
+
+  /**
+   * GET /auth/admin-verify
+   * Verifica en la DB que el usuario autenticado tiene rol ADMIN.
+   * El frontend llama a este endpoint al entrar al panel de administración
+   * para garantizar que no haya tokens stale con roles incorrectos.
+   * Responde 200 si es admin, 403 si no lo es.
+   */
+  @Get('admin-verify')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @HttpCode(HttpStatus.OK)
+  adminVerify(@Request() req: any) {
+    return { isAdmin: true, userId: req.user.id };
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────

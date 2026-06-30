@@ -22,7 +22,7 @@ export class Inicio {
       duration: '40 horas',
       level: 'Intermedio',
       badge: 'Popular',
-      color: 'from-orange-500 to-red-600',
+      color: 'from-orange-400 to-orange-600',
       description: 'Aprende a integrar herramientas de inteligencia artificial generativa en tus planeaciones didácticas y evaluaciones diarias.'
     },
     {
@@ -32,7 +32,7 @@ export class Inicio {
       duration: '30 horas',
       level: 'Básico',
       badge: 'Esencial',
-      color: 'from-red-600 to-orange-500',
+      color: 'from-orange-600 to-orange-400',
       description: 'Domina las plataformas clave del estado de Jalisco para la gestión escolar, comunicación grupal y colaboración educativa.'
     },
     {
@@ -42,7 +42,7 @@ export class Inicio {
       duration: '50 horas',
       level: 'Avanzado',
       badge: 'Nuevo',
-      color: 'from-orange-500 via-red-600 to-orange-500',
+      color: 'from-orange-400 via-orange-500 to-orange-600',
       description: 'Implementa el aprendizaje basado en proyectos (ABP), gamificación y aula invertida utilizando herramientas digitales interactivas.'
     }
   ];

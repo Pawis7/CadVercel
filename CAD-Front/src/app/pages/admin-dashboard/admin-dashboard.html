@@ -1,0 +1,38 @@
+<!-- Admin Dashboard — Panel vacío (pendiente de gestión de vistas) -->
+<div class="min-h-[60vh] flex flex-col items-center justify-center text-center py-16 px-4">
+
+  <!-- Ícono escudo admin -->
+  <div class="w-20 h-20 rounded-2xl bg-orange-500/10 dark:bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  </div>
+
+  <!-- Título -->
+  <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
+    Panel de Administración
+  </h1>
+
+  <!-- Subtítulo con nombre del admin -->
+  <p class="text-sm text-slate-500 dark:text-neutral-400 mb-1">
+    Bienvenido, <span class="font-semibold text-orange-500">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</span>
+  </p>
+
+  <!-- Badge de rol -->
+  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-orange-500/10 text-orange-500 border border-orange-500/20 select-none mt-3">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    </svg>
+    Administrador
+  </span>
+
+  <!-- Divisor -->
+  <div class="w-16 h-px bg-slate-200 dark:bg-neutral-800 my-8"></div>
+
+  <!-- Mensaje de construcción -->
+  <p class="text-xs text-slate-400 dark:text-neutral-600 max-w-sm leading-relaxed">
+    Las vistas de gestión serán agregadas próximamente. Este espacio está reservado para el panel de control de administración.
+  </p>
+
+</div>

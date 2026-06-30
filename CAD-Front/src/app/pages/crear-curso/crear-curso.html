@@ -1,0 +1,820 @@
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  CREAR CURSO — CAD Admin                                    ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<div class="min-h-screen bg-slate-50 dark:bg-neutral-950 text-slate-800 dark:text-neutral-200">
+
+  <!-- ═══ HEADER STICKY ═══ -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-b border-slate-200/80 dark:border-neutral-800/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+
+      <!-- Volver -->
+      <button type="button" (click)="volver()"
+        class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-600 transition-colors flex-shrink-0 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+        <span class="hidden sm:inline">Volver al catálogo</span>
+        <span class="sm:hidden">Volver</span>
+      </button>
+
+      <!-- Stepper centrado -->
+      <div class="flex items-center gap-3 sm:gap-5 mx-auto flex-shrink-0">
+        <!-- Paso 1 -->
+        <button type="button" (click)="goToStep(1)" class="flex items-center gap-2 cursor-pointer">
+          <span
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all flex-shrink-0"
+            [class.bg-orange-500]="step() === 1"
+            [class.text-white]="step() === 1"
+            [class.shadow-sm]="step() === 1"
+            [class.bg-emerald-100]="step() > 1"
+            [class.dark:bg-emerald-500]="step() > 1"
+            [class.text-emerald-700]="step() > 1"
+            [class.bg-slate-200]="step() < 1"
+            [class.dark:bg-neutral-700]="step() < 1"
+            [class.text-slate-400]="step() < 1"
+          >
+            <!-- Check si ya pasó el paso -->
+            @if (step() > 1) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            } @else {
+              1
+            }
+          </span>
+          <div class="text-left hidden sm:block">
+            <p class="text-xs font-black m-0 leading-tight"
+               [class.text-slate-900]="step() === 1"
+               [class.dark:text-white]="step() === 1"
+               [class.text-slate-400]="step() !== 1"
+               [class.dark:text-neutral-500]="step() !== 1">Datos</p>
+            <p class="text-[10px] m-0 text-slate-400 dark:text-neutral-500 leading-tight">Información básica</p>
+          </div>
+        </button>
+
+        <!-- Línea separadora -->
+        <div class="w-8 sm:w-14 h-0.5 rounded-full transition-colors"
+             [class.bg-emerald-400]="step() > 1"
+             [class.bg-slate-200]="step() <= 1"
+             [class.dark:bg-neutral-700]="step() <= 1"></div>
+
+        <!-- Paso 2 -->
+        <button type="button" (click)="step() > 1 ? goToStep(2) : null"
+          class="flex items-center gap-2"
+          [class.cursor-pointer]="step() > 1"
+          [class.cursor-not-allowed]="step() === 1">
+          <span
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all flex-shrink-0"
+            [class.bg-orange-500]="step() === 2"
+            [class.text-white]="step() === 2"
+            [class.bg-slate-200]="step() !== 2"
+            [class.dark:bg-neutral-700]="step() !== 2"
+            [class.text-slate-400]="step() !== 2"
+          >2</span>
+          <div class="text-left hidden sm:block">
+            <p class="text-xs font-black m-0 leading-tight"
+               [class.text-slate-900]="step() === 2"
+               [class.dark:text-white]="step() === 2"
+               [class.text-slate-400]="step() !== 2"
+               [class.dark:text-neutral-500]="step() !== 2">Módulos</p>
+            <p class="text-[10px] m-0 text-slate-400 dark:text-neutral-500 leading-tight">Estructura del curso</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Acciones derecha -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <!-- Guardar borrador (solo paso 1) -->
+        @if (step() === 1) {
+          <button type="button" (click)="guardarBorrador()" [disabled]="saving()"
+            class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/60 text-slate-700 dark:text-neutral-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-neutral-700/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+            Guardar borrador
+          </button>
+        }
+
+        <!-- Siguiente / Publicar -->
+        @if (step() < maxStep) {
+          <button type="button" (click)="nextStep()"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition-all shadow-sm active:scale-95 cursor-pointer">
+            Siguiente
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        }
+
+        @if (step() === maxStep) {
+          <button type="button" (click)="publicar()" [disabled]="saving()"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-black transition-all shadow-sm cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            {{ saving() ? 'Publicando…' : 'Publicar curso' }}
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ PASO 1: DATOS ═══════════════════ -->
+  @if (step() === 1) {
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+
+      <!-- Encabezado -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Crear nuevo curso</h1>
+        <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">Completa la información básica del curso. Puedes guardarlo como borrador y publicarlo después.</p>
+      </div>
+
+      <!-- Grid: formulario + preview -->
+      <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-6 items-start">
+
+        <!-- ═══ Columna izquierda: cards ═══ -->
+        <div class="space-y-4">
+
+          <!-- Card 1: Información general -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-4">
+              <span class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              </span>
+              <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Información general</h2>
+            </header>
+
+            <!-- Nombre -->
+            <div class="mb-4">
+              <label class="flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-neutral-200 mb-1.5">
+                Título del curso <span class="text-red-600">*</span>
+              </label>
+              <input type="text" formControlName="nombre"
+                [maxlength]="MAX_NOMBRE"
+                placeholder="Ej: Innovación Educativa con Inteligencia Artificial"
+                class="w-full px-3.5 py-2.5 rounded-xl border text-sm placeholder:text-slate-400 dark:placeholder:text-neutral-500 bg-white dark:bg-neutral-950 text-slate-900 dark:text-white outline-none transition-all duration-200"
+                [class.border-slate-200]="!nombreCtrl.touched || nombreCtrl.valid"
+                [class.dark:border-neutral-700]="!nombreCtrl.touched || nombreCtrl.valid"
+                [class.focus:border-orange-500]="true"
+                [class.border-red-500]="nombreCtrl.touched && nombreCtrl.invalid"
+              />
+              <div class="flex items-center justify-between mt-1">
+                @if (nombreCtrl.touched && nombreCtrl.invalid) {
+                  <p class="text-[10px] text-red-500 font-bold">Mínimo 4 caracteres requeridos.</p>
+                } @else {
+                  <span></span>
+                }
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 font-bold tabular-nums">{{ nombreLen }}/{{ MAX_NOMBRE }}</p>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div>
+              <label class="flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-neutral-200 mb-1.5">
+                Descripción <span class="text-red-600">*</span>
+              </label>
+              <textarea formControlName="descripcion"
+                rows="4"
+                [maxlength]="MAX_DESCRIPCION"
+                placeholder="Describe de qué trata el curso, qué aprenderán los docentes y cuáles son los objetivos principales…"
+                class="w-full px-3.5 py-2.5 rounded-xl border text-sm placeholder:text-slate-400 dark:placeholder:text-neutral-500 bg-white dark:bg-neutral-950 text-slate-900 dark:text-white outline-none transition-all duration-200 resize-y"
+                [class.border-slate-200]="!descripcionCtrl.touched || descripcionCtrl.valid"
+                [class.dark:border-neutral-700]="!descripcionCtrl.touched || descripcionCtrl.valid"
+                [class.border-red-500]="descripcionCtrl.touched && descripcionCtrl.invalid"
+              ></textarea>
+              <div class="flex items-center justify-between mt-1">
+                @if (descripcionCtrl.touched && descripcionCtrl.invalid) {
+                  <p class="text-[10px] text-red-500 font-bold">Mínimo 10 caracteres requeridos.</p>
+                } @else {
+                  <span></span>
+                }
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 font-bold tabular-nums">{{ descripcionLen }}/{{ MAX_DESCRIPCION }}</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Card 2: Portada -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-4">
+              <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 text-xs font-black text-slate-500 dark:text-neutral-400">2</span>
+              <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Imagen de portada</h2>
+              <span class="text-[10px] text-slate-400 dark:text-neutral-500 font-medium">(opcional)</span>
+            </header>
+
+            <!-- Sin imagen: dropzone -->
+            @if (!portadaPreview()) {
+              <div
+                class="rounded-2xl border-2 border-dashed transition-all py-8 px-5 text-center cursor-pointer relative"
+                [class.border-orange-400]="dragActive()"
+                [class.bg-orange-50]="dragActive()"
+                [class.dark:bg-orange-500]="dragActive()"
+                [class.border-slate-300]="!dragActive()"
+                [class.dark:border-neutral-700]="!dragActive()"
+                [class.bg-slate-50]="!dragActive()"
+                [class.dark:bg-neutral-950]="!dragActive()"
+                (click)="portadaInput.click()"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave()"
+                (drop)="onDrop($event)"
+              >
+                <div class="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <p class="text-sm font-bold text-slate-700 dark:text-neutral-200">
+                  Arrastra una imagen aquí o <span class="text-orange-500">selecciona un archivo</span>
+                </p>
+                <p class="text-xs text-slate-400 dark:text-neutral-500 mt-1">JPG, PNG o WebP · Relación 16:9 recomendada · Máx 10 MB</p>
+                <button type="button" (click)="$event.stopPropagation(); portadaInput.click()"
+                  class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition-all shadow-sm active:scale-95 cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                  </svg>
+                  Seleccionar imagen
+                </button>
+              </div>
+            }
+
+            <!-- Con imagen: thumbnail horizontal -->
+            @if (portadaPreview()) {
+              <div class="flex items-center gap-4 p-3.5 rounded-2xl border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-950">
+                <!-- Thumbnail clickeable para cambiar -->
+                <button type="button" (click)="portadaInput.click()"
+                  class="relative rounded-xl overflow-hidden flex-shrink-0 w-32 h-20 bg-slate-200 dark:bg-neutral-800 group shadow-sm cursor-pointer">
+                  <img [src]="portadaPreview()!" alt="Portada del curso" class="w-full h-full object-cover"/>
+                  <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </div>
+                </button>
+                <!-- Meta -->
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-extrabold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    Imagen cargada
+                  </p>
+                  <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">Haz clic en la imagen para cambiarla</p>
+                  <div class="mt-2 flex gap-2">
+                    <button type="button" (click)="portadaInput.click()"
+                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-500 text-[10px] font-black hover:bg-orange-100 transition-colors cursor-pointer">
+                      Cambiar
+                    </button>
+                    <button type="button" (click)="removeBanner()"
+                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 text-[10px] font-black hover:bg-red-100 transition-colors cursor-pointer">
+                      Quitar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <input #portadaInput type="file" class="hidden" accept="image/png,image/jpeg,image/webp"
+              (change)="onBannerSelected($event)" (click)="$event.stopPropagation()"/>
+
+            @if (portadaError()) {
+              <p class="mt-2.5 text-xs text-red-500 font-bold flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                {{ portadaError() }}
+              </p>
+            }
+          </section>
+
+          <!-- Card 3: Nivel -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-3">
+              <span class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </span>
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Nivel del curso</h2>
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">Selecciona el nivel de conocimiento requerido.</p>
+              </div>
+            </header>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" formGroupName="">
+              @for (n of niveles; track n.value) {
+                <button type="button"
+                  (click)="nivelCtrl.setValue(n.value)"
+                  class="flex flex-col items-center gap-1.5 p-3.5 rounded-xl border-2 text-xs font-bold transition-all duration-150 cursor-pointer text-center"
+                  [class.border-emerald-400]="nivelCtrl.value === n.value"
+                  [class.bg-emerald-50]="nivelCtrl.value === n.value"
+                  [class.dark:bg-emerald-500]="nivelCtrl.value === n.value"
+                  [class.text-emerald-700]="nivelCtrl.value === n.value"
+                  [class.dark:text-emerald-300]="nivelCtrl.value === n.value"
+                  [class.border-slate-200]="nivelCtrl.value !== n.value"
+                  [class.dark:border-neutral-700]="nivelCtrl.value !== n.value"
+                  [class.text-slate-600]="nivelCtrl.value !== n.value"
+                  [class.dark:text-neutral-300]="nivelCtrl.value !== n.value"
+                  [class.hover:border-slate-300]="nivelCtrl.value !== n.value"
+                >
+                  <span class="font-extrabold">{{ n.label }}</span>
+                  <span class="text-[10px] font-medium opacity-70 leading-tight">{{ n.desc }}</span>
+                </button>
+              }
+            </div>
+          </section>
+
+          <!-- Card 4: Etiquetas -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-3">
+              <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 text-xs font-black text-slate-500 dark:text-neutral-400">4</span>
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Etiquetas</h2>
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">Hasta {{ MAX_ETIQUETAS }} etiquetas. Presiona <kbd class="px-1 py-0.5 rounded text-[9px] bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700">Enter</kbd> o coma para agregar.</p>
+              </div>
+            </header>
+
+            <!-- Chips de etiquetas actuales -->
+            @if (etiquetasList.length > 0) {
+              <div class="flex flex-wrap gap-2 mb-3">
+                @for (tag of etiquetasList; track tag; let i = $index) {
+                  <span class="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20">
+                    {{ tag }}
+                    <button type="button" (click)="removeEtiqueta(i)"
+                      class="w-4 h-4 rounded-full hover:bg-orange-100 dark:hover:bg-orange-500/20 flex items-center justify-center transition-colors cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Input de nueva etiqueta -->
+            @if (etiquetasList.length < MAX_ETIQUETAS) {
+              <div class="relative">
+                <input type="text"
+                  [value]="etiquetaInput()"
+                  (input)="etiquetaInput.set($any($event.target).value)"
+                  (keydown)="onEtiquetaKeydown($event)"
+                  [maxLength]="MAX_ETIQUETA"
+                  placeholder="Ej: tecnología, pedagogía, primaria…"
+                  class="w-full px-3.5 py-2.5 pr-20 rounded-xl border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-500 outline-none focus:border-orange-500 transition-all"
+                />
+                <button type="button" (click)="addEtiqueta()"
+                  [disabled]="!etiquetaInput().trim()"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg bg-orange-500 text-white text-[10px] font-black disabled:opacity-40 disabled:cursor-not-allowed hover:bg-orange-600 transition-colors cursor-pointer">
+                  Agregar
+                </button>
+              </div>
+            }
+          </section>
+
+          <!-- Card 5: Duración estimada -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-3">
+              <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 text-xs font-black text-slate-500 dark:text-neutral-400">5</span>
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Duración estimada</h2>
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">Tiempo total del curso en minutos. Se actualiza automáticamente al agregar módulos.</p>
+              </div>
+              <span class="ml-auto text-[10px] text-slate-400 dark:text-neutral-500 font-medium">(opcional)</span>
+            </header>
+            <div class="flex items-center gap-3">
+              <input type="number"
+                formControlName="duracionEstimada"
+                min="1"
+                max="9999"
+                placeholder="Ej: 120"
+                class="w-36 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-orange-500 transition-all"
+              />
+              <span class="text-xs text-slate-500 dark:text-neutral-400 font-medium">minutos</span>
+              @if (duracionCtrl.value && duracionCtrl.value > 0) {
+                <span class="text-xs text-slate-400 dark:text-neutral-500">
+                  ≈ {{ (duracionCtrl.value / 60 | number:'1.0-1') }} h
+                </span>
+              }
+            </div>
+          </section>
+
+          <!-- Card 6: Estado inicial -->
+          <section class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6">
+            <header class="flex items-center gap-2.5 mb-3">
+              <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 text-xs font-black text-slate-500 dark:text-neutral-400">6</span>
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Estado al guardar</h2>
+                <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">Elige si el curso queda como borrador privado o publicado para todos.</p>
+              </div>
+            </header>
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Borrador -->
+              <button type="button" (click)="estadoCtrl.setValue('BORRADOR')"
+                class="flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all duration-150 cursor-pointer"
+                [class.border-orange-400]="estadoCtrl.value === 'BORRADOR'"
+                [class.bg-orange-50]="estadoCtrl.value === 'BORRADOR'"
+                [class.dark:bg-orange-500]="estadoCtrl.value === 'BORRADOR'"
+                [class.border-slate-200]="estadoCtrl.value !== 'BORRADOR'"
+                [class.dark:border-neutral-700]="estadoCtrl.value !== 'BORRADOR'"
+              >
+                <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500 dark:text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-800 dark:text-white">Borrador</p>
+                  <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5 leading-tight">Solo visible para administradores</p>
+                </div>
+              </button>
+              <!-- Publicado -->
+              <button type="button" (click)="estadoCtrl.setValue('PUBLICADO')"
+                class="flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all duration-150 cursor-pointer"
+                [class.border-emerald-400]="estadoCtrl.value === 'PUBLICADO'"
+                [class.bg-emerald-50]="estadoCtrl.value === 'PUBLICADO'"
+                [class.dark:bg-emerald-500]="estadoCtrl.value === 'PUBLICADO'"
+                [class.border-slate-200]="estadoCtrl.value !== 'PUBLICADO'"
+                [class.dark:border-neutral-700]="estadoCtrl.value !== 'PUBLICADO'"
+              >
+                <div class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-800 dark:text-white">Publicado</p>
+                  <p class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5 leading-tight">Visible en el catálogo para todos</p>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <!-- Error general -->
+          @if (errorMsg()) {
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <p class="text-xs font-semibold text-red-700 dark:text-red-400">{{ errorMsg() }}</p>
+            </div>
+          }
+
+          <!-- Botón móvil: Siguiente -->
+          <div class="xl:hidden pt-1">
+            <button type="button" (click)="nextStep()"
+              class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-black transition-all shadow-sm active:scale-95 cursor-pointer">
+              Continuar a módulos
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ Columna derecha: Preview card ═══ -->
+        <aside class="xl:sticky xl:top-20 self-start">
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 overflow-hidden">
+            <!-- Portada preview -->
+            <div class="aspect-video bg-slate-100 dark:bg-neutral-800 relative overflow-hidden">
+              @if (portadaPreview()) {
+                <img [src]="portadaPreview()!" alt="Portada" class="w-full h-full object-cover"/>
+              } @else {
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 dark:text-neutral-600 gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span class="text-xs font-medium">Sin portada</span>
+                </div>
+              }
+              <!-- Badge nivel -->
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border backdrop-blur-sm"
+                [class.bg-emerald-50]="nivelCtrl.value === 'PRINCIPIANTE'"
+                [class.text-emerald-700]="nivelCtrl.value === 'PRINCIPIANTE'"
+                [class.border-emerald-200]="nivelCtrl.value === 'PRINCIPIANTE'"
+                [class.bg-amber-50]="nivelCtrl.value === 'INTERMEDIO'"
+                [class.text-amber-700]="nivelCtrl.value === 'INTERMEDIO'"
+                [class.border-amber-200]="nivelCtrl.value === 'INTERMEDIO'"
+                [class.bg-rose-50]="nivelCtrl.value === 'AVANZADO'"
+                [class.text-rose-700]="nivelCtrl.value === 'AVANZADO'"
+                [class.border-rose-200]="nivelCtrl.value === 'AVANZADO'"
+              >
+                {{ nivelCtrl.value === 'PRINCIPIANTE' ? 'Principiante' : nivelCtrl.value === 'INTERMEDIO' ? 'Intermedio' : 'Avanzado' }}
+              </span>
+            </div>
+
+            <!-- Cuerpo preview -->
+            <div class="p-4 space-y-3">
+              <!-- Label preview -->
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-orange-500">Vista previa</p>
+
+              <!-- Título -->
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 min-h-[2.5rem]">
+                {{ nombreCtrl.value || 'Título del curso…' }}
+              </h3>
+
+              <!-- Autor -->
+              <p class="text-xs text-slate-400 dark:text-neutral-500">
+                {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+              </p>
+
+              <!-- Chips de info -->
+              <div class="flex flex-wrap gap-1.5">
+                @if (duracionCtrl.value && duracionCtrl.value > 0) {
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ duracionCtrl.value < 60 ? duracionCtrl.value + ' min' : (duracionCtrl.value / 60 | number:'1.0-1') + ' h' }}
+                  </span>
+                }
+                @if (etiquetasList.length > 0) {
+                  @for (tag of etiquetasList.slice(0,2); track tag) {
+                    <span class="px-2 py-1 rounded-full text-[10px] font-semibold border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800 text-slate-500 dark:text-neutral-400">
+                      {{ tag }}
+                    </span>
+                  }
+                }
+              </div>
+
+              <!-- Estado badge -->
+              <div class="pt-2 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                  [class.bg-slate-100]="estadoCtrl.value === 'BORRADOR'"
+                  [class.text-slate-500]="estadoCtrl.value === 'BORRADOR'"
+                  [class.border-slate-200]="estadoCtrl.value === 'BORRADOR'"
+                  [class.bg-emerald-50]="estadoCtrl.value === 'PUBLICADO'"
+                  [class.text-emerald-600]="estadoCtrl.value === 'PUBLICADO'"
+                  [class.border-emerald-200]="estadoCtrl.value === 'PUBLICADO'"
+                >
+                  {{ estadoCtrl.value === 'BORRADOR' ? 'Borrador' : 'Publicado' }}
+                </span>
+                <span class="text-[10px] text-slate-400 dark:text-neutral-500">Vista previa</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tips card -->
+          <div class="mt-4 bg-orange-50 dark:bg-orange-500/5 rounded-2xl border border-orange-200/60 dark:border-orange-500/10 p-4">
+            <p class="text-xs font-extrabold text-orange-600 dark:text-orange-400 mb-2">💡 Consejos</p>
+            <ul class="space-y-1.5">
+              <li class="text-[10px] text-slate-600 dark:text-neutral-400 flex items-start gap-1.5">
+                <span class="text-orange-400 mt-0.5">•</span>
+                Un título claro y descriptivo aumenta la visibilidad del curso.
+              </li>
+              <li class="text-[10px] text-slate-600 dark:text-neutral-400 flex items-start gap-1.5">
+                <span class="text-orange-400 mt-0.5">•</span>
+                La imagen de portada en formato 16:9 se ve mejor en el catálogo.
+              </li>
+              <li class="text-[10px] text-slate-600 dark:text-neutral-400 flex items-start gap-1.5">
+                <span class="text-orange-400 mt-0.5">•</span>
+                Guarda como borrador y agrega módulos antes de publicar.
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </form>
+  }
+
+  <!-- ═══════════════════ PASO 2: MÓDULOS ═══════════════════ -->
+  @if (step() === 2) {
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Estructura del curso</h1>
+          <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">Organiza el contenido en módulos. Agrega videos, lecturas, PDFs y cuestionarios con preguntas infinitas.</p>
+        </div>
+        <button type="button" (click)="addModulo()"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition-all shadow-sm cursor-pointer self-start sm:self-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+          Añadir Módulo
+        </button>
+      </div>
+
+      <div formArrayName="modulos" class="space-y-6">
+        @for (moduloCtrl of modulosArray.controls; track moduloCtrl; let mIndex = $index) {
+          <div [formGroupName]="mIndex" class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 p-5 sm:p-6 shadow-sm transition-all">
+            
+            <!-- Header de Módulo -->
+            <div class="flex items-start justify-between gap-4 pb-4 mb-4 border-b border-slate-100 dark:border-neutral-800">
+              <div class="flex items-center gap-3 flex-1">
+                <span class="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 font-black text-sm flex items-center justify-center flex-shrink-0">
+                  {{ mIndex + 1 }}
+                </span>
+                <div class="flex-1 grid grid-cols-1 gap-2">
+                  <input type="text" formControlName="titulo" placeholder="Título del Módulo (ej: Introducción a la IA)"
+                    class="w-full font-bold text-base bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-500 outline-none border-b border-transparent focus:border-orange-500 transition-colors py-1" />
+                  <input type="text" formControlName="descripcion" placeholder="Descripción breve del módulo (opcional)"
+                    class="w-full text-xs text-slate-500 dark:text-neutral-400 bg-transparent placeholder:text-slate-400 dark:placeholder:text-neutral-600 outline-none border-b border-transparent focus:border-orange-500 transition-colors py-0.5" />
+                </div>
+              </div>
+              @if (modulosArray.length > 1) {
+                <button type="button" (click)="removeModulo(mIndex)" title="Eliminar módulo"
+                  class="text-slate-400 hover:text-red-600 dark:hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              }
+            </div>
+
+            <!-- Lista de Lecciones del Módulo -->
+            <div formArrayName="lecciones" class="space-y-4 pl-2 sm:pl-4 border-l-2 border-slate-100 dark:border-neutral-800">
+              @for (leccionCtrl of getLeccionesArray(mIndex).controls; track leccionCtrl; let lIndex = $index) {
+                <div [formGroupName]="lIndex" class="bg-slate-50 dark:bg-neutral-950/60 rounded-xl border border-slate-200/60 dark:border-neutral-800/80 p-4 transition-all">
+                  
+                  <!-- Header Lección -->
+                  <div class="flex items-center justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2 flex-1">
+                      <!-- Badge Tipo -->
+                      <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1"
+                        [class.bg-blue-100]="leccionCtrl.get('tipo')?.value === 'VIDEO'"
+                        [class.text-blue-700]="leccionCtrl.get('tipo')?.value === 'VIDEO'"
+                        [class.dark:bg-blue-900/30]="leccionCtrl.get('tipo')?.value === 'VIDEO'"
+                        [class.dark:text-blue-300]="leccionCtrl.get('tipo')?.value === 'VIDEO'"
+                        [class.bg-emerald-100]="leccionCtrl.get('tipo')?.value === 'LECTURA'"
+                        [class.text-emerald-700]="leccionCtrl.get('tipo')?.value === 'LECTURA'"
+                        [class.dark:bg-emerald-900/30]="leccionCtrl.get('tipo')?.value === 'LECTURA'"
+                        [class.dark:text-emerald-300]="leccionCtrl.get('tipo')?.value === 'LECTURA'"
+                        [class.bg-purple-100]="leccionCtrl.get('tipo')?.value === 'CUESTIONARIO'"
+                        [class.text-purple-700]="leccionCtrl.get('tipo')?.value === 'CUESTIONARIO'"
+                        [class.dark:bg-purple-900/30]="leccionCtrl.get('tipo')?.value === 'CUESTIONARIO'"
+                        [class.dark:text-purple-300]="leccionCtrl.get('tipo')?.value === 'CUESTIONARIO'"
+                      >
+                        @if (leccionCtrl.get('tipo')?.value === 'VIDEO') { 🎥 Video }
+                        @else if (leccionCtrl.get('tipo')?.value === 'LECTURA') { 📖 Lectura }
+                        @else { 📝 Cuestionario }
+                      </span>
+
+                      <!-- Título Lección -->
+                      <input type="text" formControlName="titulo" placeholder="Título de la lección..."
+                        class="flex-1 text-sm font-bold bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-500 outline-none border-b border-transparent focus:border-orange-500 transition-colors px-1 py-0.5" />
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                      <!-- Toggle Obligatoria -->
+                      <label class="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-neutral-400 cursor-pointer select-none">
+                        <input type="checkbox" formControlName="esObligatoria" class="rounded text-orange-500 focus:ring-orange-500 cursor-pointer" />
+                        <span class="hidden md:inline">Obligatoria para avanzar</span>
+                      </label>
+
+                      <!-- Eliminar lección -->
+                      <button type="button" (click)="removeLeccion(mIndex, lIndex)" title="Eliminar lección"
+                        class="text-slate-400 hover:text-red-600 dark:hover:text-red-500 p-1 rounded transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Contenido según Tipo de Lección -->
+                  <div class="mt-3 pt-3 border-t border-slate-200/60 dark:border-neutral-800/60 text-xs">
+                    @if (leccionCtrl.get('tipo')?.value === 'VIDEO') {
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="sm:col-span-2">
+                          <label class="block font-bold text-slate-600 dark:text-neutral-300 mb-1">URL del Video (YouTube / Vimeo / MP4)</label>
+                          <input type="text" formControlName="recursoUrl" placeholder="https://www.youtube.com/watch?v=..."
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-slate-800 dark:text-white outline-none focus:border-orange-500" />
+                        </div>
+                        <div>
+                          <label class="block font-bold text-slate-600 dark:text-neutral-300 mb-1">Duración (segundos)</label>
+                          <input type="number" formControlName="duracionSeg" placeholder="Ej: 360" min="0"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-slate-800 dark:text-white outline-none focus:border-orange-500" />
+                        </div>
+                      </div>
+                    }
+
+                    @if (leccionCtrl.get('tipo')?.value === 'LECTURA') {
+                      <div>
+                        <label class="block font-bold text-slate-600 dark:text-neutral-300 mb-1">Contenido de la Lectura (HTML / Texto)</label>
+                        <textarea formControlName="contenidoHtml" rows="3" placeholder="Escribe el contenido o instrucciones para el alumno..."
+                          class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-slate-800 dark:text-white outline-none focus:border-orange-500 resize-y"></textarea>
+                      </div>
+                    }
+
+                    @if (leccionCtrl.get('tipo')?.value === 'CUESTIONARIO') {
+                      <div class="space-y-4">
+                        <div class="flex items-center justify-between bg-purple-50 dark:bg-purple-950/20 p-3 rounded-xl border border-purple-200/60 dark:border-purple-900/30">
+                          <div>
+                            <span class="font-extrabold text-purple-900 dark:text-purple-300">Configuración de Evaluación</span>
+                            <p class="text-[11px] text-purple-700 dark:text-purple-400 mt-0.5">Puedes añadir tantas preguntas y opciones como necesites.</p>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <label class="font-bold text-purple-900 dark:text-purple-300">% Mínimo aprobatorio:</label>
+                            <input type="number" formControlName="calificacionMinima" min="0" max="100" class="w-16 px-2 py-1 rounded border border-purple-300 dark:border-purple-800 bg-white dark:bg-neutral-900 font-bold text-center text-purple-900 dark:text-purple-200 outline-none" />
+                          </div>
+                        </div>
+
+                        <!-- Lista de Preguntas del Cuestionario -->
+                        <div formArrayName="preguntas" class="space-y-4">
+                          @for (preguntaCtrl of getPreguntasArray(mIndex, lIndex).controls; track preguntaCtrl; let pIndex = $index) {
+                            <div [formGroupName]="pIndex" class="bg-white dark:bg-neutral-900 p-3.5 rounded-xl border border-slate-200 dark:border-neutral-800 shadow-sm">
+                              <div class="flex items-center gap-2 mb-3">
+                                <span class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-black text-xs flex items-center justify-center flex-shrink-0">
+                                  P{{ pIndex + 1 }}
+                                </span>
+                                <input type="text" formControlName="texto" placeholder="Escribe la pregunta aquí..."
+                                  class="flex-1 font-bold text-slate-800 dark:text-white bg-transparent outline-none border-b border-transparent focus:border-orange-500 transition-colors py-0.5" />
+                                @if (getPreguntasArray(mIndex, lIndex).length > 1) {
+                                  <button type="button" (click)="removePregunta(mIndex, lIndex, pIndex)" class="text-slate-400 hover:text-red-500 p-1 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                  </button>
+                                }
+                              </div>
+
+                              <!-- Lista de Opciones infinitas -->
+                              <div formArrayName="opciones" class="space-y-2 pl-4 border-l border-purple-200 dark:border-purple-900/40">
+                                @for (opcionCtrl of getOpcionesArray(mIndex, lIndex, pIndex).controls; track opcionCtrl; let oIndex = $index) {
+                                  <div [formGroupName]="oIndex" class="flex items-center gap-2">
+                                    <input type="radio" [name]="'pregunta_' + mIndex + '_' + lIndex + '_' + pIndex"
+                                      [checked]="opcionCtrl.get('esCorrecta')?.value"
+                                      (change)="setOpcionCorrecta(mIndex, lIndex, pIndex, oIndex)"
+                                      title="Marcar como respuesta correcta"
+                                      class="text-emerald-500 focus:ring-emerald-500 cursor-pointer" />
+                                    <input type="text" formControlName="texto" placeholder="Opción de respuesta..."
+                                      class="flex-1 px-2.5 py-1 rounded border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-950 text-slate-800 dark:text-white outline-none focus:border-purple-500 text-xs"
+                                      [class.border-emerald-500]="opcionCtrl.get('esCorrecta')?.value"
+                                      [class.font-bold]="opcionCtrl.get('esCorrecta')?.value" />
+                                    @if (opcionCtrl.get('esCorrecta')?.value) {
+                                      <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-wider px-1.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 rounded border border-emerald-200 dark:border-emerald-800">Correcta</span>
+                                    }
+                                    @if (getOpcionesArray(mIndex, lIndex, pIndex).length > 2) {
+                                      <button type="button" (click)="removeOpcion(mIndex, lIndex, pIndex, oIndex)" class="text-slate-400 hover:text-red-500 p-1 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                      </button>
+                                    }
+                                  </div>
+                                }
+                                <button type="button" (click)="addOpcion(mIndex, lIndex, pIndex)"
+                                  class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 cursor-pointer">
+                                  + Añadir otra opción
+                                </button>
+                              </div>
+                            </div>
+                          }
+                          <button type="button" (click)="addPregunta(mIndex, lIndex)"
+                            class="w-full py-2 rounded-xl border border-dashed border-purple-300 dark:border-purple-800 text-purple-600 dark:text-purple-400 font-bold text-xs hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors cursor-pointer">
+                            + Añadir Pregunta al Cuestionario
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Botones Añadir Lección por tipo -->
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-neutral-800 flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold text-slate-500 dark:text-neutral-400 mr-2">Añadir contenido al módulo:</span>
+              <button type="button" (click)="addLeccion(mIndex, 'VIDEO')"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer">
+                🎥 + Video
+              </button>
+              <button type="button" (click)="addLeccion(mIndex, 'LECTURA')"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 text-xs font-bold hover:bg-emerald-100 transition-colors cursor-pointer">
+                📖 + Lectura
+              </button>
+              <button type="button" (click)="addLeccion(mIndex, 'CUESTIONARIO')"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 text-xs font-bold hover:bg-purple-100 transition-colors cursor-pointer">
+                📝 + Cuestionario
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Botón Agregar Módulo inferior -->
+      <div class="mt-8 text-center">
+        <button type="button" (click)="addModulo()"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border-2 border-dashed border-orange-400 text-orange-500 font-extrabold text-sm hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+          Añadir Nuevo Módulo al Curso
+        </button>
+      </div>
+    </form>
+  }
+</div>
+
+<!-- ═══ Overlay de guardado ═══ -->
+@if (saving()) {
+  <div class="fixed inset-0 z-50 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl p-10 shadow-2xl flex flex-col items-center gap-4 max-w-sm text-center border border-slate-200 dark:border-neutral-800">
+      <div class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg">
+        <span class="w-8 h-8 border-[3px] border-white/30 border-t-white rounded-full animate-spin block"></span>
+      </div>
+      <div>
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Guardando curso</h3>
+        <p class="text-sm text-slate-400 dark:text-neutral-500 mt-1">Enviando datos al servidor…</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+        <span class="text-[11px] text-slate-400 font-medium">Esto puede tomar unos segundos</span>
+      </div>
+    </div>
+  </div>
+}
