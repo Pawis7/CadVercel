@@ -8,15 +8,22 @@ import { Request } from 'express';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(config: ConfigService) {
+    const isProd = config.get<string>('NODE_ENV') === 'production';
+
+    // En producción: solo cookie HttpOnly (inmune a XSS, sin exposición en headers/logs).
+    // En desarrollo: también acepta Authorization: Bearer para facilitar pruebas con Postman.
+    const extractors = [
+      (request: Request) => {
+        return request?.cookies?.['cad_token'] ?? null;
+      },
+    ];
+
+    if (!isProd) {
+      extractors.push(ExtractJwt.fromAuthHeaderAsBearerToken());
+    }
+
     super({
-      // Extrae el JWT primero desde la cookie HttpOnly 'cad_token' (inmune a XSS).
-      // Si no está en cookie, acepta el header Authorization como fallback (APIs/Postman).
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => {
-          return request?.cookies?.['cad_token'] ?? null;
-        },
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ]),
+      jwtFromRequest: ExtractJwt.fromExtractors(extractors),
       ignoreExpiration: false,
       secretOrKey: config.get<string>('JWT_SECRET')!,
       passReqToCallback: false,

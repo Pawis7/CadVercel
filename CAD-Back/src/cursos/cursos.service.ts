@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EstadoCurso, NivelCurso } from '@prisma/client';
 import { CreateCursoDto, UpdateCursoDto } from './dto/cursos.dto';
@@ -320,10 +320,20 @@ export class CursosService {
       create: { usuarioId, cursoId, porcentaje: 0 },
     });
 
-    // 2. Verificar lección y calificación si es cuestionario
-    const leccion = await this.prisma.leccion.findUnique({ where: { id: leccionId } });
+    // 2. Verificar que la lección pertenece al curso indicado
+    const leccion = await this.prisma.leccion.findFirst({
+      where: {
+        id: leccionId,
+        modulo: { cursoId },
+      },
+    });
+
+    if (!leccion) {
+      throw new NotFoundException('La lección no existe o no pertenece a este curso.');
+    }
+
     let completada = data.completada;
-    if (leccion?.tipo === 'CUESTIONARIO' && data.calificacion !== undefined) {
+    if (leccion.tipo === 'CUESTIONARIO' && data.calificacion !== undefined) {
       const min = leccion.calificacionMinima ?? 60;
       completada = data.calificacion >= min;
     }

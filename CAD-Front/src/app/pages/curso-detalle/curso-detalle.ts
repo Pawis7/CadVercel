@@ -52,6 +52,18 @@ export class CursoDetalle implements OnInit {
     return Math.round(c.miInscripcion.porcentaje || 0);
   });
 
+  totalLeccionesCount = computed(() => {
+    const c = this.curso();
+    if (!c || !c.modulos) return 0;
+    return c.modulos.reduce((acc: number, mod: any) => acc + (mod.lecciones?.length || 0), 0);
+  });
+
+  completadasCount = computed(() => {
+    const c = this.curso();
+    if (!c || !c.miProgreso) return 0;
+    return c.miProgreso.filter((p: any) => p.completada).length;
+  });
+
   estaInscrito = computed(() => {
     return !!this.curso()?.miInscripcion;
   });

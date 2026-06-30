@@ -84,12 +84,13 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           </button>
-
+ 
           <!-- User Session Component -->
-          <div class="relative" *ngIf="currentUser()">
+          <div class="relative md:w-56" *ngIf="currentUser()">
             <button 
               (click)="toggleProfileDropdown()" 
-              class="flex items-center justify-center w-9 h-9 rounded-full md:w-auto md:h-auto md:rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-800 md:border border-slate-200/80 dark:border-neutral-800 md:p-1.5 md:pr-3 transition-all duration-200 cursor-pointer"
+              class="flex items-center justify-center w-9 h-9 rounded-full md:w-full md:h-auto md:rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900/60 dark:hover:bg-neutral-800 md:border border-slate-200/80 dark:border-neutral-800 p-0 md:p-2 md:pr-3.5 transition-all duration-200 cursor-pointer"
+              [ngClass]="{ 'md:rounded-b-none md:border-b-transparent md:bg-white md:dark:bg-neutral-900 md:shadow-none': isProfileOpen() }"
             >
               <!-- Avatar with Initials (Always visible) -->
               <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-neutral-600 text-slate-700 dark:text-neutral-200 font-bold flex items-center justify-center text-sm select-none ring-2 ring-slate-200/80 dark:ring-neutral-700 shrink-0">
@@ -97,68 +98,58 @@
               </div>
               
               <!-- Desktop name details (Hidden on mobile) -->
-              <div class="text-left hidden md:block ml-2.5">
-                <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 leading-none">
+              <div class="text-left hidden md:block ml-2.5 min-w-0 flex-1">
+                <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 leading-none truncate">
                   {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
                 </p>
                 <span class="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase">Docente</span>
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 hidden md:block ml-2" [class.rotate-180]="isProfileOpen()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 hidden md:block ml-2 shrink-0" [class.rotate-180]="isProfileOpen()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-
+ 
             <!-- Overlay backdrop to close dropdown -->
             <div 
               *ngIf="isProfileOpen()" 
               (click)="closeProfileDropdown()" 
               class="fixed inset-0 z-10 cursor-default"
             ></div>
-
-            <!-- Dropdown Profile Options -->
+ 
+            <!-- Dropdown Profile Options (Vertical Accordion Expand/Collapse) -->
             <div 
               [class.opacity-100]="isProfileOpen()" 
-              [class.scale-100]="isProfileOpen()" 
-              [class.pointer-events-auto]="isProfileOpen()"
+              [class.grid-rows-[1fr]]="isProfileOpen()"
               [class.opacity-0]="!isProfileOpen()" 
-              [class.scale-95]="!isProfileOpen()" 
-              [class.pointer-events-none]="!isProfileOpen()"
-              class="absolute right-0 mt-2.5 w-56 rounded-xl bg-white dark:bg-neutral-900 border border-slate-200/80 dark:border-neutral-800 shadow-xl py-2 z-20 origin-top-right transition-all duration-200 ease-out"
+              [class.grid-rows-[0fr]]="!isProfileOpen()"
+              class="absolute right-0 md:left-0 md:top-full mt-2.5 md:mt-0 w-52 md:w-full rounded-2xl md:rounded-t-none md:rounded-b-2xl bg-white dark:bg-neutral-900 border border-slate-200/80 dark:border-neutral-800 md:border-t-transparent shadow-xl z-20 transition-[grid-template-rows,opacity] duration-300 ease-out grid overflow-hidden origin-top"
             >
-              <div class="px-4 py-2 border-b border-slate-100 dark:border-neutral-800/60">
-                <p class="text-[10px] font-extrabold text-slate-400 dark:text-neutral-500 uppercase tracking-wider">Sesión Activa</p>
-                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">
-                  {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
-                </p>
-                <p class="text-xs text-slate-505 dark:text-neutral-400 truncate mt-0.5">
-                  {{ currentUser()?.email }}
-                </p>
+              <div class="min-h-0 py-1.5">
+                <!-- Profile option -->
+                <a 
+                  routerLink="/dashboard" 
+                  (click)="closeProfileDropdown()"
+                  class="flex items-center space-x-2.5 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-neutral-350 hover:bg-slate-50/50 dark:hover:bg-neutral-800/40 hover:text-orange-500 dark:hover:text-orange-500 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-slate-400 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span>Mi Perfil</span>
+                </a>
+ 
+                <div class="border-t border-slate-100 dark:border-neutral-800/60 my-1"></div>
+ 
+                <!-- Logout option -->
+                <button 
+                  (click)="logout(); closeProfileDropdown()" 
+                  class="w-full flex items-center space-x-2.5 px-4 py-2 text-sm font-bold text-red-600 dark:text-red-600 hover:bg-red-50/50 dark:hover:bg-red-950/20 text-left transition-colors cursor-pointer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Cerrar Sesión</span>
+                </button>
               </div>
-
-              <!-- Profile/Dashboard option -->
-              <a 
-                routerLink="/dashboard" 
-                (click)="closeProfileDropdown()"
-                class="flex items-center space-x-2.5 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800/40 hover:text-orange-500 dark:hover:text-orange-500 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-slate-400 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span>Mi Perfil / Dashboard</span>
-              </a>
-
-              <div class="border-t border-slate-100 dark:border-neutral-800/60 my-1"></div>
-
-              <!-- Logout option -->
-              <button 
-                (click)="logout(); closeProfileDropdown()" 
-                class="w-full flex items-center space-x-2.5 px-4 py-2.5 text-sm font-bold text-red-600 dark:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 text-left transition-colors cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Cerrar Sesión</span>
-              </button>
             </div>
           </div>
         </div>
