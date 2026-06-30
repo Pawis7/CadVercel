@@ -87,7 +87,7 @@ export class AuthService {
 
   private generateTokens(payload: JwtPayload): AuthTokens {
     const jwtSecret = this.config.get<string>('JWT_SECRET')!;
-    const jwtExpiresIn = this.config.get<string>('JWT_EXPIRES_IN') ?? '15m';
+    const jwtExpiresIn = this.config.get<string>('JWT_EXPIRES_IN') ?? '1d';
     const refreshSecret = this.config.get<string>('JWT_REFRESH_SECRET')!;
     const refreshExpiresIn = this.config.get<string>('JWT_REFRESH_EXPIRES_IN') ?? '7d';
 

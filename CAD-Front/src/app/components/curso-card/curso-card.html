@@ -1,10 +1,10 @@
 <!-- ======================================================
      CURSO CARD — diseño vertical responsivo y moderno (Tarjeta Clickable)
      ====================================================== -->
-<a
-  [routerLink]="['/cursos', curso.id]"
-  class="group block bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out overflow-hidden h-full cursor-pointer w-full max-w-full md:max-w-[360px]"
+<div
+  class="group block bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out overflow-hidden h-full cursor-pointer w-full max-w-full md:max-w-[420px] relative"
 >
+  <a [routerLink]="['/cursos', curso.id]" class="absolute inset-0 z-0" [attr.aria-label]="curso.nombre"></a>
   <!-- Portada / Imagen (Superior) -->
   <div class="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-neutral-800 border-b border-slate-200 dark:border-neutral-800">
     
@@ -13,6 +13,7 @@
       *ngIf="curso.portada"
       [src]="curso.portada"
       [alt]="curso.nombre"
+      (error)="curso.portada = null"
       class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
     />
 
@@ -50,7 +51,7 @@
 
     <!-- Menú de 3 puntos (solo ADMIN) -->
     @if (isAdmin) {
-      <div class="absolute top-3 left-3">
+      <div class="absolute top-3 left-3 z-20">
         <button
           (click)="toggleMenu($event)"
           id="btn-opciones-{{ curso.id }}"
@@ -184,4 +185,4 @@
     </div>
 
   </div>
-</a>
+</div>

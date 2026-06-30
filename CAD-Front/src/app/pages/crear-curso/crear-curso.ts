@@ -301,7 +301,11 @@ export class CrearCurso implements OnInit, OnDestroy {
       this.form.markAllAsTouched();
       if (!this.paso1Valido) {
         this.step.set(1);
+        this.errorMsg.set('Por favor, completa el título y descripción del curso antes de continuar.');
+      } else {
+        this.errorMsg.set('Por favor, completa los campos requeridos en la estructura (todos los módulos y lecciones deben tener un título válido).');
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 

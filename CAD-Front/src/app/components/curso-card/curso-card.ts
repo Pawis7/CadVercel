@@ -22,7 +22,7 @@ export interface CursoCardData {
   imports: [CommonModule, RouterLink],
   templateUrl: './curso-card.html',
   styleUrl: './curso-card.css',
-  host: { class: 'block h-full' }
+  host: { class: 'block w-full h-full' }
 })
 export class CursoCard {
   @Input({ required: true }) curso!: CursoCardData;
@@ -36,6 +36,7 @@ export class CursoCard {
   readonly isMenuOpen = signal<boolean>(false);
 
   toggleMenu(event: Event): void {
+    event.preventDefault();
     event.stopPropagation();
     this.isMenuOpen.update(v => !v);
   }
@@ -45,12 +46,14 @@ export class CursoCard {
   }
 
   edit(event: Event): void {
+    event.preventDefault();
     event.stopPropagation();
     this.closeMenu();
     this.onEdit.emit(this.curso.id);
   }
 
   delete(event: Event): void {
+    event.preventDefault();
     event.stopPropagation();
     this.closeMenu();
     this.onDelete.emit(this.curso.id);

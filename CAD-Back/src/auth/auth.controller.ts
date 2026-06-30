@@ -125,7 +125,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProd,   // Solo HTTPS en producción
       sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE_MS,
+      ...(isProd && { maxAge: COOKIE_MAX_AGE_MS }),
       path: '/',
     });
 
@@ -133,7 +133,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      ...(isProd && { maxAge: 7 * 24 * 60 * 60 * 1000 }),
       path: '/api/auth',
     });
   }
