@@ -2,7 +2,7 @@
      CURSO CARD — diseño vertical responsivo y moderno (Tarjeta Clickable)
      ====================================================== -->
 <div
-  class="group block bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out overflow-hidden h-full cursor-pointer w-full max-w-full md:max-w-[420px] relative"
+  class="group block bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out overflow-hidden h-full cursor-pointer w-full max-w-full md:max-w-[25rem] xl:max-w-none relative"
 >
   <a [routerLink]="['/cursos', curso.id]" class="absolute inset-0 z-0" [attr.aria-label]="curso.nombre"></a>
   <!-- Portada / Imagen (Superior) -->
@@ -36,7 +36,7 @@
 
     <!-- Badge de Nivel (Top-Right) — Fondo oscuro con punto de color -->
     <span
-      class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white bg-slate-950/75 border border-white/10 backdrop-blur-sm select-none"
+      class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.625rem] font-black uppercase tracking-wider text-white bg-slate-950/75 border border-white/10 backdrop-blur-sm select-none"
     >
       <span 
         class="w-1.5 h-1.5 rounded-full shrink-0"
@@ -102,7 +102,7 @@
     
     <!-- Tag de Categoría / Etiquetas -->
     <span
-      class="self-start inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border select-none"
+      class="self-start inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[0.625rem] font-black uppercase tracking-wider border select-none"
       [ngClass]="{
         'bg-orange-50 dark:bg-orange-950/20 text-orange-500 border-orange-200/50 dark:border-orange-900/30': curso.nivel === 'PRINCIPIANTE',
         'bg-indigo-50 dark:bg-indigo-950/20 text-indigo-500 border-indigo-200/50 dark:border-indigo-900/30': curso.nivel === 'INTERMEDIO',
@@ -140,7 +140,7 @@
 
       <!-- Caso 2: No Inscrito (Muestra Contenedor Bloqueado) -->
       <div *ngIf="porcentaje === null" 
-        class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-neutral-950/30 text-slate-400 dark:text-neutral-500 text-xs font-bold rounded-xl border border-slate-200/50 dark:border-neutral-800/40 border-dashed select-none min-h-[34px]">
+        class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-neutral-950/30 text-slate-400 dark:text-neutral-500 text-xs font-bold rounded-xl border border-slate-200/50 dark:border-neutral-800/40 border-dashed select-none min-h-[2.125rem]">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
         </svg>
@@ -149,7 +149,7 @@
     </div>
 
     <!-- Fila Inferior (Metadata y Flecha) -->
-    <div class="pt-3 border-t border-slate-100 dark:border-neutral-800/60 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-neutral-400">
+    <div class="pt-3 border-t border-slate-100 dark:border-neutral-800/60 flex items-center justify-between text-[0.6875rem] font-bold text-slate-500 dark:text-neutral-400">
       <div class="flex flex-wrap items-center gap-3">
         <!-- Duración -->
         <span *ngIf="duracionLabel" class="inline-flex items-center gap-1">

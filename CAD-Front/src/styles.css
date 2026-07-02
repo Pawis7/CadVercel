@@ -3,20 +3,24 @@
 
 @theme {
   --font-sans: 'Montserrat', sans-serif;
-  
+
   /* Modo Oscuro Brand Slate-Navy overrides */
   --color-neutral-950: #0D1321;
   --color-neutral-900: #1b2336;
   --color-neutral-800: #222c42;
-  
+
   /* Brand Orange & Red overrides */
   --color-orange-500: #FF8300;
   --color-orange-400: #ffa233;
   --color-orange-600: #d96f00;
-  
+
   --color-red-650: #C90045;
   --color-red-600: #C90045;
   --color-red-500: #C90045;
+
+  /* Custom high-res breakpoints for 1080p and 2K screens */
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -31,5 +35,3 @@ body {
   animation-duration: 0.5s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-

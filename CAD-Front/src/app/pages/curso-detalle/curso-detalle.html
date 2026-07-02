@@ -46,7 +46,7 @@
       <!-- Info Left Block -->
       <div class="space-y-4 relative z-10">
         <!-- Badge Módulo / Lección -->
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[0.625rem] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20">
           📙 MÓDULO {{ moduloActivo()?.orden || 1 }} · LECCIÓN {{ leccionActiva()?.orden || 1 }}
         </span>
 
@@ -63,7 +63,7 @@
         <div class="flex flex-wrap items-center gap-y-2.5 gap-x-5 text-sm font-semibold text-slate-400">
           <!-- Autor -->
           <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 flex items-center justify-center font-bold text-[9px] border border-orange-500/30">
+            <div class="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 flex items-center justify-center font-bold text-[0.5625rem] border border-orange-500/30">
               {{ (curso().autor?.firstName?.[0] || 'A') + (curso().autor?.lastName?.[0] || 'U') }}
             </div>
             <span>Por {{ curso().autor?.firstName }} {{ curso().autor?.lastName }}</span>
@@ -109,13 +109,13 @@
       <div class="w-full md:w-60 space-y-2 shrink-0 relative z-10">
         @if (estaInscrito()) {
           <div class="flex justify-between items-end">
-            <span class="text-[10px] font-black text-slate-400 tracking-wider">TU PROGRESO</span>
+            <span class="text-[0.625rem] font-black text-slate-400 tracking-wider">TU PROGRESO</span>
             <span class="text-orange-500 text-3xl font-black leading-none">{{ porcentajeProgreso() }}%</span>
           </div>
           <div class="h-2 w-full rounded-full bg-neutral-900 overflow-hidden">
             <div class="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out" [style.width.%]="porcentajeProgreso()"></div>
           </div>
-          <p class="text-[10px] text-slate-400 font-bold leading-normal">
+          <p class="text-[0.625rem] text-slate-400 font-bold leading-normal">
             {{ completadasCount() }} de {{ totalLeccionesCount() }} actividades completadas
           </p>
         } @else {
@@ -262,7 +262,7 @@
                     <!-- Encabezado del Cuestionario -->
                     <div class="pb-5 border-b border-slate-200 dark:border-neutral-800">
                       <div class="space-y-1.5">
-                        <span class="inline-flex px-2.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20">
+                        <span class="inline-flex px-2.5 py-0.5 rounded-md text-[0.5625rem] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20">
                           MÓDULO {{ moduloActivo()?.orden || 1 }} · LECCIÓN {{ leccion.orden }}
                         </span>
                         <h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
@@ -309,7 +309,7 @@
                               <button
                                 type="button"
                                 (click)="toggleMarcarRevisar(preg.id, $event)"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight border transition-all duration-150 cursor-pointer focus:outline-none shrink-0"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.625rem] font-bold tracking-tight border transition-all duration-150 cursor-pointer focus:outline-none shrink-0"
                                 [ngClass]="preguntasMarcadas()[preg.id] 
                                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-450 font-black' 
                                   : 'bg-slate-50 hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-750 border-slate-205 dark:border-neutral-700 text-slate-400 dark:text-neutral-500'"
@@ -459,7 +459,7 @@
             </div>
 
             <!-- Leyenda de colores -->
-            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-neutral-800 text-[10px] font-bold text-slate-500 dark:text-neutral-400">
+            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-neutral-800 text-[0.625rem] font-bold text-slate-500 dark:text-neutral-400">
               <div class="flex items-center gap-2.5">
                 <span class="w-3 h-3 rounded bg-orange-500 block"></span>
                 <span>Respondida</span>
@@ -484,7 +484,7 @@
             <span class="text-amber-500 text-lg shrink-0 mt-0.5">💡</span>
             <div class="space-y-1">
               <h4 class="text-xs font-bold text-amber-600 dark:text-amber-450 uppercase tracking-wider">Consejo</h4>
-              <p class="text-[11px] leading-relaxed text-slate-500 dark:text-neutral-450 font-semibold">
+              <p class="text-[0.6875rem] leading-relaxed text-slate-500 dark:text-neutral-450 font-semibold">
                 Lee cada pregunta cuidadosamente antes de seleccionar tu respuesta. Recuerda marcar preguntas para revisar si tienes dudas.
               </p>
             </div>
