@@ -5,12 +5,14 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import type { Response } from 'express';
+import type { Request as ExpressRequest, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -63,6 +65,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
     const isProd = process.env.NODE_ENV === 'production';
@@ -82,6 +85,28 @@ export class AuthController {
     });
 
     return { message: 'Sesión cerrada correctamente' };
+  }
+
+  /**
+   * POST /auth/refresh
+   * Lee el cookie HttpOnly `cad_refresh_token`, lo verifica criptográficamente
+   * y emite un nuevo par access + refresh token.
+   * Sin throttle agresivo (usa el límite global de 30 req/60s).
+   */
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Req() req: ExpressRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const refreshToken = req.cookies?.['cad_refresh_token'];
+    if (!refreshToken) {
+      throw new UnauthorizedException('No hay sesión activa para renovar');
+    }
+
+    const tokens = await this.authService.refreshTokens(refreshToken);
+    this.setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+    return { message: 'Sesión renovada correctamente' };
   }
 
   /**

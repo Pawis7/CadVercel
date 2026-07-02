@@ -6,7 +6,7 @@
     [class.-translate-y-full]="isNavbarHidden()" 
     class="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-neutral-800/80 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out transform"
   >
-    <div class="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1920px] 4xl:max-w-[2400px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl 2xl:max-w-[1600px] container-autenticado mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-20 items-center relative">
         
         <!-- Left Section: Hamburger Menu (Mobile only) -->
@@ -26,7 +26,7 @@
         <!-- Middle Section on mobile, Left Section on desktop: Logo & Desktop Links -->
         <div class="flex items-center space-x-8 absolute top-0 left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:flex-grow-0 h-full">
           <a routerLink="/inicio" class="flex items-center justify-center cursor-pointer select-none h-full">
-            <img src="/assets/images/logo_aprende.png" class="h-[44px] md:h-[52px] w-auto object-contain transform translate-x-[14px] translate-y-[1px] md:translate-x-0 md:translate-y-0" alt="Jalisco Aprende" />
+            <img src="/assets/images/logo_aprende.png" class="h-[2.75rem] md:h-[3.25rem] w-auto object-contain transform translate-x-[0.875rem] translate-y-[0.0625rem] md:translate-x-0 md:translate-y-0" alt="Jalisco Aprende" />
           </a>
 
           <!-- Navigation Menu (Desktop) -->
@@ -99,7 +99,7 @@
                 <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 leading-none truncate">
                   {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
                 </p>
-                <span class="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase">Docente</span>
+                <span class="text-[0.5625rem] font-bold text-slate-400 dark:text-neutral-500 uppercase">Docente</span>
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 hidden md:block ml-2 shrink-0" [class.rotate-180]="isProfileOpen()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -174,7 +174,7 @@
     <!-- Drawer Header -->
     <div class="flex items-center justify-between pb-6 border-b border-slate-100 dark:border-neutral-800/60">
       <div class="flex items-center space-x-2.5 select-none">
-        <img src="/assets/images/logo_aprende.png" class="h-[36px] w-auto object-contain" alt="Jalisco Aprende" />
+        <img src="/assets/images/logo_aprende.png" class="h-[2.25rem] w-auto object-contain" alt="Jalisco Aprende" />
       </div>
       <!-- Close Button -->
       <button 
@@ -250,7 +250,7 @@
           <p class="text-xs font-bold text-slate-800 dark:text-neutral-200 truncate">
             {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
           </p>
-          <p class="text-[10px] text-slate-400 dark:text-neutral-500 truncate">
+          <p class="text-[0.625rem] text-slate-400 dark:text-neutral-500 truncate">
             {{ currentUser()?.email }}
           </p>
         </div>
@@ -259,7 +259,7 @@
   </div>
 
   <!-- Main Content Route Outlet -->
-  <main class="flex-grow max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1920px] 4xl:max-w-[2400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-20">
+  <main class="flex-grow max-w-7xl 2xl:max-w-[1600px] container-autenticado w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-20">
     <router-outlet></router-outlet>
   </main>
 
@@ -280,7 +280,7 @@
       ></div>
     </div>
 
-    <div class="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1920px] 4xl:max-w-[2400px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+    <div class="max-w-7xl 2xl:max-w-[1600px] container-autenticado mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
       
       <!-- Main Content Grid (2 Columns: Left Branding, Right Social Networks) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
@@ -296,7 +296,7 @@
             <div class="h-10 w-px bg-slate-200 dark:bg-neutral-800"></div>
             <div class="text-left">
               <h4 class="text-base font-bold text-slate-800 dark:text-white tracking-tight">Jalisco Aprende</h4>
-              <p class="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-neutral-500">Jalisco</p>
+              <p class="text-[0.625rem] uppercase font-bold tracking-wider text-slate-400 dark:text-neutral-500">Jalisco</p>
             </div>
           </div>
           <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed max-w-sm">
@@ -362,7 +362,7 @@
         <p class="text-center sm:text-left">
           © {{ todayYear }} Jalisco Aprende. Todos los derechos reservados. Secretaría de Educación Jalisco.
         </p>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-semibold bg-slate-100 dark:bg-neutral-800/80 text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800/80 select-none">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-[0.625rem] font-mono font-semibold bg-slate-100 dark:bg-neutral-800/80 text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800/80 select-none">
           v1.0.0
         </span>
       </div>

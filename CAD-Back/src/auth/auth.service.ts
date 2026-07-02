@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError, JsonWebTokenError } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -66,12 +66,35 @@ export class AuthService {
     return this.generateTokens({ sub: user.id, email: user.email });
   }
 
-  async refreshTokens(userId: string): Promise<AuthTokens> {
-    const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
+  /**
+   * Verifica criptográficamente el refresh token (firma + expiry) y emite nuevos tokens.
+   * El refresh token DEBE llegar como cookie HttpOnly — no como argumento libre.
+   */
+  async refreshTokens(refreshToken: string): Promise<AuthTokens> {
+    const refreshSecret = this.config.get<string>('JWT_REFRESH_SECRET')!;
+
+    try {
+      const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+        secret: refreshSecret,
+      });
+
+      // Confirmar que el usuario sigue existiendo en BD
+      const user = await this.usersService.findById(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+
+      return this.generateTokens({ sub: user.id, email: user.email });
+    } catch (err) {
+      if (err instanceof TokenExpiredError) {
+        throw new UnauthorizedException('El refresh token ha expirado, inicia sesión nuevamente');
+      }
+      if (err instanceof JsonWebTokenError) {
+        throw new UnauthorizedException('Refresh token inválido');
+      }
+      // Re-lanzar UnauthorizedException ya construidas (user not found, etc.)
+      throw err;
     }
-    return this.generateTokens({ sub: user.id, email: user.email });
   }
 
   async me(userId: string) {

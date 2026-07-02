@@ -1,8 +1,8 @@
-<div class="max-w-[1700px] 3xl:max-w-[1920px] 4xl:max-w-[2400px] mx-auto w-full">
+<div class="max-w-[1700px] container-autenticado mx-auto w-full">
   <!-- Encabezado de página -->
   <div class="mb-8 flex items-start justify-between gap-4">
   <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Catálogo de Cursos</h1>
+    <h1 class="text-xl 3xl:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Catálogo de Cursos</h1>
     <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1.5">
       Inscríbete en los cursos oficiales aprobados por la Dirección de Formación Continua de Jalisco.
     </p>
@@ -45,7 +45,7 @@
 
 <!-- Estado de carga -->
 @if (isLoading()) {
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[2500px]:grid-cols-6 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[2500px]:grid-cols-6 grid-cursos gap-4">
     @for (skeleton of [1,2,3,4,5,6]; track skeleton) {
       <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200/80 dark:border-neutral-800 overflow-hidden animate-pulse">
         <div class="aspect-video bg-slate-200 dark:bg-neutral-800"></div>
@@ -83,7 +83,7 @@
 
 <!-- Grid de tarjetas -->
 @if (!isLoading() && !error()) {
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-6 w-full">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 grid-cursos gap-6 w-full">
     <app-curso-card
       *ngFor="let course of filteredCourses"
       [curso]="course"

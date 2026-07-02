@@ -1,5 +1,5 @@
 import { NivelCurso, EstadoCurso } from '@prisma/client';
-import { IsString, IsOptional, IsArray, IsEnum, IsNumber, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsEnum, IsNumber, IsUrl, MinLength, MaxLength, ArrayMaxSize, Min, Max } from 'class-validator';
 
 /**
  * DTO para crear un curso.
@@ -17,12 +17,14 @@ export class CreateCursoDto {
   descripcion!: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl({ protocols: ['https', 'http'], require_tld: true }, { message: 'La portada debe ser una URL válida' })
   portada?: string;
 
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(20, { message: 'Máximo 20 etiquetas' })
   @IsString({ each: true })
+  @MaxLength(50, { each: true, message: 'Cada etiqueta puede tener máximo 50 caracteres' })
   etiquetas?: string[];
 
   @IsOptional()
@@ -35,6 +37,8 @@ export class CreateCursoDto {
 
   @IsOptional()
   @IsNumber()
+  @Min(1)
+  @Max(10000)
   duracionEstimada?: number;
 }
 
@@ -55,12 +59,14 @@ export class UpdateCursoDto {
   descripcion?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl({ protocols: ['https', 'http'], require_tld: true }, { message: 'La portada debe ser una URL válida' })
   portada?: string;
 
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(20, { message: 'Máximo 20 etiquetas' })
   @IsString({ each: true })
+  @MaxLength(50, { each: true, message: 'Cada etiqueta puede tener máximo 50 caracteres' })
   etiquetas?: string[];
 
   @IsOptional()
@@ -73,5 +79,7 @@ export class UpdateCursoDto {
 
   @IsOptional()
   @IsNumber()
+  @Min(1)
+  @Max(10000)
   duracionEstimada?: number;
 }

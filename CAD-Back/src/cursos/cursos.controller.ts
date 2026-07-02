@@ -15,6 +15,7 @@ import {
 import { CursosService } from './cursos.service';
 import { CreateCursoDto, UpdateCursoDto } from './dto/cursos.dto';
 import { EstructuraCursoDto } from './dto/estructura.dto';
+import { RegistrarProgresoDto } from './dto/registrar-progreso.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -77,7 +78,7 @@ export class CursosController {
   registrarProgreso(
     @Param('id') cursoId: string,
     @Param('leccionId') leccionId: string,
-    @Body() body: { completada: boolean; calificacion?: number; tiempoVisto?: number },
+    @Body() body: RegistrarProgresoDto,
     @Request() req: any,
   ) {
     return this.cursosService.registrarProgreso(cursoId, leccionId, req.user.id, body);
@@ -103,7 +104,8 @@ export class CursosController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async update(@Param('id') id: string, @Body() dto: UpdateCursoDto) {
-    const curso = await this.cursosService.findById(id);
+    // isAdminContext=true: el RolesGuard ya verificó ADMIN, se puede acceder a borradores
+    const curso = await this.cursosService.findById(id, undefined, true);
     if (!curso) throw new NotFoundException('Curso no encontrado');
     return this.cursosService.update(id, dto);
   }
@@ -116,7 +118,7 @@ export class CursosController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async updateEstructura(@Param('id') id: string, @Body() dto: EstructuraCursoDto) {
-    const curso = await this.cursosService.findById(id);
+    const curso = await this.cursosService.findById(id, undefined, true);
     if (!curso) throw new NotFoundException('Curso no encontrado');
     return this.cursosService.saveEstructura(id, dto);
   }
@@ -130,7 +132,7 @@ export class CursosController {
   @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
-    const curso = await this.cursosService.findById(id);
+    const curso = await this.cursosService.findById(id, undefined, true);
     if (!curso) throw new NotFoundException('Curso no encontrado');
     await this.cursosService.remove(id);
     return { message: 'Curso eliminado correctamente' };

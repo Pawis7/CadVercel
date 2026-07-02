@@ -18,12 +18,38 @@
   --color-red-600: #C90045;
   --color-red-500: #C90045;
 
-  /* Custom high-res breakpoints for 1080p and 2K screens */
-  --breakpoint-3xl: 1920px;
-  --breakpoint-4xl: 2560px;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  font-size: 16px;
+}
+
+/* Responsive overrides for 1080p and 2K screens */
+@media (min-width: 1880px) {
+  html {
+    font-size: 17.5px !important;
+  }
+  .container-autenticado {
+    max-width: 2000px !important;
+  }
+  .grid-cursos {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 2500px) {
+  html {
+    font-size: 21.5px !important;
+  }
+  .container-autenticado {
+    max-width: 2500px !important;
+  }
+  .grid-cursos {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
 
 body {
   @apply bg-slate-50 dark:bg-neutral-950 text-slate-600 dark:text-neutral-200 transition-colors duration-300;

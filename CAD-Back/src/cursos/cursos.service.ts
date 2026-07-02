@@ -3,6 +3,31 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EstadoCurso, NivelCurso } from '@prisma/client';
 import { CreateCursoDto, UpdateCursoDto } from './dto/cursos.dto';
 import { EstructuraCursoDto } from './dto/estructura.dto';
+import sanitizeHtml from 'sanitize-html';
+
+/** Configuración permitida para HTML de lecciones de lectura */
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: [
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'p', 'br', 'hr', 'blockquote', 'pre', 'code',
+    'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+    'strong', 'em', 'b', 'i', 'u', 's', 'del', 'ins',
+    'a', 'img', 'figure', 'figcaption',
+    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td',
+    'div', 'span',
+  ],
+  allowedAttributes: {
+    a:   ['href', 'title', 'target', 'rel'],
+    img: ['src', 'alt', 'width', 'height'],
+    '*': ['class', 'id'],
+  },
+  allowedSchemes: ['https', 'http', 'mailto'],
+  // Bloquea js: data: etc. en href/src
+  allowedSchemesByTag: {
+    a:   ['https', 'http', 'mailto'],
+    img: ['https', 'http'],
+  },
+};
 
 @Injectable()
 export class CursosService {
@@ -103,9 +128,39 @@ export class CursosService {
     return cursos;
   }
 
-  async findById(id: string, usuarioId?: string) {
+  /**
+   * Busca un curso por ID aplicando reglas de acceso según el rol:
+   *
+   * - Usuarios normales (USER/EDITOR): solo ven cursos PUBLICADOS.
+   *   Las opciones de cuestionario se devuelven SIN `esCorrecta`
+   *   para evitar que los alumnos obtengan las respuestas correctas
+   *   inspeccionando la respuesta de la API.
+   *
+   * - Administradores: ven cualquier estado (BORRADOR, ARCHIVADO).
+   *   Reciben `esCorrecta` para poder editar los cuestionarios.
+   *
+   * - isAdminContext = true: usado internamente por endpoints de
+   *   edición/borrado (PUT, DELETE) donde no hay un usuarioId pero
+   *   el guard ya garantizó que el caller es ADMIN.
+   */
+  async findById(id: string, usuarioId?: string, isAdminContext = false) {
+    // Determinar si la petición viene de un admin
+    let isAdmin = isAdminContext;
+
+    if (usuarioId && !isAdminContext) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: usuarioId },
+        select: { role: true },
+      });
+      isAdmin = user?.role === 'ADMIN';
+    }
+
     const curso = await this.prisma.curso.findUnique({
-      where: { id },
+      where: {
+        id,
+        // Alumnos solo acceden a cursos publicados
+        ...(!isAdmin && { estado: 'PUBLICADO' }),
+      },
       include: {
         autor: { select: { firstName: true, lastName: true } },
         _count: { select: { modulos: true, inscritos: true } },
@@ -118,7 +173,10 @@ export class CursosService {
                 preguntas: {
                   orderBy: { orden: 'asc' },
                   include: {
-                    opciones: true,
+                    // Admins ven esCorrecta para editar; alumnos solo ven id y texto
+                    opciones: isAdmin
+                      ? true
+                      : { select: { id: true, texto: true } },
                   },
                 },
               },
@@ -153,6 +211,7 @@ export class CursosService {
       miProgreso: progreso,
     };
   }
+
 
   async create(data: CreateCursoDto, autorId: string) {
     return this.prisma.curso.create({
@@ -227,8 +286,10 @@ export class CursosService {
               // VIDEO
               recursoUrl:         leccionData.recursoUrl,
               duracionSeg:        leccionData.duracionSeg,
-              // LECTURA
-              contenidoHtml:      leccionData.contenidoHtml,
+              // LECTURA — sanitizar HTML para prevenir XSS stored
+              contenidoHtml:      leccionData.contenidoHtml
+                ? sanitizeHtml(leccionData.contenidoHtml, SANITIZE_OPTIONS)
+                : undefined,
               // ARCHIVO
               nombreArchivo:      leccionData.nombreArchivo,
               tipoMime:           leccionData.tipoMime,
