@@ -1,12 +1,13 @@
 /* Specific styles for the Inicio page */
 
-/* ── YouTube-style card: rounded, zoom, and animated border drawing from top/bottom center ── */
+/* ── YouTube-style card: rounded, zoom, and animated border drawing from 4 edge centers ── */
 .yt-card {
   position: relative;
+  /* Sincronizamos la duración y curva del zoom con el dibujo del borde (0.55s) */
   transition:
-    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 0.2s ease;
+    transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease;
   will-change: transform;
 }
 
@@ -19,11 +20,12 @@
   border: 1.5px solid #FF8300;
   pointer-events: none;
   opacity: 0;
-  /* El clip-path inicial tiene exactamente 6 vértices colapsados en el centro vertical */
-  clip-path: polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 100%, 50% 0%);
+  /* Clip-path inicial de 4 vértices (rombo que toca el centro de cada arista) */
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  /* Ralentizamos el dibujo a 0.55s en perfecta sincronía con el zoom */
   transition:
-    opacity 0.15s ease,
-    clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.25s ease,
+    clip-path 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
 }
 
@@ -36,6 +38,6 @@
 
 .yt-card:hover::before {
   opacity: 1;
-  /* Expande los mismos 6 vértices hacia las esquinas exteriores para revelar el borde */
-  clip-path: polygon(50% -10%, 110% -10%, 110% 110%, 50% 110%, -10% 110%, -10% -10%);
+  /* Expande los 4 vértices del rombo hacia las esquinas exteriores, dibujando el borde */
+  clip-path: polygon(110% -10%, 110% 110%, -10% 110%, -10% -10%);
 }
