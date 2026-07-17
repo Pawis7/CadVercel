@@ -16,6 +16,7 @@ import { CursosService } from './cursos.service';
 import { CreateCursoDto, UpdateCursoDto } from './dto/cursos.dto';
 import { EstructuraCursoDto } from './dto/estructura.dto';
 import { RegistrarProgresoDto } from './dto/registrar-progreso.dto';
+import { EnviarCuestionarioDto } from './dto/enviar-cuestionario.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -82,6 +83,23 @@ export class CursosController {
     @Request() req: any,
   ) {
     return this.cursosService.registrarProgreso(cursoId, leccionId, req.user.id, body);
+  }
+
+  /**
+   * POST /cursos/:id/lecciones/:leccionId/evaluar
+   * Evalúa un cuestionario server-side: recibe las respuestas del alumno,
+   * compara con esCorrecta en la DB y retorna calificación real.
+   */
+  @Post(':id/lecciones/:leccionId/evaluar')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  evaluarCuestionario(
+    @Param('id') cursoId: string,
+    @Param('leccionId') leccionId: string,
+    @Body() body: EnviarCuestionarioDto,
+    @Request() req: any,
+  ) {
+    return this.cursosService.evaluarCuestionario(cursoId, leccionId, req.user.id, body.respuestas);
   }
 
   /**

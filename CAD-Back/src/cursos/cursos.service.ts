@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EstadoCurso, NivelCurso } from '@prisma/client';
 import { CreateCursoDto, UpdateCursoDto } from './dto/cursos.dto';
@@ -53,6 +53,19 @@ export class CursosService {
       _count: {
         select: { modulos: true, inscritos: true },
       },
+      // Primera lección tipo VIDEO de cualquier módulo para el thumbnail
+      modulos: {
+        orderBy: { orden: 'asc' },
+        take: 1,
+        select: {
+          lecciones: {
+            where: { tipo: 'VIDEO' },
+            orderBy: { orden: 'asc' },
+            take: 1,
+            select: { recursoUrl: true, titulo: true },
+          },
+        },
+      },
     };
 
     if (usuarioId) {
@@ -68,17 +81,19 @@ export class CursosService {
       select: selectFields,
     });
 
-    if (usuarioId) {
-      return cursos.map((curso: any) => {
-        const { inscritos, ...rest } = curso;
-        return {
-          ...rest,
-          inscripciones: inscritos,
-        };
-      });
-    }
+    // Extraer videoIntro y limpiar la estructura de módulos del response
+    const cursosConVideo = cursos.map((curso: any) => {
+      const { modulos, inscritos, ...rest } = curso;
+      const primeraLeccionVideo = modulos?.[0]?.lecciones?.[0] ?? null;
+      return {
+        ...rest,
+        inscripciones: inscritos,
+        videoIntro: primeraLeccionVideo?.recursoUrl ?? null,
+        videoIntroTitulo: primeraLeccionVideo?.titulo ?? null,
+      };
+    });
 
-    return cursos;
+    return cursosConVideo;
   }
 
   /**
@@ -458,6 +473,83 @@ export class CursosService {
       porcentaje,
       completadosCount,
       totalPasos: pool.length,
+    };
+  }
+
+  /**
+   * Evalúa un cuestionario server-side.
+   * Recibe las respuestas del alumno, las compara con `esCorrecta` en la DB
+   * (campo que nunca se expone al cliente) y calcula la calificación real.
+   * Llama internamente a registrarProgreso para persistir el resultado.
+   */
+  async evaluarCuestionario(
+    cursoId: string,
+    leccionId: string,
+    usuarioId: string,
+    respuestas: { preguntaId: string; opcionId: string }[],
+  ) {
+    // 1. Cargar la lección con todas sus preguntas y opciones
+    const leccion = await this.prisma.leccion.findFirst({
+      where: { id: leccionId, modulo: { cursoId } },
+      include: {
+        preguntas: {
+          include: { opciones: true },
+        },
+      },
+    });
+
+    if (!leccion) {
+      throw new NotFoundException('La lección no existe o no pertenece a este curso.');
+    }
+
+    if (leccion.tipo !== 'CUESTIONARIO') {
+      throw new BadRequestException('Esta lección no es un cuestionario.');
+    }
+
+    const totalPreguntas = leccion.preguntas.length;
+    if (totalPreguntas === 0) {
+      throw new BadRequestException('El cuestionario no tiene preguntas configuradas.');
+    }
+
+    // 2. Verificar que se respondieron todas las preguntas
+    if (respuestas.length !== totalPreguntas) {
+      throw new BadRequestException(
+        `Se esperaban ${totalPreguntas} respuestas pero se recibieron ${respuestas.length}.`,
+      );
+    }
+
+    // 3. Comparar respuestas con esCorrecta (server-side, nunca expuesto al cliente)
+    let correctas = 0;
+    for (const resp of respuestas) {
+      const pregunta = leccion.preguntas.find((p) => p.id === resp.preguntaId);
+      if (!pregunta) {
+        throw new BadRequestException(`Pregunta desconocida: ${resp.preguntaId}`);
+      }
+      const opcion = pregunta.opciones.find((o) => o.id === resp.opcionId);
+      if (!opcion) {
+        throw new BadRequestException(`Opción desconocida: ${resp.opcionId}`);
+      }
+      if (opcion.esCorrecta) correctas++;
+    }
+
+    // 4. Calcular calificación (0-100)
+    const calificacion = Math.round((correctas / totalPreguntas) * 100);
+    const minima = leccion.calificacionMinima ?? 60;
+    const aprobado = calificacion >= minima;
+
+    // 5. Persistir resultado reutilizando la lógica existente
+    const resultado = await this.registrarProgreso(cursoId, leccionId, usuarioId, {
+      completada: aprobado,
+      calificacion,
+    });
+
+    return {
+      calificacion,
+      aprobado,
+      correctas,
+      total: totalPreguntas,
+      calificacionMinima: minima,
+      ...resultado,
     };
   }
 }

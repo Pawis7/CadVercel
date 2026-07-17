@@ -40,6 +40,14 @@ export class CursoDetalle implements OnInit {
     return l.preguntas.length - this.respondidasCount();
   });
 
+  /** Índice de la primera pregunta sin responder (-1 si todas están respondidas) */
+  primeraPreguntaSinResponderIdx = computed(() => {
+    const l = this.leccionActiva();
+    if (!l || !l.preguntas) return -1;
+    const respuestas = this.respuestasQuiz();
+    return l.preguntas.findIndex((p: any) => !respuestas[p.id]);
+  });
+
   progresoQuizPercent = computed(() => {
     const l = this.leccionActiva();
     if (!l || !l.preguntas || l.preguntas.length === 0) return 0;
@@ -192,13 +200,45 @@ export class CursoDetalle implements OnInit {
     return progreso.some((p: any) => p.leccionId === leccionId && p.completada);
   }
 
+  /**
+   * Lista blanca de dominios permitidos para embeder videos en iframe.
+   * bypassSecurityTrustResourceUrl desactiva la protección de Angular,
+   * así que solo lo aplicamos a dominios conocidos y confiables.
+   */
+  private readonly allowedVideoDomains = [
+    'youtube.com',
+    'www.youtube.com',
+    'youtu.be',
+    'player.vimeo.com',
+    'vimeo.com',
+    'drive.google.com',
+    'docs.google.com',
+  ];
+
   getSafeVideoUrl(url?: string): SafeResourceUrl | null {
     if (!url) return null;
+
     let embedUrl = url;
     const ytMatch = url.match(/(?:youtu\.be\/|watch\?v=|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
     if (ytMatch) {
       embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
     }
+
+    // Validar que el dominio está en la lista blanca antes de hacer bypass
+    try {
+      const parsedUrl = new URL(embedUrl);
+      const isAllowed = this.allowedVideoDomains.some(
+        (domain) => parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`),
+      );
+      if (!isAllowed) {
+        console.warn(`Dominio de video no permitido: ${parsedUrl.hostname}`);
+        return null;
+      }
+    } catch {
+      // URL malformada — no embeder
+      return null;
+    }
+
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
 
@@ -264,31 +304,33 @@ export class CursoDetalle implements OnInit {
     const preguntas = l.preguntas || [];
     if (preguntas.length === 0) return;
 
-    let aciertos = 0;
-    const respuestas = this.respuestasQuiz();
-
-    for (const p of preguntas) {
-      const seleccionadaId = respuestas[p.id];
-      const opcionSeleccionada = (p.opciones || []).find((o: any) => o.id === seleccionadaId);
-      if (opcionSeleccionada && opcionSeleccionada.esCorrecta) {
-        aciertos++;
-      }
+    // ── Bloquear si hay preguntas sin responder ───────────────────────────────
+    const sinResponder = this.primeraPreguntaSinResponderIdx();
+    if (sinResponder !== -1) {
+      this.preguntaActivaIndex.set(sinResponder);
+      return;
     }
 
-    const calificacion = Math.round((aciertos / preguntas.length) * 100);
-    const min = l.calificacionMinima ?? 60;
-    const aprobado = calificacion >= min;
+    // ── Formatear respuestas del alumno para el endpoint de evaluación ───────
+    const respuestasMap = this.respuestasQuiz();
+    const respuestas = Object.entries(respuestasMap).map(([preguntaId, opcionId]) => ({
+      preguntaId,
+      opcionId,
+    }));
 
-    this.cursosService.registrarProgreso(c.id, l.id, { completada: aprobado, calificacion }).subscribe({
+    // ── Enviar al backend para evaluación server-side ────────────────────────
+    // El backend compara con esCorrecta (nunca expuesto al cliente) y retorna
+    // la calificación real junto con si aprobó o no.
+    this.cursosService.evaluarCuestionario(c.id, l.id, respuestas).subscribe({
       next: (res) => {
         this.actualizarEstadoCurso(res);
-        this.quizResultado.set({ calificacion, aprobado });
-        if (aprobado) {
-          setTimeout(() => this.irALaSiguienteActividad(), 1500);
-        }
+        this.quizResultado.set({
+          calificacion: res.calificacion,
+          aprobado: res.aprobado,
+        });
       },
       error: (err) => {
-        console.error('Error enviando cuestionario:', err);
+        console.error('Error evaluando cuestionario:', err);
       },
     });
   }

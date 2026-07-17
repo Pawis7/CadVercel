@@ -116,4 +116,16 @@ export class CursosService {
   registrarProgreso(cursoId: string, leccionId: string, payload: { completada: boolean; calificacion?: number; tiempoVisto?: number }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/cursos/${cursoId}/lecciones/${leccionId}/progreso`, payload);
   }
+
+  /**
+   * Envía las respuestas del cuestionario para evaluación server-side.
+   * El backend compara con `esCorrecta` y devuelve la calificación real.
+   */
+  evaluarCuestionario(
+    cursoId: string,
+    leccionId: string,
+    respuestas: { preguntaId: string; opcionId: string }[],
+  ): Observable<{ calificacion: number; aprobado: boolean; correctas: number; total: number; calificacionMinima: number; inscripcion: any; progreso: any[] }> {
+    return this.http.post<any>(`${this.apiUrl}/cursos/${cursoId}/lecciones/${leccionId}/evaluar`, { respuestas });
+  }
 }

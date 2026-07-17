@@ -61,3 +61,74 @@ body {
   animation-duration: 0.5s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+:root {
+  --color-bg-stripes: #ffffff;
+}
+
+.dark {
+  --color-bg-stripes: #1b2336;
+}
+
+.bg-rayas-naranja {
+  background-color: #FF8300 !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 6px,
+    var(--color-bg-stripes) 6px,
+    var(--color-bg-stripes) 12px
+  ) !important;
+  color: white !important;
+  border-color: transparent !important;
+}
+
+/* Animación de dibujo de borde y llenado de fondo para opciones seleccionadas */
+:root {
+  --quiz-selected-bg: rgba(255, 131, 0, 0.05);
+}
+
+.dark {
+  --quiz-selected-bg: rgba(255, 131, 0, 0.1);
+}
+
+@keyframes drawBorderBothSides {
+  0% {
+    stroke-dasharray: 0 50 0 50;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 50 0 50 0;
+    stroke-dashoffset: 25;
+  }
+}
+
+@keyframes fillBackground {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: var(--quiz-selected-bg);
+  }
+}
+
+.rect-overlay {
+  x: 1px;
+  y: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  rx: 12px;
+  fill: none;
+  stroke: #FF8300;
+  stroke-width: 2px;
+}
+
+.animate-draw-border {
+  animation: drawBorderBothSides 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.option-selected-anim {
+  border-color: transparent !important;
+  animation: fillBackground 0.25s ease-out 0.35s forwards;
+  position: relative;
+}
