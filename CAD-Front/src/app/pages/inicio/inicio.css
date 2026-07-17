@@ -3,11 +3,11 @@
 /* ── YouTube-style card: rounded, zoom, and animated border drawing from 4 edge centers ── */
 .yt-card {
   position: relative;
-  /* Sincronizamos la duración y curva del zoom con el dibujo del borde (0.55s) */
+  /* Sincronizamos la duración y curva del zoom con el dibujo del borde (0.48s) */
   transition:
-    transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s ease;
+    transform 0.48s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.48s cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 0.25s ease;
   will-change: transform;
 }
 
@@ -22,10 +22,10 @@
   opacity: 0;
   /* Clip-path inicial de 4 vértices (rombo que toca el centro de cada arista) */
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  /* Ralentizamos el dibujo a 0.55s en perfecta sincronía con el zoom */
+  /* Sincronizado a 0.48s en el término medio exacto para apreciarse sin sentirse lento */
   transition:
-    opacity 0.25s ease,
-    clip-path 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.2s ease,
+    clip-path 0.48s cubic-bezier(0.25, 1, 0.5, 1);
   z-index: 10;
 }
 
