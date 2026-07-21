@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { CursosService } from '../../services/cursos';
 
@@ -39,7 +39,7 @@ const NIVEL_LABEL: Record<string, string> = {
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
@@ -74,7 +74,7 @@ export class Inicio implements OnInit, AfterViewInit, OnDestroy {
         modulosCount: c._count?.modulos ?? 0,
         inscritosCount: c._count?.inscritos ?? 0,
         porcentaje,
-        autorNombre: c.autor ? `${c.autor.firstName} ${c.autor.lastName}` : 'Jalisco Aprende',
+        autorNombre: c.autor ? `${c.autor.firstName} ${c.autor.lastName}` : 'Alfa Digital',
       };
     })
   );
