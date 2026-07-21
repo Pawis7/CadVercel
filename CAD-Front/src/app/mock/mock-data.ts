@@ -384,12 +384,20 @@ export function getMockCursoDetalle(id: string): any {
   if (!cursoBase) return null;
 
   const videoIntro = MOCK_VIDEO_INTROS[id] ?? null;
+  const nombre = cursoBase.nombre;
+  const etiquetas = cursoBase.etiquetas ?? [];
 
-  // Generar un detalle genérico con un módulo y 2 lecciones
+  // ── Detalle genérico: 2 módulos (Introducción + Evaluación con cuestionario)
   return {
     ...cursoBase,
     videoIntro,
-    miInscripcion: null,
+    // Usuario ya inscrito — puede ver el contenido directamente
+    miInscripcion: {
+      id: `mock-insc-${id}`,
+      porcentaje: 0,
+      completado: false,
+      fechaInicio: '2026-07-10T10:00:00.000Z',
+    },
     miProgreso: [],
     modulos: [
       {
@@ -414,14 +422,111 @@ export function getMockCursoDetalle(id: string): any {
             orden: 2,
             esObligatoria: true,
             contenidoHtml: `
-              <h3>Bienvenido a ${cursoBase.nombre}</h3>
+              <h3>Bienvenido a ${nombre}</h3>
               <p>${cursoBase.descripcion}</p>
               <p>En este curso aprenderás paso a paso todo lo necesario para dominar este tema. El contenido está diseñado para ser accesible y práctico, con ejemplos reales aplicables a tu vida laboral y personal.</p>
               <h4>¿Qué aprenderás?</h4>
-              <ul>
-                ${(cursoBase.etiquetas || []).map((e: string) => `<li>${e}</li>`).join('')}
-              </ul>
+              <ul>${etiquetas.map((e: string) => `<li>${e}</li>`).join('')}</ul>
             `,
+          },
+        ],
+      },
+      {
+        id: `${id}-mod-002`,
+        titulo: 'Módulo 2 — Evaluación',
+        descripcion: 'Pon a prueba lo que aprendiste en este módulo.',
+        orden: 2,
+        lecciones: [
+          {
+            id: `${id}-lec-003`,
+            titulo: `Cuestionario — ${nombre}`,
+            tipo: 'CUESTIONARIO',
+            orden: 1,
+            esObligatoria: true,
+            calificacionMinima: 60,
+            preguntas: [
+              {
+                id: `${id}-preg-001`,
+                texto: `¿Cuál es el objetivo principal del curso "${nombre}"?`,
+                orden: 1,
+                opciones: [
+                  {
+                    id: `${id}-opc-001a`,
+                    texto: `Adquirir conocimientos y habilidades prácticas sobre: ${etiquetas.slice(0, 2).join(' y ') || nombre}.`,
+                    esCorrecta: true,
+                  },
+                  {
+                    id: `${id}-opc-001b`,
+                    texto: 'Aprender a programar robots industriales en entornos de manufactura.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-001c`,
+                    texto: 'Diseñar bases de datos distribuidas para corporaciones multinacionales.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-001d`,
+                    texto: 'Estudiar historia del arte medieval europeo.',
+                    esCorrecta: false,
+                  },
+                ],
+              },
+              {
+                id: `${id}-preg-002`,
+                texto: '¿Cuál es la mejor forma de aplicar lo aprendido en este curso?',
+                orden: 2,
+                opciones: [
+                  {
+                    id: `${id}-opc-002a`,
+                    texto: 'Practicando con ejercicios reales y aplicándolo en situaciones cotidianas del trabajo.',
+                    esCorrecta: true,
+                  },
+                  {
+                    id: `${id}-opc-002b`,
+                    texto: 'Memorizando toda la teoría sin realizar ninguna práctica.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-002c`,
+                    texto: 'Esperando a que otra persona lo haga por ti.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-002d`,
+                    texto: 'Ignorando los ejemplos y enfocándose solo en el examen final.',
+                    esCorrecta: false,
+                  },
+                ],
+              },
+              {
+                id: `${id}-preg-003`,
+                texto: '¿Qué característica describe mejor la plataforma Alfa Digital?',
+                orden: 3,
+                opciones: [
+                  {
+                    id: `${id}-opc-003a`,
+                    texto: 'Una plataforma de capacitación digital accesible para ciudadanos de Jalisco.',
+                    esCorrecta: true,
+                  },
+                  {
+                    id: `${id}-opc-003b`,
+                    texto: 'Un servicio exclusivo para empresas privadas con costo mensual elevado.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-003c`,
+                    texto: 'Una red social para compartir fotos y videos personales.',
+                    esCorrecta: false,
+                  },
+                  {
+                    id: `${id}-opc-003d`,
+                    texto: 'Un videojuego educativo para niños de primaria.',
+                    esCorrecta: false,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
