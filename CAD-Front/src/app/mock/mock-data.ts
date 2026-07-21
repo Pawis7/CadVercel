@@ -14,9 +14,9 @@ import { CursoApi } from '../services/cursos';
 // ─────────────────────────────────────────────────────────────────────────────
 export const MOCK_USER: User = {
   id: 'mock-user-001',
-  firstName: 'Ana',
-  lastName: 'García',
-  email: 'demo@alfadigital.edu.mx',
+  firstName: 'Alfa',
+  lastName: 'Digital',
+  email: 'hola@alfadigital.edu.mx',
   role: 'USER',
   createdAt: '2025-01-15T10:00:00.000Z',
   updatedAt: '2026-07-01T08:00:00.000Z',
