@@ -49,6 +49,15 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "mock": {
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mock.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -64,6 +73,9 @@
             },
             "development": {
               "buildTarget": "CAD-Front:build:development"
+            },
+            "mock": {
+              "buildTarget": "CAD-Front:build:mock"
             }
           },
           "defaultConfiguration": "development"

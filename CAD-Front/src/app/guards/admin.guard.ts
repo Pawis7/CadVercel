@@ -3,6 +3,8 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../services/auth';
 import { map, catchError, of, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 /**
  * Guard para la ruta /admin.
@@ -16,6 +18,13 @@ import { map, catchError, of, switchMap } from 'rxjs';
  * 5. Cualquier fallo de red o 403 redirige a /inicio.
  */
 export const adminGuard: CanActivateFn = () => {
+  // En modo MOCK: el usuario demo no es ADMIN → redirigir a inicio
+  if (environment.mock) {
+    const router = inject(Router);
+    router.navigate(['/inicio']);
+    return false;
+  }
+
   const authService = inject(AuthService);
   const router = inject(Router);
   const http = inject(HttpClient);

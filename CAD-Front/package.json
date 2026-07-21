@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:mock": "ng build --configuration mock",
+    "serve:mock": "ng serve --configuration mock",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

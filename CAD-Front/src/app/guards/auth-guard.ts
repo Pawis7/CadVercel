@@ -2,8 +2,14 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth';
 import { map, catchError, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export const authGuard: CanActivateFn = (route, state) => {
+  // En modo MOCK: siempre autenticado, sin llamadas HTTP
+  if (environment.mock) {
+    return true;
+  }
+
   const authService = inject(AuthService);
   const router = inject(Router);
 

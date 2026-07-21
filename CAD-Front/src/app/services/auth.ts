@@ -1,7 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError, switchMap } from 'rxjs';
+import { Observable, tap, catchError, throwError, switchMap, of } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { MOCK_USER } from '../mock/mock-data';
 
 export interface User {
   id: string;
@@ -38,10 +40,17 @@ export class AuthService {
 
   /**
    * Log in user.
-   * El backend setea la cookie HttpOnly 'cad_token' automáticamente.
-   * El frontend nunca toca el token — es invisible para JavaScript.
+   * En modo MOCK: acepta cualquier credencial y logea con el usuario demo.
+   * En producción: el backend setea la cookie HttpOnly 'cad_token' automáticamente.
    */
   login(credentials: { email: string; password?: string }): Observable<User> {
+    if (environment.mock) {
+      this.currentUser.set(MOCK_USER);
+      this.isAuthenticated.set(true);
+      this.isLoading.set(false);
+      return of(MOCK_USER);
+    }
+
     return this.http.post<AuthMessageResponse>(
       `${this.apiUrl}/auth/login`,
       credentials
@@ -53,9 +62,23 @@ export class AuthService {
 
   /**
    * Register a new user.
-   * El backend setea la cookie HttpOnly automáticamente al registrarse.
+   * En modo MOCK: registra con el usuario demo automáticamente.
+   * En producción: el backend setea la cookie HttpOnly automáticamente al registrarse.
    */
   register(userData: { firstName: string; lastName: string; email: string; password?: string }): Observable<User> {
+    if (environment.mock) {
+      const mockNewUser: User = {
+        ...MOCK_USER,
+        firstName: userData.firstName || MOCK_USER.firstName,
+        lastName: userData.lastName || MOCK_USER.lastName,
+        email: userData.email || MOCK_USER.email,
+      };
+      this.currentUser.set(mockNewUser);
+      this.isAuthenticated.set(true);
+      this.isLoading.set(false);
+      return of(mockNewUser);
+    }
+
     return this.http.post<AuthMessageResponse>(
       `${this.apiUrl}/auth/register`,
       userData
@@ -67,9 +90,17 @@ export class AuthService {
 
   /**
    * Fetch authenticated user details.
-   * La cookie HttpOnly se envía automáticamente por el browser.
+   * En modo MOCK: devuelve el usuario demo directamente.
+   * En producción: la cookie HttpOnly se envía automáticamente por el browser.
    */
   fetchMe(): Observable<User> {
+    if (environment.mock) {
+      this.currentUser.set(MOCK_USER);
+      this.isAuthenticated.set(true);
+      this.isLoading.set(false);
+      return of(MOCK_USER);
+    }
+
     return this.http.get<User>(`${this.apiUrl}/auth/me`).pipe(
       tap((user) => {
         this.currentUser.set(user);
@@ -93,9 +124,18 @@ export class AuthService {
   }
 
   /**
-   * Clear auth session. El backend expira las cookies de forma segura.
+   * Clear auth session.
+   * En modo MOCK: limpia el estado local y redirige.
+   * En producción: el backend expira las cookies de forma segura.
    */
   logout(): void {
+    if (environment.mock) {
+      this.currentUser.set(null);
+      this.isAuthenticated.set(false);
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.http.post(
       `${this.apiUrl}/auth/logout`,
       {},
@@ -127,9 +167,17 @@ export class AuthService {
 
   /**
    * Initialize authentication on app boot.
-   * Hace un ping al servidor para verificar si la cookie aún es válida.
+   * En modo MOCK: auto-login con usuario demo sin ninguna llamada HTTP.
+   * En producción: hace un ping al servidor para verificar si la cookie aún es válida.
    */
   private initAuth(): void {
+    if (environment.mock) {
+      this.currentUser.set(MOCK_USER);
+      this.isAuthenticated.set(true);
+      this.isLoading.set(false);
+      return;
+    }
+
     this.fetchMe().subscribe({
       next: () => this.isLoading.set(false),
       error: () => {
