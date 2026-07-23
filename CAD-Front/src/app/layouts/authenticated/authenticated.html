@@ -23,11 +23,11 @@
           
         </div>
 
-        <!-- Middle Section on mobile, Left Section on desktop: Logo & Desktop Links -->
-        <div class="flex items-center space-x-8 absolute top-0 left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:flex-grow-0 h-full">
-          <a routerLink="/inicio" class="flex items-center justify-center cursor-pointer select-none h-full">
-            <span class="text-xl font-bold tracking-tight">
-              <span class="text-orange-500">Alfa</span><span class="text-white dark:text-white text-slate-800"> Digital</span>
+        <!-- Middle Section on mobile (Centrado perfecto X & Y), Left Section en desktop -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none md:static md:inset-auto md:pointer-events-auto md:flex md:items-center md:space-x-8 h-full z-10">
+          <a routerLink="/inicio" class="pointer-events-auto flex items-center justify-center cursor-pointer select-none h-full">
+            <span class="text-xl font-bold tracking-tight inline-flex items-center">
+              <span class="text-orange-500">Alfa</span><span class="text-red-600"> Digital</span>
             </span>
           </a>
 
@@ -299,7 +299,7 @@
             >
             <div class="h-10 w-px bg-slate-200 dark:bg-neutral-800"></div>
             <div class="text-left">
-              <h4 class="text-base font-bold text-slate-800 dark:text-white tracking-tight">Alfa Digital</h4>
+              <h4 class="text-base font-bold tracking-tight"><span class="text-orange-500">Alfa</span> <span class="text-red-600">Digital</span></h4>
               <p class="text-[0.625rem] uppercase font-bold tracking-wider text-slate-400 dark:text-neutral-500">SEP Jalisco</p>
             </div>
           </div>

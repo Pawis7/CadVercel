@@ -219,3 +219,24 @@ model Progreso {
 
   @@unique([inscripcionId, leccionId]) // una entrada por lección por inscripción
 }
+
+// ============================================
+// REELS VIDEOS
+// ============================================
+// Videos en formato vertical / reels para la página de inicio.
+
+model Reel {
+  id           String   @id @default(cuid())
+  titulo       String
+  videoUrl     String
+  thumbnailUrl String?
+  autorNombre  String   @default("Alfa Digital")
+  autorAvatar  String?
+  duracion     Int?     // duración estimada en segundos
+  orden        Int      @default(0)
+  creadoEn     DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@map("reels")
+}
+

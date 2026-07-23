@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CursosModule } from './cursos/cursos.module';
+import { ReelsModule } from './reels/reels.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CursosModule } from './cursos/cursos.module';
     UsersModule,
     AuthModule,
     CursosModule,
+    ReelsModule,
   ],
   providers: [
     // Aplica el ThrottlerGuard de forma global a toda la API

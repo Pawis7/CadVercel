@@ -41,3 +41,61 @@
   /* Expande los 4 vértices del rombo hacia las esquinas exteriores, dibujando el borde */
   clip-path: polygon(110% -10%, 110% 110%, -10% 110%, -10% -10%);
 }
+
+
+/* ── Reel-style vertical card: 9:16 vertical ratio, animated border & thumbnail zoom ── */
+.reel-card, .reel {
+  position: relative;
+  transition:
+    transform 0.48s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.48s cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 0.25s ease;
+  will-change: transform;
+}
+
+/* Pseudo-elemento para el dibujo de borde animado institucional (#FF8300) */
+.reel-card::before, .reel::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1.5px solid #FF8300;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transition:
+    opacity 0.2s ease,
+    clip-path 0.48s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 10;
+}
+
+/* Hover en card de reel: Elevación sutil, sombra limpia institucional y activación de borde dibujado */
+.reel-card:hover, .reel:hover {
+  border-color: transparent !important;
+  transform: scale(1.025);
+  box-shadow: 0 14px 32px rgba(255, 131, 0, 0.18);
+}
+
+.reel-card:hover::before, .reel:hover::before {
+  opacity: 1;
+  clip-path: polygon(110% -10%, 110% 110%, -10% 110%, -10% -10%);
+}
+
+/* Zoom específico en la miniatura del Reel al hacer hover */
+.reel-card .reel-thumb, .reel .reel-thumb {
+  transition: transform 0.48s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.reel-card:hover .reel-thumb, .reel:hover .reel-thumb {
+  transform: scale(1.08);
+}
+
+/* Scrollbar oculta para el carrusel horizontal de Reels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
