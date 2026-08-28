@@ -22,24 +22,27 @@ export class ReelsController {
 
   /**
    * GET /reels
-   * Obtiene la lista completa de Reels (disponible para consumo de inicio).
+   * Requiere sesión autenticada. Retorna la lista de Reels para la pantalla de inicio.
    */
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.reelsService.findAll();
   }
 
   /**
    * GET /reels/:id
+   * Requiere sesión autenticada.
    */
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.reelsService.findOne(id);
   }
 
   /**
    * POST /reels
-   * Crear Reel (Requiere ADMIN o usuario autenticado)
+   * Solo ADMIN o EDITOR.
    */
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -51,6 +54,7 @@ export class ReelsController {
 
   /**
    * PUT /reels/:id
+   * Solo ADMIN o EDITOR.
    */
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -61,6 +65,7 @@ export class ReelsController {
 
   /**
    * DELETE /reels/:id
+   * Solo ADMIN.
    */
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)

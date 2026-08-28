@@ -1,12 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller } from '@nestjs/common';
 
+/**
+ * AppController vacío — no expone ningún endpoint en la raíz.
+ * Los endpoints de la aplicación están bajo el prefijo /api (configurado en main.ts).
+ */
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-}
+export class AppController {}

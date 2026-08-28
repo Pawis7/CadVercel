@@ -20,8 +20,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
 
-// Duración de la cookie: 1 día en milisegundos
-const COOKIE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+// Duración de la cookie del refresh token: 7 días en milisegundos (coincide con JWT_REFRESH_EXPIRES_IN)
+const REFRESH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 @Controller('auth')
 export class AuthController {
@@ -65,11 +65,13 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
     const isProd = process.env.NODE_ENV === 'production';
 
+    // No requiere JwtAuthGuard: borrar cookies no expone datos sensibles.
+    // Si el access token ya expiró (razón del 401), el server igual debe
+    // poder limpiar las cookies — si no, quedan atrapadas hasta su maxAge.
     res.clearCookie('cad_token', {
       path: '/',
       sameSite: 'lax',
@@ -140,25 +142,23 @@ export class AuthController {
   private setAuthCookies(res: Response, accessToken: string, refreshToken: string): void {
     const isProd = process.env.NODE_ENV === 'production';
 
-    // SameSite=Lax (dev y prod):
-    //   ✅ Bloquea CSRF en POST/PUT/DELETE cross-site (el vector real de ataque)
-    //   ✅ Funciona aunque front y API estén en subdominios distintos
-    //   ✅ HttpOnly + Secure + CORS específico cubren el resto
-    //   ℹ️  Strict solo añadiría bloquear clicks desde otros dominios — innecesario aquí
-
+    // Access token: cookie de sesión (sin maxAge) — el JWT ya lleva su propia expiración (15m).
+    // Al cerrar el navegador desaparece; la renovación automática la gestiona el refresh token.
+    // HttpOnly + Secure + SameSite=Lax cubren XSS y CSRF.
     res.cookie('cad_token', accessToken, {
       httpOnly: true,
-      secure: isProd,   // Solo HTTPS en producción
+      secure: isProd,
       sameSite: 'lax',
-      ...(isProd && { maxAge: COOKIE_MAX_AGE_MS }),
       path: '/',
     });
 
+    // Refresh token: maxAge de 7 días (coincide con JWT_REFRESH_EXPIRES_IN).
+    // Path restringido a /api/auth para minimizar la superficie de envío automático.
     res.cookie('cad_refresh_token', refreshToken, {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
-      ...(isProd && { maxAge: 7 * 24 * 60 * 60 * 1000 }),
+      maxAge: REFRESH_COOKIE_MAX_AGE_MS,
       path: '/api/auth',
     });
   }

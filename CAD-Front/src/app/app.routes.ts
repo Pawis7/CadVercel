@@ -13,26 +13,28 @@ import { noAuthGuard } from './guards/no-auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
-  // Rutas públicas — si ya hay sesión activa, redirigen a inicio
+  // ── Rutas públicas — si ya hay sesión activa, redirigen a /inicio ──────────
   { path: 'login',    component: Login,    canActivate: [noAuthGuard] },
   { path: 'register', component: Register, canActivate: [noAuthGuard] },
-  
-  // Rutas protegidas globales que comparten el layout y el guard de autenticación
+
+  // ── Rutas protegidas — requieren sesión activa (cookie HttpOnly válida) ─────
   {
     path: '',
     component: AuthenticatedLayout,
     canActivate: [authGuard],
     children: [
-      { path: 'inicio', component: Inicio },
+      // Redirige la raíz a /inicio dentro del layout protegido
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      { path: 'inicio',    component: Inicio },
       { path: 'dashboard', component: Dashboard },
-      { path: 'cursos', component: Cursos },
-      // ── Rutas de administración — requieren sesión activa + rol ADMIN verificado en la DB
-      { path: 'admin',         component: AdminDashboard, canActivate: [adminGuard] },
-      { path: 'cursos/nuevo',  component: CrearCurso,     canActivate: [adminGuard] },
-      { path: 'cursos/:id',    component: CursoDetalle },
-    ]
+      { path: 'cursos',    component: Cursos },
+      // ── Rutas de administración — rol ADMIN verificado en DB ────────────────
+      { path: 'admin',        component: AdminDashboard, canActivate: [adminGuard] },
+      { path: 'cursos/nuevo', component: CrearCurso,     canActivate: [adminGuard] },
+      { path: 'cursos/:id',   component: CursoDetalle },
+    ],
   },
-  
-  { path: '',   redirectTo: '/inicio', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' }
+
+  // ── Cualquier ruta desconocida → login ──────────────────────────────────────
+  { path: '**', redirectTo: '/login' },
 ];

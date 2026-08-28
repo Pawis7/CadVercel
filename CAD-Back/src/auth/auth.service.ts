@@ -52,7 +52,7 @@ export class AuthService {
     }
 
     // 2. Hash de contraseña
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const passwordHash = await bcrypt.hash(dto.password, 12);
 
     // 3. Crear usuario
     const user = await this.usersService.create({

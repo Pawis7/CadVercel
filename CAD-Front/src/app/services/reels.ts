@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 export interface ReelApi {
   id: string;
@@ -125,9 +125,24 @@ export class ReelsService {
   private http = inject(HttpClient);
   private apiUrl = '/api/reels';
 
+  // Cache en memoria: el request HTTP solo se ejecuta una vez por sesión.
+  // refCount: false → el buffer de shareReplay persiste aunque no haya
+  // suscriptores activos (navegación entre páginas).
+  private cache$: Observable<ReelApi[]> | null = null;
+
   getReels(): Observable<ReelApi[]> {
-    return this.http.get<ReelApi[]>(this.apiUrl).pipe(
-      catchError(() => of(DEFAULT_REELS))
-    );
+    if (!this.cache$) {
+      this.cache$ = this.http.get<ReelApi[]>(this.apiUrl).pipe(
+        // Sin catchError: si la API responde 401, el authInterceptor limpia la sesión
+        // y redirige al login. Los DEFAULT_REELS solo existen como referencia de estructura.
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
+    }
+    return this.cache$;
+  }
+
+  /** Fuerza una recarga limpia (usar tras crear/editar un reel en admin) */
+  invalidateCache(): void {
+    this.cache$ = null;
   }
 }

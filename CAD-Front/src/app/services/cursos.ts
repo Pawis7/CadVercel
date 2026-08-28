@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
 
 /** Forma exacta en que la API devuelve un curso del catálogo */
 export interface CursoApi {
@@ -72,14 +73,37 @@ export class CursosService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/api';
 
+  // Cache en memoria por tipo de lista.
+  // shareReplay(1) evita requests duplicados al navegar entre páginas.
+  private cursosCache$: Observable<CursoApi[]> | null = null;
+  private cursosAdminCache$: Observable<CursoApi[]> | null = null;
+
   /** Catálogo público — solo cursos PUBLICADOS */
   getCursos(): Observable<CursoApi[]> {
-    return this.http.get<CursoApi[]>(`${this.apiUrl}/cursos`);
+    if (!this.cursosCache$) {
+      this.cursosCache$ = this.http.get<CursoApi[]>(`${this.apiUrl}/cursos`).pipe(
+        tap({ error: () => (this.cursosCache$ = null) }),
+        shareReplay(1),
+      );
+    }
+    return this.cursosCache$;
   }
 
   /** Admin — todos los cursos (incluye borradores y archivados) */
   getCursosAdmin(): Observable<CursoApi[]> {
-    return this.http.get<CursoApi[]>(`${this.apiUrl}/cursos/admin/all`);
+    if (!this.cursosAdminCache$) {
+      this.cursosAdminCache$ = this.http.get<CursoApi[]>(`${this.apiUrl}/cursos/admin/all`).pipe(
+        tap({ error: () => (this.cursosAdminCache$ = null) }),
+        shareReplay(1),
+      );
+    }
+    return this.cursosAdminCache$;
+  }
+
+  /** Fuerza una recarga limpia (llamar tras crear/editar/borrar un curso) */
+  invalidateCache(): void {
+    this.cursosCache$ = null;
+    this.cursosAdminCache$ = null;
   }
 
   /** Crea un curso nuevo (solo ADMIN) */

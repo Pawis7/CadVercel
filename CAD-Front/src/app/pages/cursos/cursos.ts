@@ -73,7 +73,11 @@ export class Cursos implements OnInit {
   onDelete(id: string): void {
     if (!confirm('¿Estás seguro de que quieres eliminar este curso? Esta acción no se puede deshacer.')) return;
     this.cursosService.deleteCurso(id).subscribe({
-      next: () => this.loadCursos(),
+      next: () => {
+        // Invalida el cache para que la recarga traiga datos frescos
+        this.cursosService.invalidateCache();
+        this.loadCursos();
+      },
       error: () => alert('Error al eliminar el curso. Inténtalo de nuevo.'),
     });
   }

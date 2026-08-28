@@ -12,14 +12,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Evitar bucles y redirecciones redundantes si la petición ya es de sesión básica/auth
+      // Rutas de auth excluidas para evitar bucles infinitos.
+      // /auth/logout está aquí: si logout falla (raro), no intentamos hacer logout de nuevo.
       const isAuthPath = req.url.includes('/auth/login') ||
                          req.url.includes('/auth/register') ||
                          req.url.includes('/auth/logout') ||
                          req.url.includes('/auth/me');
 
       if (error.status === 401 && !isAuthPath) {
-        authService.clearSession();
+        // logout() llama al servidor → el servidor borra las cookies HttpOnly con
+        // res.clearCookie(). JavaScript solo puede borrar cookies sin HttpOnly,
+        // por eso la limpieza DEBE hacerse server-side.
+        authService.logout();
       }
       return throwError(() => error);
     })
