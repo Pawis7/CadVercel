@@ -46,6 +46,7 @@ services:
       - .env
     environment:
       DATABASE_URL: "postgresql://cad:cad_dev@db:5432/cad?schema=public"
+      DIRECT_URL: "postgresql://cad:cad_dev@db:5432/cad?schema=public"
       NODE_ENV: development
     volumes:
       - ./src:/app/src
@@ -57,8 +58,8 @@ services:
       sh -c "
         echo '⏳ Generando cliente de Prisma...' &&
         npx prisma generate &&
-        echo '⏳ Aplicando migraciones de base de datos...' &&
-        npx prisma migrate deploy &&
+        echo '⏳ Sincronizando esquema de base de datos local...' &&
+        npx prisma db push &&
         echo '✅ Base de datos lista' &&
         echo '🚀 Iniciando API NestJS...' &&
         npm run start:dev
