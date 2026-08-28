@@ -15,12 +15,14 @@ import { map, catchError, of, switchMap } from 'rxjs';
  * 4. Si no hay usuario en memoria → intenta /me para obtener datos y luego verifica el rol.
  * 5. Cualquier fallo de red o 403 redirige a /inicio.
  */
+import { environment } from '../../environments/environment';
+
 export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const http = inject(HttpClient);
 
-  const apiUrl = 'http://localhost:3000/api';
+  const apiUrl = environment.apiUrl;
 
   /** Verifica el rol ADMIN directamente en el backend (fuente de verdad). */
   const verifyAdminOnServer = () =>

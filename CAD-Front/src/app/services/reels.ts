@@ -118,12 +118,14 @@ export const DEFAULT_REELS: ReelApi[] = [
   },
 ];
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ReelsService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/reels';
+  private apiUrl = `${environment.apiUrl}/reels`;
 
   // Cache en memoria: el request HTTP solo se ejecuta una vez por sesión.
   // refCount: false → el buffer de shareReplay persiste aunque no haya

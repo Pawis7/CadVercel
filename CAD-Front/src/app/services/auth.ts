@@ -18,14 +18,15 @@ export interface AuthMessageResponse {
   message: string;
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  // URL absoluta del backend — el interceptor añade withCredentials en todas las peticiones
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = environment.apiUrl;
 
   // Signals for reactive application state
   readonly currentUser = signal<User | null>(null);

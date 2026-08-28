@@ -66,12 +66,14 @@ export interface EstructuraCursoPayload {
   modulos: ModuloPayload[];
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class CursosService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = environment.apiUrl;
 
   // Cache en memoria por tipo de lista.
   // shareReplay(1) evita requests duplicados al navegar entre páginas.
