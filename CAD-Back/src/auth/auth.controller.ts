@@ -68,20 +68,18 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
     const isProd = process.env.NODE_ENV === 'production';
+    const sameSiteMode = isProd ? ('none' as const) : ('lax' as const);
 
-    // No requiere JwtAuthGuard: borrar cookies no expone datos sensibles.
-    // Si el access token ya expiró (razón del 401), el server igual debe
-    // poder limpiar las cookies — si no, quedan atrapadas hasta su maxAge.
     res.clearCookie('cad_token', {
       path: '/',
-      sameSite: 'lax',
+      sameSite: sameSiteMode,
       secure: isProd,
       httpOnly: true,
     });
 
     res.clearCookie('cad_refresh_token', {
       path: '/api/auth',
-      sameSite: 'lax',
+      sameSite: sameSiteMode,
       secure: isProd,
       httpOnly: true,
     });
@@ -141,23 +139,24 @@ export class AuthController {
 
   private setAuthCookies(res: Response, accessToken: string, refreshToken: string): void {
     const isProd = process.env.NODE_ENV === 'production';
+    const sameSiteMode = isProd ? ('none' as const) : ('lax' as const);
 
     // Access token: cookie de sesión (sin maxAge) — el JWT ya lleva su propia expiración (15m).
-    // Al cerrar el navegador desaparece; la renovación automática la gestiona el refresh token.
-    // HttpOnly + Secure + SameSite=Lax cubren XSS y CSRF.
+    // En producción cross-origin (Vercel -> Render), SameSite=None + Secure es obligatorio
+    // para que el navegador envíe las cookies con withCredentials: true.
     res.cookie('cad_token', accessToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: sameSiteMode,
       path: '/',
     });
 
     // Refresh token: maxAge de 7 días (coincide con JWT_REFRESH_EXPIRES_IN).
-    // Path restringido a /api/auth para minimizar la superficie de envío automático.
+    // Path /api/auth para aislar el token de refresco.
     res.cookie('cad_refresh_token', refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: sameSiteMode,
       maxAge: REFRESH_COOKIE_MAX_AGE_MS,
       path: '/api/auth',
     });

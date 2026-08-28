@@ -9,6 +9,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('Bootstrap');
 
+  // ─── Confianza en proxies inversos (Render / Vercel load balancers) ─────────
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   // ─── Límite de tamaño de payload — previene DoS por cuerpos masivos ────────────
   // 2 MB es suficiente para cualquier curso con contenido HTML extenso.
   app.use(require('express').json({ limit: '2mb' }));
