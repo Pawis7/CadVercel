@@ -32,9 +32,21 @@ async function bootstrap() {
     }),
   );
 
-  // ─── CORS – solo permite el origen definido en .env ─────────────────────────────────────
+  // ─── CORS – orígenes permitidos ──────────────────────────────────────────────────────────
+  const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:4200')
+    .split(',')
+    .map((o) => o.trim().replace(/\/+$/, ''));
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+    origin: (origin, callback) => {
+      // Permitir herramientas como Postman, health checks o peticiones sin header Origin
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/+$/, '');
+      if (allowedOrigins.includes(cleanOrigin) || allowedOrigins.includes('*')) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
   });
 
