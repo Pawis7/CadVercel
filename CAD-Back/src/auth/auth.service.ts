@@ -24,19 +24,21 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
+  // Hash precalculado para comparación dummy cuando el usuario no existe.
+  // Esto iguala el tiempo de respuesta entre emails existentes e inexistentes,
+  // previniendo ataques de timing side-channel para enumerar cuentas.
+  private static readonly DUMMY_HASH = '$2b$12$LJ3m4ys3Lg/3sSiCihOSZOz5cXR1YLQFG5e.NhU1rGCrvuFwfLOhq';
+
   async login(dto: LoginDto): Promise<AuthTokens> {
     // 1. Buscar usuario por email
     const user = await this.usersService.findByEmail(dto.email);
 
-    if (!user) {
-      throw new UnauthorizedException('Credenciales incorrectas');
-    }
+    // 2. Siempre ejecutar bcrypt.compare — incluso si el usuario no existe.
+    //    Esto garantiza que el tiempo de respuesta sea idéntico en ambos casos.
+    const hashToCompare = user?.password ?? AuthService.DUMMY_HASH;
+    const passwordValid = await bcrypt.compare(dto.password, hashToCompare);
 
-    // 2. Verificar contraseña
-    const passwordValid = await bcrypt.compare(dto.password, user.password);
-
-    if (!passwordValid) {
-      // Mismo mensaje para no revelar si el email existe (anti user enumeration)
+    if (!user || !passwordValid) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
